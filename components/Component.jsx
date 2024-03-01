@@ -2,8 +2,8 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import Message from "@mapstore/components/I18N/Message";
-import { SAMPLEEXTENSION_PANEL_WIDTH } from "../constants/sampleExtension-constants.js";
-// import {  } from "../actions/sampleExtension-action.js";
+import { PHOTOSOBLIQUESEXTENSION_PANEL_WIDTH } from "../constants/photosObliquesExtension-constants.js";
+// import {  } from "../actions/photosObliquesExtension-action.js";
 import ResponsivePanel from "@mapstore/components/misc/panels/ResponsivePanel";
 
 // import {
@@ -14,29 +14,29 @@ import ResponsivePanel from "@mapstore/components/misc/panels/ResponsivePanel";
 //     InputGroup,
 //     Checkbox
 // } from 'react-bootstrap';
-export class sampleExtension extends React.Component {
+export class photosObliquesExtension extends React.Component {
 
     static propTypes= {
         active: PropTypes.bool,
         dockStyle: PropTypes.object,
         panelClassName: PropTypes.string,
         width: PropTypes.number,
-        sampleExtensionHomeText: PropTypes.string,
+        photosObliquesExtensionHomeText: PropTypes.string,
         toggleControl: PropTypes.func
     }
 
     static defaultProps= {
         active: false,
         dockStyle: {zIndex: 100},
-        panelClassName: 'sampleExtension-panel',
-        width: SAMPLEEXTENSION_PANEL_WIDTH,
+        panelClassName: 'photosObliquesExtension-panel',
+        width: PHOTOSOBLIQUESEXTENSION_PANEL_WIDTH,
         toggleControl: ()=>{}
     }
 
     constructor(props) {
         super(props);
         this.state = {
-            sampleExtensionHomeText: props.sampleExtensionHomeText
+            photosObliquesExtensionHomeText: props.photosObliquesExtensionHomeText
         };
         props.initConfigs({
             ...props
@@ -45,7 +45,7 @@ export class sampleExtension extends React.Component {
 
     /**
      * onClose closes the plugins Panel
-     * @memberof sampleExtension.component
+     * @memberof photosObliquesExtension.component
      * @returns - toggleControl action
      */
     onClose() {
@@ -54,13 +54,13 @@ export class sampleExtension extends React.Component {
 
     /**
      * renderHomeTab home tab content
-     * @memberof sampleExtension.component
+     * @memberof photosObliquesExtension.component
      * @returns - dom of the home tab content
      */
     renderHomeTab() {
         return (
-            <div id="SAMPLEEXTENSION_EXTENSION SAMPLEEXTENSION_scrollBar">
-                <div className="SAMPLEEXTENSION_paragraphs" dangerouslySetInnerHTML={{__html: this.props.sampleExtensionHomeText}}>
+            <div id="PHOTOSOBLIQUESEXTENSION_EXTENSION PHOTOSOBLIQUESEXTENSION_scrollBar">
+                <div className="PHOTOSOBLIQUESEXTENSION_paragraphs" dangerouslySetInnerHTML={{__html: this.props.photosObliquesExtensionHomeText}}>
                 </div>
             </div>
         );
@@ -68,7 +68,7 @@ export class sampleExtension extends React.Component {
 
     /**
      * render component
-     * @memberof sampleExtension.component
+     * @memberof photosObliquesExtension.component
      * @returns - Mapstore ResponsivePanel with our data inside
      */
     render = () => {
@@ -76,16 +76,16 @@ export class sampleExtension extends React.Component {
             <ResponsivePanel
                 containerStyle={this.props.dockStyle}
                 style={this.props.dockStyle}
-                containerId="ms-sampleExtension-panel"
-                containerClassName="sampleExtension-dock-container"
+                containerId="ms-photosObliquesExtension-panel"
+                containerClassName="photosObliquesExtension-dock-container"
                 className={this.props.panelClassName}
                 open={this.props.active}
                 position="right"
                 size={this.props.width}
                 bsStyle="primary"
-                title={<Message msgId="sampleExtension.title"/>}
+                title={<Message msgId="photosObliquesExtension.title"/>}
                 glyph=""
-                onClose={() => this.props.toggleControl('sampleExtension', null)}>
+                onClose={() => this.props.toggleControl('photosObliquesExtension', null)}>
                 {this.renderHomeTab()}
             </ResponsivePanel>
         );

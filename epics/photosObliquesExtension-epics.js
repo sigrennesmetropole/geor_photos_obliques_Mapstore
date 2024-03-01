@@ -2,16 +2,16 @@
 import Rx from "rxjs";
 import {
     actions,
-    sampleExtensionUpdateMapLayout,
+    photosObliquesExtensionUpdateMapLayout,
     initConfigs
-} from "../actions/sampleExtension-action";
+} from "../actions/photosObliquesExtension-action";
 import {
     TOGGLE_CONTROL
 } from "@mapstore/actions/controls";
 import {
-    SAMPLEEXTENSION_PANEL_WIDTH,
+    PHOTOSOBLIQUESEXTENSION_PANEL_WIDTH,
     RIGHT_SIDEBAR_MARGIN_LEFT
-} from "../constants/sampleExtension-constants";
+} from "../constants/photosObliquesExtension-constants";
 import {
     updateDockPanelsList,
     UPDATE_MAP_LAYOUT
@@ -19,19 +19,19 @@ import {
 
 import {
     isOpen
-} from "../selectors/sampleExtension-selectors";
+} from "../selectors/photosObliquesExtension-selectors";
 
 var currentLayout;
 
 /**
- * opensampleExtensionPanelEpic opens the panel of this sampleExtension plugin
- * @memberof sampleExtension.epics
+ * openphotosObliquesExtensionPanelEpic opens the panel of this photosObliquesExtension plugin
+ * @memberof photosObliquesExtension.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
  * @returns - observable with the list of actions to do after completing the function (trigger the projection, the dock panel, the grid, the drawing tools and the map layout update actions)
  */
-export const opensampleExtensionPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTROL)
-    .filter(action => action.control === 'sampleExtension'
+export const openphotosObliquesExtensionPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTROL)
+    .filter(action => action.control === 'photosObliquesExtension'
     && !!store.getState()
     && !!isOpen(store.getState()))
     .switchMap(() => {
@@ -42,10 +42,10 @@ export const opensampleExtensionPanelEpic = (action$, store) => action$.ofType(T
             rightPanel: true,
             leftPanel: false,
             ...layout.boundingMapRect,
-            right: SAMPLEEXTENSION_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT,
+            right: PHOTOSOBLIQUESEXTENSION_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT,
             boundingMapRect: {
                 ...layout.boundingMapRect,
-                right: SAMPLEEXTENSION_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT
+                right: PHOTOSOBLIQUESEXTENSION_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT
             },
             boundingSidebarRect: layout.boundingSidebarRect
         };
@@ -53,24 +53,24 @@ export const opensampleExtensionPanelEpic = (action$, store) => action$.ofType(T
         currentLayout = layout;
 
         let observables = [
-            sampleExtensionUpdateMapLayout(layout),
-            updateDockPanelsList('sampleExtension', 'add', 'right'),
+            photosObliquesExtensionUpdateMapLayout(layout),
+            updateDockPanelsList('photosObliquesExtension', 'add', 'right'),
             initConfigs
         ];
         return Rx.Observable.from(observables);
     });
 
 /**
- * closesampleExtensionPanelEpic close the panel of this sampleExtension plugin
- * @memberof sampleExtension.epics
+ * closephotosObliquesExtensionPanelEpic close the panel of this photosObliquesExtension plugin
+ * @memberof photosObliquesExtension.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
  * @returns - observable with the list of actions to do after completing the function (the dock panel and the map layout update actions)
  */
-export const closesampleExtensionPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTROL, actions.CLOSE_SAMPLEEXTENSION)
-    .filter(action => action.control === 'sampleExtension'
+export const closephotosObliquesExtensionPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTROL, actions.CLOSE_PHOTOSOBLIQUESEXTENSION)
+    .filter(action => action.control === 'photosObliquesExtension'
     && !!store.getState()
-    && !isOpen(store.getState()) || action.type === actions.CLOSE_SAMPLEEXTENSION )
+    && !isOpen(store.getState()) || action.type === actions.CLOSE_PHOTOSOBLIQUESEXTENSION )
     .switchMap(() => {
         let layout = store.getState().maplayout;
         layout = {
@@ -88,8 +88,8 @@ export const closesampleExtensionPanelEpic = (action$, store) => action$.ofType(
         };
         currentLayout = layout;
         return Rx.Observable.from([
-            updateDockPanelsList('sampleExtension', 'remove', 'right'),
-            sampleExtensionUpdateMapLayout(currentLayout)
+            updateDockPanelsList('photosObliquesExtension', 'remove', 'right'),
+            photosObliquesExtensionUpdateMapLayout(currentLayout)
         ]);
     });
 
@@ -99,9 +99,9 @@ export const closesampleExtensionPanelEpic = (action$, store) => action$.ofType(
  * @param action$ - list of actions triggered in mapstore context
  * @returns - observable which update map layout
  */
-export function onUpdatingLayoutWhensampleExtensionPanelOpenedEpic(action$, store) {
+export function onUpdatingLayoutWhenPhotosObliquesExtensionPanelOpenedEpic(action$, store) {
     return action$.ofType(UPDATE_MAP_LAYOUT)
-        .filter((action) => (action.source === "sampleExtension" || action.source === undefined)
+        .filter((action) => (action.source === "photosObliquesExtension" || action.source === undefined)
         && store
         && store.getState()
         && !!isOpen(store.getState())
@@ -114,13 +114,13 @@ export function onUpdatingLayoutWhensampleExtensionPanelOpenedEpic(action$, stor
                 rightPanel: true,
                 leftPanel: layout.layout.leftPanel,
                 ...layout.boundingMapRect,
-                right: SAMPLEEXTENSION_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT,
+                right: PHOTOSOBLIQUESEXTENSION_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT,
                 boundingMapRect: {
                     ...layout.boundingMapRect,
-                    right: SAMPLEEXTENSION_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT
+                    right: PHOTOSOBLIQUESEXTENSION_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT
                 },
                 boundingSidebarRect: layout.boundingSidebarRect};
             currentLayout = layout;
-            return Rx.Observable.of(sampleExtensionUpdateMapLayout(layout));
+            return Rx.Observable.of(photosObliquesExtensionUpdateMapLayout(layout));
         });
 }

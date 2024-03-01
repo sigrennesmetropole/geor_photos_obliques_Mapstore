@@ -1,4 +1,4 @@
-#SAMPLEEXTENSION_EXTENSION {
+#PHOTOSOBLIQUESEXTENSION_EXTENSION {
     max-width: 555px;
     max-height: 700px;
     padding-left: 10px;
@@ -9,14 +9,14 @@
     z-index: 1000;
 }
 
-.SAMPLEEXTENSION_scrollBar{
+.PHOTOSOBLIQUESEXTENSION_scrollBar{
     overflow-y: scroll;
     max-height: 5000px;
     margin-right: 17px;
     cursor: pointer;
 }
 
-.SAMPLEEXTENSION_paragraphs{
+.PHOTOSOBLIQUESEXTENSION_paragraphs{
     margin-top: 15px;
     margin-left: 10px;
     max-width: 500px;
