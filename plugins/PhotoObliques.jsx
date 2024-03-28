@@ -4,43 +4,43 @@ import { name } from '../../../config';
 
 import {createPlugin} from "@mapstore/utils/PluginsUtils";
 import { toggleControl } from '@mapstore/actions/controls';
-import { photosObliquesExtension } from "../components/Component";
-import pluginIcon from "../assets/images/photosObliquesExtensionLogo.svg";
+import { photosObliques } from "../components/Component";
+import pluginIcon from "../assets/images/photosObliquesLogo.svg";
 
 import {
     initConfigs
-} from "../actions/photosObliquesExtension-action";
-import photosObliquesExtensionReducer from "../reducers/photosObliquesExtension-reducer";
-import * as epics from "../epics/photosObliquesExtension-epics";
+} from "../actions/photosObliques-action";
+import photosObliquesReducer from "../reducers/photosObliques-reducer";
+import * as epics from "../epics/photosObliques-epics";
 import { mapLayoutValuesSelector } from '@mapstore/selectors/maplayout';
 import {
     isOpen
-} from "../selectors/photosObliquesExtension-selectors";
+} from "../selectors/photosObliques-selectors";
 import '../assets/style.css';
 
 export default createPlugin(name, {
     component: connect(state => ({
         active: !!isOpen(state),
-        value: state.photosObliquesExtension && state.photosObliquesExtension.value,
+        value: state.photosObliques && state.photosObliques.value,
         dockStyle: mapLayoutValuesSelector(state, {right: true, height: true}, true),
         pluginIcon
     }), {
         toggleControl: toggleControl,
         initConfigs
-    })(photosObliquesExtension),
+    })(photosObliques),
     reducers: {
-        photosObliquesExtension: photosObliquesExtensionReducer
+        photosObliques: photosObliquesReducer
     },
     epics: epics,
     containers: {
         SidebarMenu: {
-            name: "photosObliquesExtension",
+            name: "photosObliques",
             position: 10,
             icon: <img src={pluginIcon} className="iconSize" />,
             doNotHide: true,
-            tooltip: "photosObliquesExtension.title",
+            tooltip: "photosObliques.title",
             toggle: true,
-            action: toggleControl.bind(null, 'photosObliquesExtension', 'enabled'),
+            action: toggleControl.bind(null, 'photosObliques', 'enabled'),
             priority: 1
         }
     }

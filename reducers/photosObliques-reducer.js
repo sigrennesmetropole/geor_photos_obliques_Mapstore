@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { actions } from "../actions/photosObliquesExtension-action";
+import { actions } from "../actions/photosObliques-action";
 import assign from 'object-assign';
 
 const initialState = {
@@ -7,8 +7,8 @@ const initialState = {
 };
 
 /**
- * photosObliquesExtension reducer
- * @memberof photosObliquesExtension.reducer
+ * photosObliques reducer
+ * @memberof photosObliques.reducer
  * @param state - the plugins state
  * @param action - the current action triggered
  * @returns - returns the current actions to be made from the current action

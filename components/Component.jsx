@@ -2,8 +2,7 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import Message from "@mapstore/components/I18N/Message";
-import { PHOTOSOBLIQUESEXTENSION_PANEL_WIDTH } from "../constants/photosObliquesExtension-constants.js";
-// import {  } from "../actions/photosObliquesExtension-action.js";
+import { PHOTOSOBLIQUES_PANEL_WIDTH } from "../constants/photosObliques-constants.js";
 import ResponsivePanel from "@mapstore/components/misc/panels/ResponsivePanel";
 
 // import {
@@ -14,29 +13,29 @@ import ResponsivePanel from "@mapstore/components/misc/panels/ResponsivePanel";
 //     InputGroup,
 //     Checkbox
 // } from 'react-bootstrap';
-export class photosObliquesExtension extends React.Component {
+export class photosObliques extends React.Component {
 
     static propTypes= {
         active: PropTypes.bool,
         dockStyle: PropTypes.object,
         panelClassName: PropTypes.string,
         width: PropTypes.number,
-        photosObliquesExtensionHomeText: PropTypes.string,
+        photosObliquesHomeText: PropTypes.string,
         toggleControl: PropTypes.func
     }
 
     static defaultProps= {
         active: false,
         dockStyle: {zIndex: 100},
-        panelClassName: 'photosObliquesExtension-panel',
-        width: PHOTOSOBLIQUESEXTENSION_PANEL_WIDTH,
+        panelClassName: 'photosObliques-panel',
+        width: PHOTOSOBLIQUES_PANEL_WIDTH,
         toggleControl: ()=>{}
     }
 
     constructor(props) {
         super(props);
         this.state = {
-            photosObliquesExtensionHomeText: props.photosObliquesExtensionHomeText
+            photosObliquesHomeText: props.photosObliquesHomeText
         };
         props.initConfigs({
             ...props
@@ -45,7 +44,7 @@ export class photosObliquesExtension extends React.Component {
 
     /**
      * onClose closes the plugins Panel
-     * @memberof photosObliquesExtension.component
+     * @memberof photosObliques.component
      * @returns - toggleControl action
      */
     onClose() {
@@ -54,13 +53,13 @@ export class photosObliquesExtension extends React.Component {
 
     /**
      * renderHomeTab home tab content
-     * @memberof photosObliquesExtension.component
+     * @memberof photosObliques.component
      * @returns - dom of the home tab content
      */
     renderHomeTab() {
         return (
-            <div id="PHOTOSOBLIQUESEXTENSION_EXTENSION PHOTOSOBLIQUESEXTENSION_scrollBar">
-                <div className="PHOTOSOBLIQUESEXTENSION_paragraphs" dangerouslySetInnerHTML={{__html: this.props.photosObliquesExtensionHomeText}}>
+            <div id="PHOTOSOBLIQUES_EXTENSION PHOTOSOBLIQUES_scrollBar">
+                <div className="PHOTOSOBLIQUES_paragraphs" dangerouslySetInnerHTML={{__html: this.props.photosObliquesHomeText}}>
                 </div>
             </div>
         );
@@ -68,7 +67,7 @@ export class photosObliquesExtension extends React.Component {
 
     /**
      * render component
-     * @memberof photosObliquesExtension.component
+     * @memberof photosObliques.component
      * @returns - Mapstore ResponsivePanel with our data inside
      */
     render = () => {
@@ -76,16 +75,16 @@ export class photosObliquesExtension extends React.Component {
             <ResponsivePanel
                 containerStyle={this.props.dockStyle}
                 style={this.props.dockStyle}
-                containerId="ms-photosObliquesExtension-panel"
-                containerClassName="photosObliquesExtension-dock-container"
+                containerId="ms-photosObliques-panel"
+                containerClassName="photosObliques-dock-container"
                 className={this.props.panelClassName}
                 open={this.props.active}
                 position="right"
                 size={this.props.width}
                 bsStyle="primary"
-                title={<Message msgId="photosObliquesExtension.title"/>}
+                title={<Message msgId="photosObliques.title"/>}
                 glyph=""
-                onClose={() => this.props.toggleControl('photosObliquesExtension', null)}>
+                onClose={() => this.props.toggleControl('photosObliques', null)}>
                 {this.renderHomeTab()}
             </ResponsivePanel>
         );
