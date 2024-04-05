@@ -3,7 +3,8 @@ import { actions } from "../actions/photosObliques-action";
 import assign from 'object-assign';
 
 const initialState = {
-    value: 1
+    value: 1,
+    activeTab: tabTypes.HOME
 };
 
 /**
@@ -17,6 +18,8 @@ export default (state = initialState, action) => {
     switch (action.type) {
     case actions.INIT_CONFIGS:
         return assign({}, state, { configs: action.configs });
+    case actions.CHANGE_TAB:
+        return assign({}, state, { activeTab: action.tab });
     default:
         return state;
     }

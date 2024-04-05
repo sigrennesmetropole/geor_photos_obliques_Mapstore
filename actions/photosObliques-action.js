@@ -4,7 +4,15 @@ import {UPDATE_MAP_LAYOUT} from "@mapstore/actions/maplayout";
 export const actions = {
     LOCAL_ACTION: 'PHOTOSOBLIQUES:LOCAL_ACTION',
     INIT_CONFIGS: "PHOTOSOBLIQUES:INIT_CONFIGS",
-    CLOSE_PHOTOSOBLIQUES: "PHOTOSOBLIQUES:CLOSE_PHOTOSOBLIQUES"
+    CLOSE_PHOTOSOBLIQUES: "PHOTOSOBLIQUES:CLOSE_PHOTOSOBLIQUES",
+    CHANGE_TAB: 'PHOTOSOBLIQUES:CHANGE_TAB',
+
+};
+
+export const tabTypes = {
+    HOME: 'PHOTOSOBLIQUES:HOME',
+    SELECT: 'PHOTOSOBLIQUES:SELECT',
+    SEND: 'PHOTOSOBLIQUES:SEND'
 };
 
 /**
@@ -41,5 +49,18 @@ export function initConfigs(configs) {
 export function closephotosObliques() {
     return {
         type: actions.CLOSE_PHOTOSOBLIQUES
+    };
+}
+
+/**
+ * photosObliquesChangeTab start action to change tab
+ * @memberof photosObliques.actions
+ * @param tab - the tab string we should use
+ * @returns - action change tab
+ */
+export function photosObliquesChangeTab(tab) {
+    return {
+        type: actions.CHANGE_TAB,
+        tab
     };
 }
