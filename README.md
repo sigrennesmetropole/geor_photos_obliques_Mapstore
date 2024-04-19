@@ -94,4 +94,4 @@ _ Describe here how to configure the plugin in the mapstore map context manageme
 
 _ If the plugin works with a back-end: link to the back-end repository and its configuration procedure _
 
-toto
+
