@@ -5,19 +5,17 @@ import { name } from '../../../config';
 import {createPlugin} from "@mapstore/utils/PluginsUtils";
 import { toggleControl } from '@mapstore/actions/controls';
 import { photosObliques } from "../components/Component";
-import pluginIcon from "../assets/images/photosObliquesLogo.svg";
+import pluginIcon from "../assets/images/sampleExtensionLogo.svg";
 
 import {
-    initConfigs,
-    photosObliquesChangeTab
-} from "../actions/photosObliques-action";
-import photosObliquesReducer from "../reducers/photosObliques-reducer";
-import * as epics from "../epics/photosObliques-epics";
+    initConfigs
+} from "../actions/sampleExtension-action";
+import photosObliquesReducer from "../reducers/sampleExtension-reducer";
+import * as epics from "../epics/sampleExtension-epics";
 import { mapLayoutValuesSelector } from '@mapstore/selectors/maplayout';
 import {
-    isOpen,
-    getActiveTab
-} from "../selectors/photosObliques-selectors";
+    isOpen
+} from "../selectors/sampleExtension-selectors";
 import '../assets/style.css';
 
 export default createPlugin(name, {
@@ -25,12 +23,10 @@ export default createPlugin(name, {
         active: !!isOpen(state),
         value: state.photosObliques && state.photosObliques.value,
         dockStyle: mapLayoutValuesSelector(state, {right: true, height: true}, true),
-        pluginIcon,
-        activeTab: getActiveTab(state)
+        pluginIcon
     }), {
         toggleControl: toggleControl,
-        initConfigs,
-        photosObliquesChangeTab: photosObliquesChangeTab
+        initConfigs
     })(photosObliques),
     reducers: {
         photosObliques: photosObliquesReducer

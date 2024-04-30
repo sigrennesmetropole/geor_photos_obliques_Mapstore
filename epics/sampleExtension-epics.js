@@ -4,14 +4,14 @@ import {
     actions,
     photosObliquesUpdateMapLayout,
     initConfigs
-} from "../actions/photosObliques-action";
+} from "../actions/sampleExtension-action";
 import {
     TOGGLE_CONTROL
 } from "@mapstore/actions/controls";
 import {
     PHOTOSOBLIQUES_PANEL_WIDTH,
     RIGHT_SIDEBAR_MARGIN_LEFT
-} from "../constants/photosObliques-constants";
+} from "../constants/sampleExtension-constants";
 import {
     updateDockPanelsList,
     UPDATE_MAP_LAYOUT
@@ -19,12 +19,12 @@ import {
 
 import {
     isOpen
-} from "../selectors/photosObliques-selectors";
+} from "../selectors/sampleExtension-selectors";
 
 var currentLayout;
 
 /**
- * openphotosObliquesPanelEpic opens the panel of this photosObliques plugin
+ * openphotosObliquesPanelEpic opens the panel of this sampleExtension plugin
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
@@ -95,7 +95,7 @@ export const closephotosObliquesPanelEpic = (action$, store) => action$.ofType(T
 
 /**
  * onUpdatingLayoutWhenPhotosObliquesPanelOpenedEpic fix mapstore search bar issue on rtge panel opening
- * @memberof rtge.epics
+ * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
  * @returns - observable which update map layout
  */

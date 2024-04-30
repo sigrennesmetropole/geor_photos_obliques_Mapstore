@@ -2,9 +2,9 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import Message from "@mapstore/components/I18N/Message";
-import { PHOTOSOBLIQUES_PANEL_WIDTH } from "../constants/photosObliques-constants.js";
+import { PHOTOSOBLIQUES_PANEL_WIDTH } from "../constants/sampleExtension-constants.js";
+// import {  } from "../actions/sampleExtension-action.js";
 import ResponsivePanel from "@mapstore/components/misc/panels/ResponsivePanel";
-import { tabTypes } from "../actions/photosObliques-action";
 
 // import {
 //     Form,
@@ -22,9 +22,7 @@ export class photosObliques extends React.Component {
         panelClassName: PropTypes.string,
         width: PropTypes.number,
         photosObliquesHomeText: PropTypes.string,
-        activeTab: PropTypes.string,
-        toggleControl: PropTypes.func,
-        photosObliquesChangeTab: PropTypes.func
+        toggleControl: PropTypes.func
     }
 
     static defaultProps= {
@@ -32,9 +30,7 @@ export class photosObliques extends React.Component {
         dockStyle: {zIndex: 100},
         panelClassName: 'photosObliques-panel',
         width: PHOTOSOBLIQUES_PANEL_WIDTH,
-        activeTab: tabTypes.HOME,
-        toggleControl: ()=>{},
-        photosObliquesChangeTab: ()=>{}
+        toggleControl: ()=>{}
     }
 
     constructor(props) {
@@ -90,46 +86,8 @@ export class photosObliques extends React.Component {
                 title={<Message msgId="photosObliques.title"/>}
                 glyph=""
                 onClose={() => this.props.toggleControl('photosObliques', null)}>
-                {this.renderTabMenu()}
                 {this.renderHomeTab()}
             </ResponsivePanel>
         );
     }
-
-    /**
-     * renderTabMenu renders the selection tabs to get all plkugins sub parts
-     * @memberof photosObliques.component
-     * @returns - navbar like for the plugin
-     */
-    renderTabMenu() {
-        return (
-            <div className="row PHOTOSOBLIQUES_rowTabs">
-                <div className="col-sm-6 text-center">
-                    <button className={this.props.activeTab === "PHOTOSOBLIQUES:HOME"
-                        ? "PHOTOSOBLIQUES_homeButton PHOTOSOBLIQUES_active"
-                        : "PHOTOSOBLIQUES_homeButton"} onClick={() => this.props.photosObliquesChangeTab(tabTypes.HOME)}>
-                        <Message msgId={'photosObliques.searchTab'}/>
-                    </button>
-                </div>
-                <div className="col-sm-6 text-center">
-                    {/* {this.props.selectedTiles.length === 0 &&
-                    <>
-                        <button className="PHOTOSOBLIQUES_sendButton PHOTOSOBLIQUES_gray PHOTOSOBLIQUES_tooltipMain">
-                            <Message msgId={'PHOTOSOBLIQUES.send'}/>
-                            <span className="PHOTOSOBLIQUES_tooltipContent"><Message msgId={'PHOTOSOBLIQUES.sendBtnDisabled'}/></span>
-                        </button>
-                    </>
-                    }
-                    {this.props.selectedTiles.length > 0 && */}
-                        <button className={this.props.activeTab === "PHOTOSOBLIQUES:SEND"
-                            ? "PHOTOSOBLIQUES_sendButton PHOTOSOBLIQUES_active"
-                            : "PHOTOSOBLIQUES_sendButton" } onClick={() => this.props.photosObliquesChangeTab(tabTypes.SEND)}>
-                            <Message msgId={'photosObliques.basketTab'}/>
-                        </button>
-                    {/* } */}
-                </div>
-            </div>
-        );
-    }
-    
 }

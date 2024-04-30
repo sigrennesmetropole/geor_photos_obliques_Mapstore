@@ -35,24 +35,3 @@ button .iconSize{
 button.active .iconSize{
     filter: invert(100%) sepia(100%) saturate(100%) hue-rotate(100deg) brightness(100%) contrast(100%);
 }
-
-.PHOTOSOBLIQUES_rowTabs{
-    padding: 10px;
-    margin-bottom: 20px;
-}
-
-.PHOTOSOBLIQUES_homeButton, .PHOTOSOBLIQUES_selectButton, .PHOTOSOBLIQUES_sendButton {
-    /* margin: 20px; */
-    width: 100px;
-    background-color: inherit;
-    border: none;
-    margin-top: 10px;
-    height: 40px;
-    width: 100%;
-}
-
-.PHOTOSOBLIQUES_active{
-    border-bottom: 0px solid white;
-    background-color: white;
-    color: black;
-}
