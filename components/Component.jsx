@@ -2,8 +2,8 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import Message from "@mapstore/components/I18N/Message";
-import { PHOTOSOBLIQUES_PANEL_WIDTH } from "../constants/sampleExtension-constants.js";
-// import {  } from "../actions/sampleExtension-action.js";
+import { PHOTOSOBLIQUES_PANEL_WIDTH } from "../constants/photosObliques-constants.js";
+// import {  } from "../actions/photosObliques-action.js";
 import ResponsivePanel from "@mapstore/components/misc/panels/ResponsivePanel";
 
 // import {

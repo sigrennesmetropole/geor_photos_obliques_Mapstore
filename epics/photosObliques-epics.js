@@ -4,14 +4,14 @@ import {
     actions,
     photosObliquesUpdateMapLayout,
     initConfigs
-} from "../actions/sampleExtension-action";
+} from "../actions/photosObliques-action";
 import {
     TOGGLE_CONTROL
 } from "@mapstore/actions/controls";
 import {
     PHOTOSOBLIQUES_PANEL_WIDTH,
     RIGHT_SIDEBAR_MARGIN_LEFT
-} from "../constants/sampleExtension-constants";
+} from "../constants/photosObliques-constants";
 import {
     updateDockPanelsList,
     UPDATE_MAP_LAYOUT
@@ -19,7 +19,7 @@ import {
 
 import {
     isOpen
-} from "../selectors/sampleExtension-selectors";
+} from "../selectors/photosObliques-selectors";
 
 var currentLayout;
 

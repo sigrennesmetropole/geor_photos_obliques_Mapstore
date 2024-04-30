@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { actions } from "../actions/sampleExtension-action";
+import { actions } from "../actions/photosObliques-action";
 import assign from 'object-assign';
 
 const initialState = {
