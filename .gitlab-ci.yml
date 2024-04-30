@@ -16,4 +16,4 @@ trigger_job:
     PARENT_COMMIT_SHA: $CI_COMMIT_SHA
   trigger:
     project: sig/ed/MapStore/MapStoreExtension
-    branch: rm/photoOblique_main
+    branch: RM/photoOblique_main
