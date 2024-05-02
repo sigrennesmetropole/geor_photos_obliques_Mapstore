@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from 'prop-types';
 import Message from "@mapstore/components/I18N/Message";
 import { PHOTOSOBLIQUES_PANEL_WIDTH } from "../constants/photosObliques-constants.js";
-// import {  } from "../actions/photosObliques-action.js";
+import { tabTypes } from "../actions/photosObliques-action.js";
 import ResponsivePanel from "@mapstore/components/misc/panels/ResponsivePanel";
 
 // import {
@@ -18,11 +18,13 @@ export class photosObliques extends React.Component {
 
     static propTypes= {
         active: PropTypes.bool,
-        dockStyle: PropTypes.object,
-        panelClassName: PropTypes.string,
         width: PropTypes.number,
+        panelClassName: PropTypes.string,
         photosObliquesHomeText: PropTypes.string,
-        toggleControl: PropTypes.func
+        activeTab: PropTypes.string,
+        dockStyle: PropTypes.object,
+        toggleControl: PropTypes.func,
+        rtgeChangeTab: PropTypes.func
     }
 
     static defaultProps= {
@@ -30,7 +32,9 @@ export class photosObliques extends React.Component {
         dockStyle: {zIndex: 100},
         panelClassName: 'photosObliques-panel',
         width: PHOTOSOBLIQUES_PANEL_WIDTH,
-        toggleControl: ()=>{}
+        activeTab: tabTypes.HOME,
+        toggleControl: ()=>{},
+        rtgeChangeTab: ()=>{}
     }
 
     constructor(props) {
@@ -57,14 +61,75 @@ export class photosObliques extends React.Component {
      * @memberof photosObliques.component
      * @returns - dom of the home tab content
      */
-    renderHomeTab() {
-        return (
-            <div id="PHOTOSOBLIQUES_EXTENSION PHOTOSOBLIQUES_scrollBar">
-                <div className="PHOTOSOBLIQUES_paragraphs" dangerouslySetInnerHTML={{__html: this.props.photosObliquesHomeText}}>
+    // renderHomeTab() {
+    //     return (
+    //         <div id="PHOTOSOBLIQUES_EXTENSION PHOTOSOBLIQUES_scrollBar">
+    //             <div className="PHOTOSOBLIQUES_paragraphs" dangerouslySetInnerHTML={{__html: this.props.photosObliquesHomeText}}>
+    //             </div>
+    //         </div>
+    //     );
+    // }
+
+        /**
+     * renderHomeTab home tab content
+     * @memberof photosObliques.component
+     * @returns - dom of the home tab content
+     */
+        // renderSelectionTab() {
+        //     return (
+        //         <div id="PHOTOSOBLIQUES_EXTENSION PHOTOSOBLIQUES_scrollBar">
+        //             <div className="PHOTOSOBLIQUES_paragraphs" dangerouslySetInnerHTML={{__html: '<p>toto pouêt</p>'}}>
+        //             </div>
+        //         </div>
+        //     );
+        // }
+
+        /**
+     * renderTabMenu renders the selection tabs to get all plkugins sub parts
+     * @memberof rtge.component
+     * @returns - navbar like for the plugin
+     */
+        renderTabMenu() {
+            return (
+                <div className="row PHOTOSOBLIQUES_rowTabs">
+                    <div className="col-sm-6 text-center">
+                        <button className={this.props.activeTab === "PHOTOSOBLIQUES:HOME"
+                            ? "PHOTOSOBLIQUES_homeButton PHOTOSOBLIQUES_active"
+                            : "PHOTOSOBLIQUES_homeButton"} onClick={() => this.props.rtgeChangeTab(tabTypes.HOME)}>
+                            <Message msgId={'photosObliques.welcome'}/>
+                        </button>
+                    </div>
+                    <div className="col-sm-6 text-center">
+                        <button className={this.props.activeTab === "PHOTOSOBLIQUES:SELECT"
+                            ? "PHOTOSOBLIQUES_selectButton PHOTOSOBLIQUES_active"
+                            : "PHOTOSOBLIQUES_selectButton"} onClick={() => this.props.rtgeChangeTab(tabTypes.SELECT)}>
+                            <Message msgId={'photosObliques.selection'}/>
+                        </button>
+                    </div>
                 </div>
-            </div>
-        );
-    }
+            );
+        }
+
+        /**
+     * renderContent organise which tab is active
+     * @memberof rtge.component
+     * @returns - tab dom content
+     */
+    // renderContent = () => {
+    //     var content;
+    //     console.log(this.props.activeTab);
+    //     switch (this.props.activeTab) {
+    //     case tabTypes.HOME:
+    //         content = this.renderHomeTab();
+    //         break;
+    //     case tabTypes.SELECT:
+    //         content = this.renderSelectionTab();
+    //         break;
+    //     default:
+    //         break;
+    //     }
+    //     return content;
+    // }
 
     /**
      * render component
@@ -86,7 +151,8 @@ export class photosObliques extends React.Component {
                 title={<Message msgId="photosObliques.title"/>}
                 glyph=""
                 onClose={() => this.props.toggleControl('photosObliques', null)}>
-                {this.renderHomeTab()}
+                {this.renderTabMenu()}
+                {/* {this.renderContent()} */}
             </ResponsivePanel>
         );
     }

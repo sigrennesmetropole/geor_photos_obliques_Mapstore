@@ -8,13 +8,15 @@ import { photosObliques } from "../components/Component";
 import pluginIcon from "../assets/images/photosObliquesLogo.svg";
 
 import {
-    initConfigs
+    initConfigs,
+    rtgeChangeTab
 } from "../actions/photosObliques-action";
 import photosObliquesReducer from "../reducers/photosObliques-reducer";
 import * as epics from "../epics/photosObliques-epics";
 import { mapLayoutValuesSelector } from '@mapstore/selectors/maplayout';
 import {
-    isOpen
+    isOpen,
+    getActiveTab
 } from "../selectors/photosObliques-selectors";
 import '../assets/style.css';
 
@@ -22,10 +24,12 @@ export default createPlugin(name, {
     component: connect(state => ({
         active: !!isOpen(state),
         value: state.photosObliques && state.photosObliques.value,
+        activeTab: getActiveTab(state),
         dockStyle: mapLayoutValuesSelector(state, {right: true, height: true}, true),
         pluginIcon
     }), {
         toggleControl: toggleControl,
+        rtgeChangeTab: rtgeChangeTab,
         initConfigs
     })(photosObliques),
     reducers: {

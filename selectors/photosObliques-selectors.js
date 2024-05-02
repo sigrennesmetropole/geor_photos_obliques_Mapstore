@@ -7,3 +7,12 @@ import { get } from "lodash";
  * @returns - returns the plugins panel state
  */
 export const isOpen = (state) => get(state, 'controls.photosObliques.enabled');
+
+/**
+ * getActiveTab checks which tab is open
+ * @memberof photosObliques.selectors
+ * @param state - application state
+ * @returns - returns the tabs state
+ */
+export const  getActiveTab = (state) => get(state, 'photosObliques.activeTab');
+
