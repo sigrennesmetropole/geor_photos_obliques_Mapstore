@@ -5,7 +5,8 @@ export const actions = {
     LOCAL_ACTION: 'PHOTOSOBLIQUES:LOCAL_ACTION',
     INIT_CONFIGS: "PHOTOSOBLIQUES:INIT_CONFIGS",
     CHANGE_TAB: 'PHOTOSOBLIQUES:CHANGE_TAB',
-    CLOSE_PHOTOSOBLIQUES: "PHOTOSOBLIQUES:CLOSE_PHOTOSOBLIQUES"
+    CLOSE_PHOTOSOBLIQUES: "PHOTOSOBLIQUES:CLOSE_PHOTOSOBLIQUES",
+    ROSE_CLICKED: 'PLUGIN:ROSE_CLICKED'
 };
 
 export const tabTypes = {
@@ -61,6 +62,19 @@ export function rtgeChangeTab(tab) {
     return {
         type: actions.CHANGE_TAB,
         tab
+    };
+}
+
+/**
+ * windRoseClick start action to change tab
+ * @memberof plugin.actions
+ * @param section - the selected section
+ * @returns - action change tab
+ */
+export function windRoseClick(section) {
+    return {
+        type: actions.ROSE_CLICKED,
+        section
     };
 }
 

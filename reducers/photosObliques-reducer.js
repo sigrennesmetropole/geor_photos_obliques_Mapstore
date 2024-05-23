@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { actions } from "../actions/photosObliques-action";
+import { actions, tabTypes } from "../actions/photosObliques-action";
 import assign from 'object-assign';
 
 const initialState = {
@@ -22,6 +22,8 @@ export default (state = initialState, action) => {
         return assign({}, state, { configs: action.configs });
     case actions.CHANGE_TAB:
         return assign({}, state, { activeTab: action.tab });
+    case actions.ROSE_CLICKED:
+        return assign({}, state, { roseValue: action.section });
     default:
         return state;
     }

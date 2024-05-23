@@ -123,4 +123,17 @@ export function onUpdatingLayoutWhenPhotosObliquesPanelOpenedEpic(action$, store
             currentLayout = layout;
             return Rx.Observable.of(photosObliquesUpdateMapLayout(layout));
         });
-}
+    }
+
+/**
+ * windRoseClickedEpic 
+ * @memberof photosObliques.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @returns - empty observable
+ */
+export const windRoseClickedEpic = (action$, store) => action$.ofType(actions.ROSE_CLICKED).switchMap(() => {
+        /* eslint-disable */
+        console.log('CURRENT ROSE SECTION SELECTED: ' + store.getState().photosObliques.roseValue);
+        /* eslint-enable */
+        return Rx.Observable.empty();
+    })
