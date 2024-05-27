@@ -1,49 +1,23 @@
-#PHOTOSOBLIQUES_EXTENSION {
-    max-width: 555px;
-    max-height: 700px;
-    padding-left: 10px;
-    padding-top: 5px;
-    margin-top: 35px;
+#SAMPLE_EXTENSION {
+    background-color: rgba(255,255,255,.9);
+    border-radius: 10px;
+    max-width: 550px;
+    padding: 10px;
+    margin: 10px;
     position: absolute;
     top: 50px;
     z-index: 1000;
 }
 
-.PHOTOSOBLIQUES_scrollBar{
-    overflow-y: scroll;
-    max-height: 5000px;
-    margin-right: 17px;
-    cursor: pointer;
-}
+/* Tabs */
 
-.PHOTOSOBLIQUES_paragraphs{
-    margin-top: 15px;
-    margin-left: 10px;
-    max-width: 500px;
-}
-
-.iconSize{
-    width: 25px;
-    height: 25px;
-}
-
-/* https://isotropic.co/tool/hex-color-to-css-filter/ */
-button .iconSize{
-    filter: invert(26%) sepia(4%) saturate(8%) hue-rotate(334deg) brightness(104%) contrast(87%);;
-}
-
-button.active .iconSize{
-    filter: invert(100%) sepia(100%) saturate(100%) hue-rotate(100deg) brightness(100%) contrast(100%);
-}
-
-/* Section renderTabMenu() */
-
-.PHOTOSOBLIQUES_rowTabs{
+.RTGE_rowTabs{
     padding: 10px;
+    margin: auto;
     margin-bottom: 20px;
 }
 
-.PHOTOSOBLIQUES_homeButton, .PHOTOSOBLIQUES_selectButton, .PHOTOSOBLIQUES_sendButton {
+.RTGE_homeButton, .RTGE_selectButton {
     /* margin: 20px; */
     width: 100px;
     background-color: inherit;
@@ -53,23 +27,19 @@ button.active .iconSize{
     width: 100%;
 }
 
-.PHOTOSOBLIQUES_active{
+.RTGE_active{
     border-bottom: 0px solid white;
     background-color: white;
     color: black;
 }
 
-button.PHOTOSOBLIQUES_active{
+button.RTGE_active{
     border-bottom: 1px solid white;
     border-top: 1px solid #ddd;
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
     background-color: white;
     color: black;
-}
-
-.PHOTOSOBLIQUES_selectorButton.PHOTOSOBLIQUES_active {
-    border: none;
 }
 
 /* Fin section renderTabManu() */
@@ -117,7 +87,6 @@ button.RTGE_active{
     background-color: white;
     color: black;
 }
-
 
 /* Compass */
 

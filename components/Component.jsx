@@ -1,20 +1,18 @@
-/* eslint-disable no-console */
 import React from "react";
-import PropTypes from 'prop-types';
 import Message from "@mapstore/components/I18N/Message";
-import { PHOTOSOBLIQUES_PANEL_WIDTH } from "../constants/photosObliques-constants.js";
-import { tabTypes } from "../actions/photosObliques-action.js";
-import ResponsivePanel from "@mapstore/components/misc/panels/ResponsivePanel";
+import TabsComponent from "../components/Tabs";
+import ContentComponent from "../components/Content";
 
-// import {
-//     Form,
-//     FormControl,
-//     FormGroup,
-//     Glyphicon,
-//     InputGroup,
-//     Checkbox
-// } from 'react-bootstrap';
-export class photosObliques extends React.Component {
+const Extension = (props) => {
+    // console.log(props);
+    return (
+        <div id="SAMPLE_EXTENSION" >
+        {/* <TabsComponent activeTab='props.activeTab' tabTypes='props.tabTypes' pluginChangeTab='props.pluginChangeTab' /> */}
+            <TabsComponent props={props} />
+            <ContentComponent props={props} />
+        </div>
+    );
+};
 
     static propTypes= {
         active: PropTypes.bool,
@@ -298,3 +296,4 @@ export class photosObliques extends React.Component {
         );
     }
 }
+export default Extension;
