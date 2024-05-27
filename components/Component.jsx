@@ -1,18 +1,20 @@
+/* eslint-disable no-console */
 import React from "react";
+import PropTypes from 'prop-types';
 import Message from "@mapstore/components/I18N/Message";
-import TabsComponent from "../components/Tabs";
-import ContentComponent from "../components/Content";
+import { PHOTOSOBLIQUES_PANEL_WIDTH } from "../constants/photosObliques-constants.js";
+import { tabTypes } from "../actions/photosObliques-action.js";
+import ResponsivePanel from "@mapstore/components/misc/panels/ResponsivePanel";
 
-const Extension = (props) => {
-    // console.log(props);
-    return (
-        <div id="SAMPLE_EXTENSION" >
-        {/* <TabsComponent activeTab='props.activeTab' tabTypes='props.tabTypes' pluginChangeTab='props.pluginChangeTab' /> */}
-            <TabsComponent props={props} />
-            <ContentComponent props={props} />
-        </div>
-    );
-};
+// import {
+//     Form,
+//     FormControl,
+//     FormGroup,
+//     Glyphicon,
+//     InputGroup,
+//     Checkbox
+// } from 'react-bootstrap';
+export class photosObliques extends React.Component {
 
     static propTypes= {
         active: PropTypes.bool,
@@ -62,17 +64,65 @@ const Extension = (props) => {
     renderHomeTab() {
         return (
             <>
-                <div className="col-sm-6">
-                    { this.searchFilters() }
-                </div>
-                <div className="col-sm-6">
-                    { this.renderCompass() }
-                </div>
-                <div className="row validateForm">
-                    { this.validateSection() }
-                </div>
+                {
+                    this.props.filtersTriggered === false &&
+                    <>
+                        <div className="col-sm-6">
+                            { this.searchFilters() }
+                        </div>
+                        <div className="col-sm-6">
+                            { this.renderCompass() }
+                        </div>
+                        <div className="row validateForm">
+                            { this.validateSection() }
+                        </div>
+                    </>
+                }
+                { 
+                    this.props.filtersTriggered === true &&
+                    <div className="row validateForm">
+                        { this.filterResults() }
+                    </div>
+                }
             </>
         );
+    }
+
+    /**
+     * filterResults home tab content
+     * @memberof photosObliques.component
+     * @returns - dom of the home tab content
+     */
+    filterResults(){
+        return (
+            <div className="text-center RTGE_arrayContent">
+                {
+                    // console.log(this.props.searchResult)
+                    this.props.searchResult.map((val, key) => {
+                        return (
+                            <div className="row PO_searchResults" key={key}>
+                                <div className="col-sm-4">
+                                    <img src={ val.picture } class="PO_searchResultPictures" />
+                                </div>
+                                <div className="col-sm-6">
+                                    <p><Message msgId={'photosObliques.yearTaken'} />: { val.yearTaken }<br/>
+                                    <Message msgId={'photosObliques.date'} />: { val.date }<br/>
+                                    <Message msgId={'photosObliques.provider'} />: { val.taker }<br/>
+                                    <Message msgId={'photosObliques.owner'} />: { val.owner }<br/>
+                                    <Message msgId={'photosObliques.weight'} />: { val.weigth }</p>
+                                </div>
+                                <div className="col-sm-2">
+                                    <div className="">{ val.searchPrecision }</div>
+                                    <div>
+                                        <button className="PO_addBasket"><Message msgId={'photosObliques.addBasket'} /></button>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })
+                }
+            </div>
+        )
     }
 
     /**
@@ -83,7 +133,7 @@ const Extension = (props) => {
     validateSection(){
         return (
             <>
-                <button onClick={() => this.props.validateSearchFilters()}>
+                <button onClick={() => this.props.validateSearchFilters(true)}>
                     <Message msgId={'PLUGIN.ValidateSearch'}/>
                 </button>
                 <span>XXX Photos disponibles</span>
@@ -296,4 +346,3 @@ const Extension = (props) => {
         );
     }
 }
-export default Extension;

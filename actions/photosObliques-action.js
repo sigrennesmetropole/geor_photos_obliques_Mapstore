@@ -6,7 +6,8 @@ export const actions = {
     INIT_CONFIGS: "PHOTOSOBLIQUES:INIT_CONFIGS",
     CHANGE_TAB: 'PHOTOSOBLIQUES:CHANGE_TAB',
     CLOSE_PHOTOSOBLIQUES: "PHOTOSOBLIQUES:CLOSE_PHOTOSOBLIQUES",
-    ROSE_CLICKED: 'PLUGIN:ROSE_CLICKED'
+    ROSE_CLICKED: 'PLUGIN:ROSE_CLICKED',
+    SEARCH_FILTERS: 'SEARCH_FILTERS'
 };
 
 export const tabTypes = {
@@ -75,6 +76,19 @@ export function windRoseClick(section) {
     return {
         type: actions.ROSE_CLICKED,
         section
+    };
+}
+
+/**
+ * validateSearchFilters start action to change tab
+ * @memberof plugin.actions
+ * @param section - the selected section
+ * @returns - action change tab
+ */
+export function validateSearchFilters(filters) {
+    return {
+        type: actions.SEARCH_FILTERS,
+        filters
     };
 }
 

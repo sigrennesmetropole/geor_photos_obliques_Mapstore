@@ -22,5 +22,21 @@ export const  getActiveTab = (state) => get(state, 'photosObliques.activeTab');
  * @param state - application state
  * @returns - returns the tabs state
  */
-export const getSelectedRoseValue = (state) => get(state, 'sampleExtension.roseValue');
+export const getSelectedRoseValue = (state) => get(state, 'photosObliques.roseValue');
+
+/**
+* getFiltersTriggered checks which tab is open
+* @memberof plugin.selectors
+* @param state - application state
+* @returns - returns the tabs state
+*/
+export const getFiltersTriggered = (state) => get(state, 'photosObliques.filtersTriggered');
+
+/**
+* getSearchResult checks which tab is open
+* @memberof plugin.selectors
+* @param state - application state
+* @returns - returns the tabs state
+*/
+export const getSearchResult = (state) => get(state, 'photosObliques.searchResult');
 

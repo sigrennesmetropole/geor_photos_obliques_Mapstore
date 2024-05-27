@@ -1,23 +1,49 @@
-#SAMPLE_EXTENSION {
-    background-color: rgba(255,255,255,.9);
-    border-radius: 10px;
-    max-width: 550px;
-    padding: 10px;
-    margin: 10px;
+#PHOTOSOBLIQUES_EXTENSION {
+    max-width: 555px;
+    max-height: 700px;
+    padding-left: 10px;
+    padding-top: 5px;
+    margin-top: 35px;
     position: absolute;
     top: 50px;
     z-index: 1000;
 }
 
-/* Tabs */
+.PHOTOSOBLIQUES_scrollBar{
+    overflow-y: scroll;
+    max-height: 5000px;
+    margin-right: 17px;
+    cursor: pointer;
+}
 
-.RTGE_rowTabs{
+.PHOTOSOBLIQUES_paragraphs{
+    margin-top: 15px;
+    margin-left: 10px;
+    max-width: 500px;
+}
+
+.iconSize{
+    width: 25px;
+    height: 25px;
+}
+
+/* https://isotropic.co/tool/hex-color-to-css-filter/ */
+button .iconSize{
+    filter: invert(26%) sepia(4%) saturate(8%) hue-rotate(334deg) brightness(104%) contrast(87%);;
+}
+
+button.active .iconSize{
+    filter: invert(100%) sepia(100%) saturate(100%) hue-rotate(100deg) brightness(100%) contrast(100%);
+}
+
+/* Section renderTabMenu() */
+
+.PHOTOSOBLIQUES_rowTabs{
     padding: 10px;
-    margin: auto;
     margin-bottom: 20px;
 }
 
-.RTGE_homeButton, .RTGE_selectButton {
+.PHOTOSOBLIQUES_homeButton, .PHOTOSOBLIQUES_selectButton, .PHOTOSOBLIQUES_sendButton {
     /* margin: 20px; */
     width: 100px;
     background-color: inherit;
@@ -27,19 +53,23 @@
     width: 100%;
 }
 
-.RTGE_active{
+.PHOTOSOBLIQUES_active{
     border-bottom: 0px solid white;
     background-color: white;
     color: black;
 }
 
-button.RTGE_active{
+button.PHOTOSOBLIQUES_active{
     border-bottom: 1px solid white;
     border-top: 1px solid #ddd;
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
     background-color: white;
     color: black;
+}
+
+.PHOTOSOBLIQUES_selectorButton.PHOTOSOBLIQUES_active {
+    border: none;
 }
 
 /* Fin section renderTabManu() */
@@ -87,6 +117,7 @@ button.RTGE_active{
     background-color: white;
     color: black;
 }
+
 
 /* Compass */
 
@@ -405,4 +436,29 @@ body {
      margin: auto;
      margin-top: 15px;
      margin-right: 5px;
+ }
+
+ /* searchResults */
+
+ .PO_searchResultPictures{
+  max-height: auto;
+  max-width: 100%;
+  padding: 3px;
+ }
+
+ .PO_searchResults{
+  margin: 10px;
+  padding: 5px 5px;
+  border-radius: 5px;
+  /* border: 1px black solid; */
+  box-shadow: 3px 3px 3px 3px lightgray;
+ }
+
+ .PO_addBasket{
+  color: white;
+  background-color: black;
+  max-height: auto;
+  max-width: 100%;
+  position: absolute;
+  bottom: 0;
  }

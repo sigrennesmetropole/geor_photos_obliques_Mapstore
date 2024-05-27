@@ -137,3 +137,16 @@ export const windRoseClickedEpic = (action$, store) => action$.ofType(actions.RO
         /* eslint-enable */
         return Rx.Observable.empty();
     })
+
+/**
+ * filtersTriggeredEpic 
+ * @memberof photosObliques.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @returns - empty observable
+ */
+export const filtersTriggeredEpic = (action$, store) => action$.ofType(actions.SEARCH_FILTERS).switchMap(() => {
+    /* eslint-disable */
+    console.log('FILTERS SELECTED: ' + store.getState().photosObliques.filtersTriggered);
+    /* eslint-enable */
+    return Rx.Observable.empty();
+})
