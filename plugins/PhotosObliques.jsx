@@ -11,7 +11,16 @@ import {
     initConfigs,
     rtgeChangeTab,
     windRoseClick,
-    validateSearchFilters
+    validateSearchFilters,
+    cancelSearchFilters,
+    filterSearchedValues,
+    addBasket,
+    removeItemOfBasket,
+    removeSelectedItemsInBasket,
+    POClickPicture,
+    downloadBasket,
+    getStartDateValue,
+    getEndDateValue
 } from "../actions/photosObliques-action";
 import photosObliquesReducer from "../reducers/photosObliques-reducer";
 import * as epics from "../epics/photosObliques-epics";
@@ -21,44 +30,47 @@ import {
     getActiveTab,
     getSelectedRoseValue,
     getFiltersTriggered,
-    getSearchResult
+    getSearchResult,
+    getItemId,
+    getBasket,
+    getItemToRemove,
+    getItemCounterInBasket,
+    getStartDate,
+    getEndDate
 } from "../selectors/photosObliques-selectors";
 import '../assets/style.css';
 
 export default createPlugin(name, {
     component: connect(state => ({
         active: !!isOpen(state),
-        value: state.photosObliques && state.photosObliques.value,
+        // value: state.photosObliques && state.photosObliques.value,
         activeTab: getActiveTab(state),
         dockStyle: mapLayoutValuesSelector(state, {right: true, height: true}, true),
         pluginIcon,
         roseValue: getSelectedRoseValue(state),
         filtersTriggered: getFiltersTriggered(state) || false,
-        searchResult: getSearchResult(state) || [
-            {
-                picture: 'https://cdn.pixabay.com/photo/2024/02/23/08/27/apple-8591539_1280.jpg',
-                yearTaken: '2022',
-                date: '18/06/2022',
-                taker: 'Photo Bretagne Edition',
-                owner: 'Ville de Rennes',
-                weigth: '3Mo',
-                searchPrecision: '75%'
-            }, {
-                picture: 'https://cdn.pixabay.com/photo/2024/02/23/08/27/apple-8591539_1280.jpg',
-                yearTaken: '2021',
-                date: '2021',
-                taker: 'Photo I&V Edition',
-                owner: 'Rennes Metropole',
-                weigth: '3.5Mo',
-                searchPrecision: '77%'
-            }
-        ]
+        searchResult: getSearchResult(state),
+        itemId: getItemId(state),
+        basket: getBasket(state) || [],
+        itemToRemove: getItemToRemove(state),
+        itemCounterInBasket: getItemCounterInBasket(state) || 0,
+        startDate: getStartDate(state) || 0,
+        endDate: getEndDate(state) || 0
     }), {
         toggleControl: toggleControl,
         rtgeChangeTab: rtgeChangeTab,
         initConfigs,
         windRoseClick: windRoseClick,
-        validateSearchFilters: validateSearchFilters
+        validateSearchFilters: validateSearchFilters,
+        cancelSearchFilters: cancelSearchFilters,
+        filterSearchedValues: filterSearchedValues,
+        addBasket: addBasket,
+        removeItemOfBasket: removeItemOfBasket,
+        removeSelectedItemsInBasket: removeSelectedItemsInBasket,
+        POClickPicture: POClickPicture,
+        downloadBasket: downloadBasket,
+        getStartDateValue: getStartDateValue,
+        getEndDateValue: getEndDateValue
     })(photosObliques),
     reducers: {
         photosObliques: photosObliquesReducer

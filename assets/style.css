@@ -429,7 +429,7 @@ body {
   /* validateForm */
 
  .validateForm{
-    margin: auto;
+    margin: 10px;
  }
 
  .validateForm > button {
@@ -446,12 +446,41 @@ body {
   padding: 3px;
  }
 
+ .PO_searchResultPictures:hover ~ .PO_searchResultPictures_apercu > img{
+  display: block;
+ }
+
+ .PO_searchResultPictures_apercu{
+    position: absolute;
+ }
+
+ .PO_static {
+  position: static;
+ }
+
+ .PO_searchResultPictures_apercu > img{
+  position: absolute;
+  width: 500px;
+  height: 400px;
+  top: -200px;
+  left: -525px;
+  right: 0;
+  bottom: 0;
+  display: none;
+}
+
  .PO_searchResults{
   margin: 10px;
   padding: 5px 5px;
   border-radius: 5px;
   /* border: 1px black solid; */
   box-shadow: 3px 3px 3px 3px lightgray;
+  height: 135px;
+ }
+
+ .PO_selected{
+  border-color: lightblue;
+  box-shadow: 3px 3px 3px 3px lightblue;
  }
 
  .PO_addBasket{
@@ -459,6 +488,72 @@ body {
   background-color: black;
   max-height: auto;
   max-width: 100%;
-  position: absolute;
-  bottom: 0;
+  padding: 5px;
  }
+
+ .PO_resultPrecision{
+  border-radius: 25px;
+  margin: 5px;
+ }
+
+ .PO_high_high{
+  background-color: green;
+ }
+
+ .PO_high_low{
+  background-color: lightgreen;
+ }
+
+ .PO_low_high{
+  background-color: orange;
+ }
+
+ .PO_low_low{
+  background-color: red;
+ }
+
+ .fold {
+	padding: 10px;
+  margin: 10px;
+	color: #999;
+	transition: all .5s linear .5s;
+}
+
+.unfolder { display: none; }
+
+.toggle-label {
+	display: inline-block;
+	cursor: pointer;
+	font-size: 11px;
+  background-color: black;
+  color: white;
+  margin: 10px;
+  padding: 5px;
+}
+.unfold-icon, .fold-icon {
+  color: #999;
+  /* fixed width to stop the icon from wiggling*/
+  width: 10px;
+  display: inline-block;
+}
+.unfolder ~ .fold {
+  display: none;
+}
+.unfolder:checked ~ .fold {
+  display: block;
+}
+
+.PO_bold{
+  font-weight: bold;
+}
+
+.PO_resultOrganizationFilters{
+  padding-left: 10px;
+  padding-right: 10px;
+  display:flex;
+  justify-content: space-between;
+}
+
+.PO_resultAmount{
+  margin-top: 15px;
+}
