@@ -5,6 +5,7 @@ import Message from "@mapstore/components/I18N/Message";
 import { PHOTOSOBLIQUES_PANEL_WIDTH } from "../constants/photosObliques-constants.js";
 import { tabTypes } from "../actions/photosObliques-action.js";
 import ResponsivePanel from "@mapstore/components/misc/panels/ResponsivePanel";
+import { Glyphicon } from 'react-bootstrap';
 
 // import {
 //     Form,
@@ -26,6 +27,7 @@ export class photosObliques extends React.Component {
         searchResult: PropTypes.array,
         itemId: PropTypes.string,
         itemCounterInBasket: PropTypes.number,
+        basket: PropTypes.array,
         toggleControl: PropTypes.func,
         rtgeChangeTab: PropTypes.func
     }
@@ -39,6 +41,7 @@ export class photosObliques extends React.Component {
         searchResult: [],
         itemCounterInBasket: 0,
         itemId: "",
+        basket: [],
         toggleControl: ()=>{},
         rtgeChangeTab: ()=>{}
     }
@@ -72,11 +75,13 @@ export class photosObliques extends React.Component {
                 <>
                     {
                         <>
-                            <div className="col-sm-6">
-                                { this.searchFilters() }
-                            </div>
-                            <div className="col-sm-6">
-                                { this.renderCompass() }
+                            <div className="row filterSelectionMainDiv">
+                                <div className="col-sm-6">
+                                    { this.searchFilters() }
+                                </div>
+                                <div className="col-sm-6">
+                                    { this.renderCompass() }
+                                </div>
                             </div>
                             <div className="row validateForm">
                                 { this.validateSection() }
@@ -141,18 +146,18 @@ export class photosObliques extends React.Component {
                             return (
                                 <div className="row PO_searchResults" key={key}>
                                     <div className="col-sm-4 PO_static">
-                                        <img src={ val.url_vignette } className="PO_searchResultPictures" />
-                                        <div className="PO_searchResultPictures_apercu" ><img src={val.url_apercu}/></div>
+                                        <img src={ val.urlThumbnail } className="PO_searchResultPictures" />
+                                        <div className="PO_searchResultPictures_apercu" ><img src={val.urlOverview}/></div>
                                     </div>
                                     <div className="col-sm-6">
-                                        <p><span  className="PO_bold"><Message msgId={'photosObliques.yearTaken'} />:</span> { val.annee }<br/>
+                                        <p><span  className="PO_bold"><Message msgId={'photosObliques.yearTaken'} />:</span> { val.year }<br/>
                                         <span  className="PO_bold"><Message msgId={'photosObliques.date'} className="PO_bold" />:</span> { val.date }<br/>
-                                        <span  className="PO_bold"><Message msgId={'photosObliques.provider'} className="PO_bold" />:</span> { val.presta }<br/>
-                                        <span  className="PO_bold"><Message msgId={'photosObliques.owner'} className="PO_bold" />:</span> { val.proprio }<br/>
-                                        <span  className="PO_bold"><Message msgId={'photosObliques.weight'} className="PO_bold" />:</span> { val.taille_fichier }</p>
+                                        <span  className="PO_bold"><Message msgId={'photosObliques.provider'} className="PO_bold" />:</span> { val.provider }<br/>
+                                        <span  className="PO_bold"><Message msgId={'photosObliques.owner'} className="PO_bold" />:</span> { val.owner }<br/>
+                                        <span  className="PO_bold"><Message msgId={'photosObliques.weight'} className="PO_bold" />:</span> { parseFloat(val.fileSize / 1000000).toFixed(1) + "Mo" }</p>
                                     </div>
                                     <div className="col-sm-2">
-                                        <div className={val.pertinence >= 50 ? val.pertinence >= 75 ? "PO_resultPrecision PO_high_high": "PO_resultPrecision PO_high_low" : val.pertinence >= 25 ? "PO_resultPrecision PO_low_high": "PO_resultPrecision PO_low_low"}>{ val.pertinence }%</div>
+                                        <div className={parseFloat(val.relevance * 100).toFixed(0) >= 50 ? parseFloat(val.relevance * 100).toFixed(0) >= 75 ? "PO_resultPrecision PO_high_high": "PO_resultPrecision PO_high_low" : parseFloat(val.relevance * 100).toFixed(0) >= 25 ? "PO_resultPrecision PO_low_high": "PO_resultPrecision PO_low_low"}>{ parseFloat(val.relevance * 100).toFixed(0) }%</div>
                                         <button className="PO_addBasket" onClick={() => this.props.addBasket(val.id)}><Message msgId={'photosObliques.addBasket'} /></button>
                                     </div>
                                 </div>
@@ -238,90 +243,92 @@ export class photosObliques extends React.Component {
      */
     renderCompass() {
         return (
-            <div className="compass">
-                <div className="compass-main">
-                    <span className="north-label">N</span>
-                    <span className="east-label">E</span>
-                    <span className="west-label">W</span>
-                    <span className="south-label">S</span>
-                    <div className="compass-rose">
-                        <div className="cardial-points">
-                            <div className="north-pointer pointer"></div>
-                            <div className="ne-pointer subpointer"></div>
-                            <div className="east-pointer pointer"></div>
-                            <div className="se-pointer subpointer"></div>
-                            <div className="south-pointer pointer"></div>
-                            <div className="sw-pointer subpointer"></div>
-                            <div className="west-pointer pointer"></div>
-                            <div className="nw-pointer subpointer"></div>            
+            <div className="compassMainStyle">
+                <b>
+                    <Message msgId={'photosObliques.windRoseLabel'} />
+                </b>
+                <div className="compass">
+                    <div className="compass-main">
+                        <span className="north-label">N</span>
+                        <span className="east-label">E</span>
+                        <span className="west-label">W</span>
+                        <span className="south-label">S</span>
+                        <div className="compass-rose">
+                            <div className="cardial-points">
+                                <div className="north-pointer pointer"></div>
+                                <div className="east-pointer pointer"></div>
+                                <div className="south-pointer pointer"></div>
+                                <div className="west-pointer pointer"></div>          
+                            </div>
+                            <div className="ordinal-points">
+                                <div className="northeast-pointer"></div>
+                                <div className="northwest-pointer"></div>
+                                <div className="southeast-pointer"></div>
+                                <div className="south-west-pointer"></div>
+                            </div>
                         </div>
-                        <div className="ordinal-points">
-                            <div className="northeast-pointer"></div>
-                            <div className="northwest-pointer"></div>
-                            <div className="southeast-pointer"></div>
-                            <div className="south-west-pointer"></div>
-                        </div>
+                        <div className="bt-center"></div>
+                        <ul className="circle">
+                            <li id="part1" onClick={() => this.props.windRoseClick(1)}>
+                                <div className="text">1</div>
+                            </li>
+                            <li id="part2" onClick={() => this.props.windRoseClick(2)}>
+                                <div className="text">2</div>
+                            </li>
+                            <li id="part3" onClick={() => this.props.windRoseClick(3)}>
+                                <div className="text">3</div>
+                            </li>
+                            <li id="part4" onClick={() => this.props.windRoseClick(4)}>
+                                <div className="text">4</div>
+                            </li>
+                            <li id="part5" onClick={() => this.props.windRoseClick(5)}>
+                                <div className="text">5</div>
+                            </li>
+                            <li id="part6" onClick={() => this.props.windRoseClick(6)}>
+                                <div className="text">6</div>
+                            </li>
+                            <li id="part7" onClick={() => this.props.windRoseClick(7)}>
+                                <div className="text">7</div>
+                            </li>
+                            <li id="part8" onClick={() => this.props.windRoseClick(8)}>
+                                <div className="text">8</div>
+                            </li>
+                            <li id="part9" onClick={() => this.props.windRoseClick(9)}>
+                                <div className="text">9</div>
+                            </li>
+                            <li id="part10" onClick={() => this.props.windRoseClick(10)}>
+                                <div className="text">10</div>
+                            </li>
+                            <li id="part11" onClick={() => this.props.windRoseClick(11)}>
+                                <div className="text">11</div>
+                            </li>
+                            <li id="part12" onClick={() => this.props.windRoseClick(12)}>
+                                <div className="text">12</div>
+                            </li>
+                            <li id="part13" onClick={() => this.props.windRoseClick(13)}>
+                                <div className="text">13</div>
+                            </li>
+                            <li id="part14" onClick={() => this.props.windRoseClick(14)}>
+                                <div className="text">14</div>
+                            </li>
+                            <li id="part15" onClick={() => this.props.windRoseClick(15)}>
+                                <div className="text">15</div>
+                            </li>
+                            <li id="part16" onClick={() => this.props.windRoseClick(16)}>
+                                <div className="text">16</div>
+                            </li>
+                            <div className="testrotate">
+                                <div className="losange"></div>
+                            </div>
+                        </ul>
                     </div>
-                    <div className="bt-center"></div>
-                    <ul className="circle">
-                        <li id="part1" onClick={() => this.props.windRoseClick(1)}>
-                            <div className="text">1</div>
-                        </li>
-                        <li id="part2" onClick={() => this.props.windRoseClick(2)}>
-                            <div className="text">2</div>
-                        </li>
-                        <li id="part3" onClick={() => this.props.windRoseClick(3)}>
-                            <div className="text">3</div>
-                        </li>
-                        <li id="part4" onClick={() => this.props.windRoseClick(4)}>
-                            <div className="text">4</div>
-                        </li>
-                        <li id="part5" onClick={() => this.props.windRoseClick(5)}>
-                            <div className="text">5</div>
-                        </li>
-                        <li id="part6" onClick={() => this.props.windRoseClick(6)}>
-                            <div className="text">6</div>
-                        </li>
-                        <li id="part7" onClick={() => this.props.windRoseClick(7)}>
-                            <div className="text">7</div>
-                        </li>
-                        <li id="part8" onClick={() => this.props.windRoseClick(8)}>
-                            <div className="text">8</div>
-                        </li>
-                        <li id="part9" onClick={() => this.props.windRoseClick(9)}>
-                            <div className="text">9</div>
-                        </li>
-                        <li id="part10" onClick={() => this.props.windRoseClick(10)}>
-                            <div className="text">10</div>
-                        </li>
-                        <li id="part11" onClick={() => this.props.windRoseClick(11)}>
-                            <div className="text">11</div>
-                        </li>
-                        <li id="part12" onClick={() => this.props.windRoseClick(12)}>
-                            <div className="text">12</div>
-                        </li>
-                        <li id="part13" onClick={() => this.props.windRoseClick(13)}>
-                            <div className="text">13</div>
-                        </li>
-                        <li id="part14" onClick={() => this.props.windRoseClick(14)}>
-                            <div className="text">14</div>
-                        </li>
-                        <li id="part15" onClick={() => this.props.windRoseClick(15)}>
-                            <div className="text">15</div>
-                        </li>
-                        <li id="part16" onClick={() => this.props.windRoseClick(16)}>
-                            <div className="text">16</div>
-                        </li>
-                        <div className="testrotate">
-                            <div className="losange"></div>
-                        </div>
-                    </ul>
                 </div>
             </div>
         )
     }
 
     /**
+     * TODO: changer les classes PO_addbasket
      * renderSelectionTab home tab content
      * @memberof photosObliques.component
      * @returns - dom of the home tab content
@@ -330,12 +337,12 @@ export class photosObliques extends React.Component {
             return (
                 <div id="PHOTOSOBLIQUES_EXTENSION PHOTOSOBLIQUES_scrollBar">
                     <div className="text-center RTGE_arrayContent">
-                        <div>
-                            {this.props.itemCounterInBasket} <Message msgId={'photosObliques.pictureSelected'} />
+                        <div className="basket_counter_position">
+                            {this.props.itemCounterInBasket} / {this.props.basket.length} <Message msgId={'photosObliques.pictureSelected'} />
                         </div>
-                        <div>
-                            <button className="PO_addBasket" onClick={() => this.props.removeSelectedItemsInBasket()}><Message msgId={'photosObliques.removeBasket'} /></button>
-                            <button className="PO_addBasket" onClick={() => this.props.downloadBasket()}><Message msgId={'photosObliques.downloadBasket'} /></button>
+                        <div className="basket_buttons_position">
+                            <button className="PO_addBasket" onClick={() => this.props.removeSelectedItemsInBasket()}><Glyphicon glyph="trash"/></button>
+                            <button className="PO_addBasket" onClick={() => this.props.downloadBasket()}><Glyphicon glyph="download"/></button>
                         </div>
                         {
                             this.props.basket.map((val, key) => {
@@ -344,12 +351,11 @@ export class photosObliques extends React.Component {
                                         <div className="col-sm-4">
                                             <img src={ val.url_vignette } className="PO_searchResultPictures" />
                                         </div>
-                                        <div className="col-sm-6">
-                                            <p><span  className="PO_bold"><Message msgId={'photosObliques.yearTaken'} />:</span> { val.annee }<br/>
-                                            <span  className="PO_bold"><Message msgId={'photosObliques.date'} className="PO_bold" />:</span> { val.date }<br/>
-                                            <span  className="PO_bold"><Message msgId={'photosObliques.provider'} className="PO_bold" />:</span> { val.presta }<br/>
-                                            <span  className="PO_bold"><Message msgId={'photosObliques.owner'} className="PO_bold" />:</span> { val.proprio }<br/>
-                                            <span  className="PO_bold"><Message msgId={'photosObliques.weight'} className="PO_bold" />:</span> { val.taille_fichier }</p>
+                                        <div className="col-sm-6 text-align-left">
+                                        <span  className="PO_bold">{ val.date }</span><br/>
+                                            { val.proprio }, { val.presta }<br />
+                                            <hr />
+                                            <span  className="PO_bold">{ val.taille_fichier }</span> - { val.id }
                                         </div>
                                         <div className="col-sm-2">
                                             <div className={val.pertinence >= 50 ? val.pertinence >= 75 ? "PO_resultPrecision PO_high_high": "PO_resultPrecision PO_high_low" : val.pertinence >= 25 ? "PO_resultPrecision PO_low_high": "PO_resultPrecision PO_low_low"}>{ val.pertinence }%</div>

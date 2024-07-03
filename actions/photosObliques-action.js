@@ -20,7 +20,9 @@ export const actions = {
     DOWNLOAD_BASKET: "PHOTOSOBLIQUES:DOWNLOAD_BASKET",
     COUNT_ITEMS_SELECTED_IN_BASKET: "PHOTOSOBLIQUES:COUNT_ITEMS_SELECTED_IN_BASKET",
     START_DATE_VALUE: "PHOTOSOBLIQUES:START_DATE_VALUE",
-    END_DATE_VALUE: "PHOTOSOBLIQUES:END_DATE_VALUE"
+    END_DATE_VALUE: "PHOTOSOBLIQUES:END_DATE_VALUE",
+    INIT_PROJECTIONS: "PHOTOSOBLIQUES:INIT_PROJECTIONS",
+    INIT_DATE_SELECT: "PHOTOSOBLIQUES:INIT_DATE_SELECT"
 };
 
 export const tabTypes = {
@@ -267,5 +269,27 @@ export function getEndDateValue(endDate) {
     return {
         type: actions.END_DATE_VALUE,
         endDate
+    };
+}
+
+/**
+ * initProjections start action to change tab
+ * @memberof plugin.actions
+ * @returns - action change tab
+ */
+export function initProjections() {
+    return {
+        type: actions.INIT_PROJECTIONS
+    };
+}
+
+/**
+ * initDateSelect start action to change tab
+ * @memberof plugin.actions
+ * @returns -
+ */
+export function initDateSelect() {
+    return {
+        type: actions.INIT_DATE_SELECT
     };
 }
