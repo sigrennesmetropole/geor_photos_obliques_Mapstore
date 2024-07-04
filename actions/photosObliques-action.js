@@ -69,12 +69,12 @@ export function closephotosObliques() {
 }
 
 /**
- * rtgeChangeTab start action to change tab
- * @memberof rtge.actions
+ * poChangeTab start action to change tab
+ * @memberof photosObliques.actions
  * @param tab - the tab string we should use
  * @returns - action change tab
  */
-export function rtgeChangeTab(tab) {
+export function poChangeTab(tab) {
     return {
         type: actions.CHANGE_TAB,
         tab

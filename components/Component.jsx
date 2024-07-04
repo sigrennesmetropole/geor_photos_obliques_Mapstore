@@ -29,7 +29,7 @@ export class photosObliques extends React.Component {
         itemCounterInBasket: PropTypes.number,
         basket: PropTypes.array,
         toggleControl: PropTypes.func,
-        rtgeChangeTab: PropTypes.func
+        poChangeTab: PropTypes.func
     }
 
     static defaultProps= {
@@ -43,7 +43,7 @@ export class photosObliques extends React.Component {
         itemId: "",
         basket: [],
         toggleControl: ()=>{},
-        rtgeChangeTab: ()=>{}
+        poChangeTab: ()=>{}
     }
 
     constructor(props) {
@@ -140,7 +140,7 @@ export class photosObliques extends React.Component {
                         </select>
                     </span>
                 </div>
-                <div className="text-center RTGE_arrayContent">
+                <div className="text-center PO_arrayContent">
                     {
                         this.props.searchResult.map((val, key) => {
                             return (
@@ -336,7 +336,7 @@ export class photosObliques extends React.Component {
         renderSelectionTab() {
             return (
                 <div id="PHOTOSOBLIQUES_EXTENSION PHOTOSOBLIQUES_scrollBar">
-                    <div className="text-center RTGE_arrayContent">
+                    <div className="text-center PO_arrayContent">
                         <div className="basket_counter_position">
                             {this.props.itemCounterInBasket} / {this.props.basket.length} <Message msgId={'photosObliques.pictureSelected'} />
                         </div>
@@ -371,7 +371,7 @@ export class photosObliques extends React.Component {
 
         /**
      * renderTabMenu renders the selection tabs to get all plkugins sub parts
-     * @memberof rtge.component
+     * @memberof photosObliques.component
      * @returns - navbar like for the plugin
      */
         renderTabMenu() {
@@ -380,14 +380,14 @@ export class photosObliques extends React.Component {
                     <div className="col-sm-6 text-center">
                         <button className={this.props.activeTab === "PHOTOSOBLIQUES:HOME"
                             ? "PHOTOSOBLIQUES_homeButton PHOTOSOBLIQUES_active"
-                            : "PHOTOSOBLIQUES_homeButton"} onClick={() => this.props.rtgeChangeTab(tabTypes.HOME)}>
+                            : "PHOTOSOBLIQUES_homeButton"} onClick={() => this.props.poChangeTab(tabTypes.HOME)}>
                             <Message msgId={'photosObliques.welcome'}/>
                         </button>
                     </div>
                     <div className="col-sm-6 text-center">
                         <button className={this.props.activeTab === "PHOTOSOBLIQUES:SELECT"
                             ? "PHOTOSOBLIQUES_selectButton PHOTOSOBLIQUES_active"
-                            : "PHOTOSOBLIQUES_selectButton"} onClick={() => this.props.rtgeChangeTab(tabTypes.SELECT)}>
+                            : "PHOTOSOBLIQUES_selectButton"} onClick={() => this.props.poChangeTab(tabTypes.SELECT)}>
                             <Message msgId={'photosObliques.selection'}/>
                         </button>
                     </div>
@@ -397,7 +397,7 @@ export class photosObliques extends React.Component {
 
         /**
      * renderContent organise which tab is active
-     * @memberof rtge.component
+     * @memberof photosObliques.component
      * @returns - tab dom content
      */
     renderContent = () => {

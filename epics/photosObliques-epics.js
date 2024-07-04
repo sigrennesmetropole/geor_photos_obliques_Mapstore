@@ -135,7 +135,7 @@ export const closephotosObliquesPanelEpic = (action$, store) => action$.ofType(T
     });
 
 /**
- * onUpdatingLayoutWhenPhotosObliquesPanelOpenedEpic fix mapstore search bar issue on rtge panel opening
+ * onUpdatingLayoutWhenPhotosObliquesPanelOpenedEpic fix mapstore search bar issue on photosObliques panel opening
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
  * @returns - observable which update map layout

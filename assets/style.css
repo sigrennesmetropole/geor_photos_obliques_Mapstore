@@ -87,13 +87,13 @@ button.PHOTOSOBLIQUES_active{
 
 /* Tabs */
 
-.RTGE_rowTabs{
+.PO_rowTabs{
     padding: 10px;
     margin: auto;
     margin-bottom: 20px;
 }
 
-.RTGE_homeButton, .RTGE_selectButton {
+.PO_homeButton, .PO_selectButton {
     /* margin: 20px; */
     width: 100px;
     background-color: inherit;
@@ -103,13 +103,13 @@ button.PHOTOSOBLIQUES_active{
     width: 100%;
 }
 
-.RTGE_active{
+.PO_active{
     border-bottom: 0px solid white;
     background-color: white;
     color: black;
 }
 
-button.RTGE_active{
+button.PO_active{
     border-bottom: 1px solid white;
     border-top: 1px solid #ddd;
     border-left: 1px solid #ddd;

@@ -9,7 +9,7 @@ import pluginIcon from "../assets/images/photosObliquesLogo.svg";
 
 import {
     initConfigs,
-    rtgeChangeTab,
+    poChangeTab,
     windRoseClick,
     validateSearchFilters,
     cancelSearchFilters,
@@ -58,7 +58,7 @@ export default createPlugin(name, {
         endDate: getEndDate(state) || 0
     }), {
         toggleControl: toggleControl,
-        rtgeChangeTab: rtgeChangeTab,
+        poChangeTab: poChangeTab,
         initConfigs,
         windRoseClick: windRoseClick,
         validateSearchFilters: validateSearchFilters,
