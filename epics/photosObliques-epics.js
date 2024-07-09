@@ -56,7 +56,7 @@ import {
 
 import Proj4js from 'proj4';
 
-import {callServer, getYears} from '../api/api';
+import {callServer, getYears, getPhotos} from '../api/api';
 
 var currentLayout;
 var lastSelectedTile;
