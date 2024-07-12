@@ -1,4 +1,10 @@
-import { get } from "lodash";
+import { get, head } from "lodash";
+
+// a supprimer quand plus nécessaire
+import { additionalLayersSelector } from '@mapstore/selectors/layers';
+import {
+    PO_PERIMETER_LAYER_ID
+} from "../constants/photosObliques-constants";
 
 /**
  * isOpen checks if plugin tab is open or not
@@ -88,3 +94,16 @@ export const getStartDate = (state) => get(state, 'photosObliques.startDate');
 * @returns - returns the tabs state
 */
 export const getEndDate = (state) => get(state, 'photosObliques.endDate');
+
+export const getSelectedTilesLayer = (state) => {
+    const additionallayers = additionalLayersSelector(state) || [];
+    return head(additionallayers.filter(({ id }) => id === PO_PERIMETER_LAYER_ID));
+}
+
+/**
+* getPolygon checks which tab is open
+* @memberof plugin.selectors
+* @param state - application state
+* @returns - returns the tabs state
+*/
+export const getPolygon = (state) => get(state, 'photosObliques.polygon');

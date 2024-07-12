@@ -12,8 +12,8 @@ const initialState = {
     basket: [],
     itemToRemove: "",
     itemCounterInBasket: 0,
-    startDate: "0",
-    endDate: "0"
+    startDate: [],
+    endDate: []
 };
 
 /**
@@ -32,7 +32,7 @@ export default (state = initialState, action) => {
     case actions.CHANGE_TAB:
         return assign({}, state, { activeTab: action.tab });
     case actions.ROSE_CLICKED:
-        return assign({}, state, { roseValue: action.section });
+        return assign({}, state, { roseValue: action.degree });
     case actions.SEARCH_FILTERS:
         return assign({}, state, { filtersTriggered: action.filters });
     case actions.SEARCH_VALUES_FILTERED:
@@ -51,6 +51,8 @@ export default (state = initialState, action) => {
          return assign({}, state, { startDate: action.startDate });
     case actions.END_DATE_VALUE:
          return assign({}, state, { endDate: action.endDate });
+    case actions.SET_POLYGON:
+        return assign({}, state, { polygon: action.polygon });
     default:
         return state;
     }
