@@ -25,7 +25,9 @@ export const actions = {
     SET_DATES: 'PHOTOSOBLIQUES:SET_DATES',
     SELECT_START_DATE_VALUE: 'PHOTOSOBLIQUES:SELECT_START_DATE_VALUE',
     SELECT_END_DATE_VALUE: 'PHOTOSOBLIQUES:SELECT_END_DATE_VALUE',
-    SET_POLYGON: 'PHOTOSOBLIQUES:SET_POLYGON'
+    SET_POLYGON: 'PHOTOSOBLIQUES:SET_POLYGON',
+    GET_PHOTO_COUNT: 'PHOTOSOBLIQUES:GET_PHOTO_COUNT',
+    SET_PHOTO_COUNT: 'PHOTOSOBLIQUES:SET_PHOTO_COUNT'
 };
 
 export const tabTypes = {
@@ -315,5 +317,28 @@ export function setPolygonPO(polygon) {
     return {
         type: actions.SET_POLYGON,
         polygon
+    };
+}
+
+/**
+ * getPhotoCountActionPO start action to change tab
+ * @memberof plugin.actions
+ * @returns - action change tab
+ */
+export function getPhotoCountActionPO() {
+    return {
+        type: actions.GET_PHOTO_COUNT
+    };
+}
+
+/**
+ * setPhotoCountActionPO start action to change tab
+ * @memberof plugin.actions
+ * @returns - action change tab
+ */
+export function setPhotoCountActionPO(amount) {
+    return {
+        type: actions.SET_PHOTO_COUNT,
+        amount
     };
 }

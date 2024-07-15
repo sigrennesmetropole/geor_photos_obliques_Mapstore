@@ -53,6 +53,8 @@ export default (state = initialState, action) => {
          return assign({}, state, { endDate: action.endDate });
     case actions.SET_POLYGON:
         return assign({}, state, { polygon: action.polygon });
+    case actions.SET_PHOTO_COUNT:
+        return assign({}, state, { photoCount: action.amount });
     default:
         return state;
     }

@@ -59,8 +59,8 @@ export function downloadPicture(datas, callback){
     });
 }
 
-export function getPhotoCount(polygon, datas, callback){
-    var slug = "/photosobliques/count?geometry=" + polygon;
+export function getPhotoCount(polygon, datas){
+    var slug = "/photosobliques/photos/count?geometry=" + polygon;
     if (datas[0]) {
         slug = slug + "&startDate=" + datas[0];
     }
@@ -76,9 +76,8 @@ export function getPhotoCount(polygon, datas, callback){
     if (datas[4]) {
         slug = slug + "&owner=" + datas[4];
     }
-    axios.get(slug).then(function (response) {
-        response = response.data;
-        callback([response]);
+    return axios.get(slug).then(function (response) {
+        return response.data;
     })
     .catch(function (error) {
         console.log(error);

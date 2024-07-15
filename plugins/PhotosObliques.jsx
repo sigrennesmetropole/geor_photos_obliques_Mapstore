@@ -37,9 +37,11 @@ import {
     getItemCounterInBasket,
     getStartDate,
     getEndDate,
-    getPolygon
+    getPolygon,
+    getPhotoCountSelector
 } from "../selectors/photosObliques-selectors";
 import '../assets/style.css';
+import { getPhotoCount } from '../api/api';
 
 export default createPlugin(name, {
     component: connect(state => ({
@@ -57,7 +59,8 @@ export default createPlugin(name, {
         itemCounterInBasket: getItemCounterInBasket(state) || 0,
         startDate: getStartDate(state) || [],
         endDate: getEndDate(state) || [],
-        polygon: getPolygon(state) || ''
+        polygon: getPolygon(state) || '',
+        photoCount: getPhotoCountSelector(state) || 0
     }), {
         toggleControl: toggleControl,
         changeTabPO: changeTabPO,

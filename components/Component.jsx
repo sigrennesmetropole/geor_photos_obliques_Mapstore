@@ -187,7 +187,7 @@ export class photosObliques extends React.Component {
                     <button onClick={() => this.props.validateSearchFiltersPO(true)}>
                         <Message msgId={'photosObliques.ValidateSearch'}/>
                     </button>
-                    <span>XXX Photos disponibles</span>
+                    <span>{ this.props.photoCount } <Message msgId={'photosObliques.picturesAvailable'}/></span>
                 </>
             )
         }else{
@@ -202,7 +202,7 @@ export class photosObliques extends React.Component {
                     <button disabled>
                         <Message msgId={'photosObliques.ValidateSearch'}/>
                     </button>
-                    <span>XXX Photos disponibles</span>
+                    <span>{ this.props.photoCount } <Message msgId={'photosObliques.picturesAvailable'}/></span>
                 </>
             )
         }

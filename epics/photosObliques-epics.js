@@ -12,7 +12,9 @@ import {
     initOverlayLayerPO,
     getEndDateValuePO,
     getStartDateValuePO,
-    setPolygonPO
+    setPolygonPO,
+    getPhotoCountActionPO,
+    setPhotoCountActionPO
 } from "../actions/photosObliques-action";
 import {
     TOGGLE_CONTROL
@@ -34,7 +36,8 @@ import {
     getSelectedTilesLayer,
     getEndDate,
     getStartDate,
-    getPolygon
+    getPolygon,
+    getSelectedRoseValue
 } from "../selectors/photosObliques-selectors";
 
 import {
@@ -71,7 +74,11 @@ import {
 
 import Proj4js from 'proj4';
 
-import {callServer, getYears, getPhotos} from '../api/api';
+import {
+    getYears, 
+    getPhotos,
+    getPhotoCount
+} from '../api/api';
 import { ogcListField } from "@mapstore/utils/FilterUtils";
 
 var currentLayout;
@@ -557,7 +564,7 @@ export const selectStartDatePOEpic = (action$, store) => action$.ofType(actions.
             }
         });
     }
-    return Rx.Observable.from([getEndDateValuePO(newEndDate)]);
+    return Rx.Observable.from([getEndDateValuePO(newEndDate), getPhotoCountActionPO()]);
 });
 
 /**
@@ -584,7 +591,30 @@ export const selectEndDatePOEpic = (action$, store) => action$.ofType(actions.SE
             }
         });
     }
-    return Rx.Observable.from([getStartDateValuePO(newStartDate)]);
+    return Rx.Observable.from([getStartDateValuePO(newStartDate), getPhotoCountActionPO()]);
+});
+
+/**
+ * getPhotoCountPOEpic on table click, selects the row selected and highlight it on the map
+ * @memberof photosObliques.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @param store - list the content of variables inputted with the actions
+ * @returns - observable which update the layer
+ */
+export const getPhotoCountPOEpic = (action$, store) => action$.ofType(actions.GET_PHOTO_COUNT).switchMap((action) => {
+    var polygon = "POLYGON((1339160.5891883592 7214802.240614536,1340297.8535671984 7232887.074032368,1365875.1941123577 7231336.039120723,1364818.7971917638 7213246.301821241,1339160.5891883592 7214802.240614536))";
+    var endDate = getEndDate(store.getState());
+    var startDate = getStartDate(store.getState());
+    var roseValue = getSelectedRoseValue(store.getState());
+    var datas = [endDate[0], startDate[startDate.length-1], roseValue];
+    return Rx.Observable.forkJoin(
+        // getPhotoCount(getPolygon(store.getState()), datas);
+        getPhotoCount(polygon, datas)
+    ).switchMap((response) => {
+        console.log(response[0].numberOfResult);
+        return Rx.Observable.from([setPhotoCountActionPO(response[0].numberOfResult)]);
+    });
+    return Rx.Observable.from([]);
 });
 
 /**

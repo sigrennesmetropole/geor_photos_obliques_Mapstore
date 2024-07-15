@@ -107,3 +107,11 @@ export const getSelectedTilesLayer = (state) => {
 * @returns - returns the tabs state
 */
 export const getPolygon = (state) => get(state, 'photosObliques.polygon');
+
+/**
+* getPhotoCountSelector checks which tab is open
+* @memberof plugin.selectors
+* @param state - application state
+* @returns - returns the tabs state
+*/
+export const getPhotoCountSelector = (state) => get(state, 'photosObliques.photoCount');
