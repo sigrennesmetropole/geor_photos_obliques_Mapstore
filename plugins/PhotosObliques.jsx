@@ -20,7 +20,8 @@ import {
     clickPicturePO,
     downloadBasketPO,
     selectStartDateValuePO,
-    selectEndDateValuePO
+    selectEndDateValuePO,
+    pictureHoveredPO
 } from "../actions/photosObliques-action";
 import photosObliquesReducer from "../reducers/photosObliques-reducer";
 import * as epics from "../epics/photosObliques-epics";
@@ -75,7 +76,8 @@ export default createPlugin(name, {
         clickPicturePO: clickPicturePO,
         downloadBasketPO: downloadBasketPO,
         selectStartDateValuePO: selectStartDateValuePO,
-        selectEndDateValuePO: selectEndDateValuePO
+        selectEndDateValuePO: selectEndDateValuePO,
+        pictureHoveredPO: pictureHoveredPO
     })(photosObliques),
     reducers: {
         photosObliques: photosObliquesReducer

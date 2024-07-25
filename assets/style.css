@@ -11,7 +11,7 @@
 
 .PHOTOSOBLIQUES_scrollBar{
     overflow-y: scroll;
-    max-height: 5000px;
+    max-height: 473px;
     margin-right: 17px;
     cursor: pointer;
 }
@@ -255,6 +255,33 @@ body {
     transform: rotateX(80deg) rotateZ(45deg);
     pointer-events: none;
   }
+
+  .testrotate2{    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    /* En cas de rotation à 90 degrés */
+    /* transform: rotate(90deg); */
+    /* En cas de rotation décaléee pour mieux fit les hitboxes */
+    transform: rotate(102.25deg);
+    pointer-events: none;
+    top: 30px;
+    left: 65px;
+    position: absolute;
+  }
+  .losangeSelected{
+    width: 60px;
+    height: 60px;
+    background-color: #777;
+    transform: rotateX(80deg) rotateZ(45deg);
+    pointer-events: none;
+    position: absolute;
+  }
+
+  .hideLosangeSelected{
+    display: none;
+  }
   /*fin aiguille*/
   
   /*zones de survol*/
@@ -443,12 +470,82 @@ body {
     background-repeat: no-repeat;
   }
 
+  .dot {
+    height: 5px;
+    width: 5px;
+    background-color: #ddd;
+    border-radius: 50%;
+    display: inline-block;
+    position: absolute;
+  }
+
+  .part2{
+    top: 10px;
+    left: 85px;
+  }
+
+  .part3{
+    top: 22px;
+    left: 102px;
+  }
+
+  .part4{
+    top: 40px;
+    left: 112px;
+  }
+
+  .part6{
+    top: 80px;
+    left: 112px;
+  }
+
+  .part7{
+    top: 97px;
+    left: 102px;
+  }
+
+  .part8{
+    top: 110px;
+    left: 85px;
+  }
+
+  .part10{
+    top: 111px;
+    left: 35px;
+  }
+
+  .part11{
+    top: 97px;
+    left: 18px;
+  }
+
+  .part12{
+    top: 80px;
+    left: 6px;
+  }
+
+  .part14{
+    top: 38px;
+    left: 8px;
+  }
+
+  .part15{
+    top: 20px;
+    left: 20px;
+  }
+
+  .part16{
+    top: 8px;
+    left: 38px;
+  }
+
   /* validateForm */
 
  .validateForm{
     margin: 10px;
     position: absolute;
-    left: 25%;
+    /* left: 25%; */
+    width: 97%;
  }
 
  .validateForm > button {
@@ -471,6 +568,7 @@ body {
 
  .PO_searchResultPictures_apercu{
     position: absolute;
+    top: 50%;
  }
 
  .PO_static {

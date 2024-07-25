@@ -27,7 +27,8 @@ export const actions = {
     SELECT_END_DATE_VALUE: 'PHOTOSOBLIQUES:SELECT_END_DATE_VALUE',
     SET_POLYGON: 'PHOTOSOBLIQUES:SET_POLYGON',
     GET_PHOTO_COUNT: 'PHOTOSOBLIQUES:GET_PHOTO_COUNT',
-    SET_PHOTO_COUNT: 'PHOTOSOBLIQUES:SET_PHOTO_COUNT'
+    SET_PHOTO_COUNT: 'PHOTOSOBLIQUES:SET_PHOTO_COUNT',
+    PICTURE_HOVERED: 'PHOTOSOBLIQUES:PICTURE_HOVERED'
 };
 
 export const tabTypes = {
@@ -340,5 +341,19 @@ export function setPhotoCountActionPO(amount) {
     return {
         type: actions.SET_PHOTO_COUNT,
         amount
+    };
+}
+
+
+
+/**
+ * pictureHoveredPO start action to change tab
+ * @memberof plugin.actions
+ * @returns - action change tab
+ */
+export function pictureHoveredPO(item) {
+    return {
+        type: actions.PICTURE_HOVERED,
+        item
     };
 }

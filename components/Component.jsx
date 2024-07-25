@@ -29,7 +29,8 @@ export class photosObliques extends React.Component {
         itemCounterInBasket: PropTypes.number,
         basket: PropTypes.array,
         toggleControl: PropTypes.func,
-        changeTabPO: PropTypes.func
+        changeTabPO: PropTypes.func,
+        pictureHoveredPO: PropTypes.func
     }
 
     static defaultProps= {
@@ -43,7 +44,8 @@ export class photosObliques extends React.Component {
         itemId: "",
         basket: [],
         toggleControl: ()=>{},
-        changeTabPO: ()=>{}
+        changeTabPO: ()=>{},
+        pictureHoveredPO: ()=>{}
     }
 
     constructor(props) {
@@ -140,11 +142,11 @@ export class photosObliques extends React.Component {
                         </select>
                     </span>
                 </div>
-                <div className="text-center PO_arrayContent">
+                <div className="PHOTOSOBLIQUES_scrollBar">
                     {
                         this.props.searchResult.map((val, key) => {
                             return (
-                                <div className="row PO_searchResults" key={key}>
+                                <div className="row PO_searchResults" key={key} onMouseEnter={() => this.props.pictureHoveredPO(val)} onMouseLeave={() => this.props.pictureHoveredPO()}>
                                     <div className="col-sm-4 PO_static">
                                         <img src={ val.urlThumbnail } className="PO_searchResultPictures" />
                                         <div className="PO_searchResultPictures_apercu" ><img src={val.urlOverview}/></div>
@@ -156,8 +158,8 @@ export class photosObliques extends React.Component {
                                         <span  className="PO_bold"><Message msgId={'photosObliques.owner'} className="PO_bold" />:</span> { val.owner }<br/>
                                         <span  className="PO_bold"><Message msgId={'photosObliques.weight'} className="PO_bold" />:</span> { parseFloat(val.fileSize / 1000000).toFixed(1) + "Mo" }</p>
                                     </div>
-                                    <div className="col-sm-2">
-                                        <div className={parseFloat(val.relevance * 100).toFixed(0) >= 50 ? parseFloat(val.relevance * 100).toFixed(0) >= 75 ? "PO_resultPrecision PO_high_high": "PO_resultPrecision PO_high_low" : parseFloat(val.relevance * 100).toFixed(0) >= 25 ? "PO_resultPrecision PO_low_high": "PO_resultPrecision PO_low_low"}>{ parseFloat(val.relevance * 100).toFixed(0) }%</div>
+                                    <div className="col-sm-2 text-center">
+                                        <div className={parseFloat(val.relevance).toFixed(0) >= 50 ? parseFloat(val.relevance).toFixed(0) >= 75 ? "PO_resultPrecision PO_high_high": "PO_resultPrecision PO_high_low" : parseFloat(val.relevance).toFixed(0) >= 25 ? "PO_resultPrecision PO_low_high": "PO_resultPrecision PO_low_low"}>{ parseFloat(val.relevance).toFixed(0) }%</div>
                                         <button className="PO_addBasket" onClick={() => this.props.addBasketPO(val)}><Message msgId={'photosObliques.addBasket'} /></button>
                                     </div>
                                 </div>
@@ -249,10 +251,23 @@ export class photosObliques extends React.Component {
                 </b>
                 <div className="compass">
                     <div className="compass-main">
-                        <span className="north-label">N</span>
-                        <span className="east-label">E</span>
-                        <span className="west-label">W</span>
-                        <span className="south-label">S</span>
+                        {console.log(this.props.roseValue)}
+                        <span className="north-label" style={this.props.roseValue === 0 ? {"font-weight": "bold"} : {"font-weight": "normal"}}>N</span>
+                        <span class="dot part2" style={this.props.roseValue === 22.5 ? {"background-color": "#aaa"} : {"background-color": "#ddd"}}></span>
+                        <span class="dot part3" style={this.props.roseValue === 45 ? {"background-color": "#aaa"} : {"background-color": "#ddd"}}></span>
+                        <span class="dot part4" style={this.props.roseValue === 67.5 ? {"background-color": "#aaa"} : {"background-color": "#ddd"}}></span>
+                        <span className="east-label" style={this.props.roseValue === 90 ? {"font-weight": "bold"} : {"font-weight": "normal"}}>E</span>
+                        <span class="dot part6" style={this.props.roseValue === 112.5 ? {"background-color": "#aaa"} : {"background-color": "#ddd"}}></span>
+                        <span class="dot part7" style={this.props.roseValue === 135 ? {"background-color": "#aaa"} : {"background-color": "#ddd"}}></span>
+                        <span class="dot part8" style={this.props.roseValue === 157.5 ? {"background-color": "#aaa"} : {"background-color": "#ddd"}}></span>
+                        <span className="south-label" style={this.props.roseValue === 180 ? {"font-weight": "bold"} : {"font-weight": "normal"}}>S</span>
+                        <span class="dot part10" style={this.props.roseValue === 202.5 ? {"background-color": "#aaa"} : {"background-color": "#ddd"}}></span>
+                        <span class="dot part11" style={this.props.roseValue === 225 ? {"background-color": "#aaa"} : {"background-color": "#ddd"}}></span>
+                        <span class="dot part12" style={this.props.roseValue === 247.5 ? {"background-color": "#aaa"} : {"background-color": "#ddd"}}></span>
+                        <span className="west-label" style={this.props.roseValue === 270 ? {"font-weight": "bold"} : {"font-weight": "normal"}}>W</span>
+                        <span class="dot part14" style={this.props.roseValue === 292.5 ? {"background-color": "#aaa"} : {"background-color": "#ddd"}}></span>
+                        <span class="dot part15" style={this.props.roseValue === 315 ? {"background-color": "#aaa"} : {"background-color": "#ddd"}}></span>
+                        <span class="dot part16" style={this.props.roseValue === 337.5 ? {"background-color": "#aaa"} : {"background-color": "#ddd"}}></span>
                         <div className="compass-rose">
                             <div className="cardial-points">
                                 <div className="north-pointer pointer"></div>
@@ -270,7 +285,6 @@ export class photosObliques extends React.Component {
                         <div className="bt-center"></div>
                         <ul className="circle">
                             <li id="part1" onClick={() => this.props.windRoseClickPO(0)}>
-                                <div className="text">1</div>
                             </li>
                             <li id="part2" onClick={() => this.props.windRoseClickPO(22.5)}>
                                 <div className="text">2</div>
@@ -317,6 +331,9 @@ export class photosObliques extends React.Component {
                             <li id="part16" onClick={() => this.props.windRoseClickPO(337.5)}>
                                 <div className="text">16</div>
                             </li>
+                            <div className="testrotate2" style={this.props.roseValue >= 0 ? {transform: "rotate(" + (this.props.roseValue - 80) + "deg)"} : {display: "none"} }>
+                                <div className={this.props.roseValue >= 0 ? "losangeSelected" : "hideLosangeSelected"}></div>
+                            </div>
                             <div className="testrotate">
                                 <div className="losange"></div>
                             </div>
@@ -336,7 +353,7 @@ export class photosObliques extends React.Component {
         renderSelectionTab() {
             return (
                 <div id="PHOTOSOBLIQUES_EXTENSION PHOTOSOBLIQUES_scrollBar">
-                    <div className="text-center PO_arrayContent">
+                    <div>
                         <div className="basket_counter_position">
                             {this.props.itemCounterInBasket} / {this.props.basket.length} <Message msgId={'photosObliques.pictureSelected'} />
                         </div>
@@ -357,7 +374,7 @@ export class photosObliques extends React.Component {
                                             <hr />
                                             <span  className="PO_bold">{ val.taille_fichier }</span> - { val.id }
                                         </div>
-                                        <div className="col-sm-2">
+                                        <div className="col-sm-2 text-center">
                                             <div className={val.pertinence >= 50 ? val.pertinence >= 75 ? "PO_resultPrecision PO_high_high": "PO_resultPrecision PO_high_low" : val.pertinence >= 25 ? "PO_resultPrecision PO_low_high": "PO_resultPrecision PO_low_low"}>{ val.pertinence }%</div>
                                         </div>
                                     </div>

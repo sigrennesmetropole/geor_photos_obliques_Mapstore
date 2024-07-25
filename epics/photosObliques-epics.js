@@ -97,8 +97,8 @@ const styles = {
     },
     "searchStyle": {
         fillColor: "#f5c42c",
-        fillOpacity: 0.2,
-        opacity: 0.6,
+        fillOpacity: 0.1,
+        opacity: 1,
         color: "#f5c42c",
         weight: 2
     },
@@ -227,7 +227,7 @@ export const windRoseClickedPOEpic = (action$, store) => action$.ofType(actions.
         /* eslint-disable */
         console.log('CURRENT ROSE SECTION SELECTED: ' + store.getState().photosObliques.roseValue);
         /* eslint-enable */
-        return Rx.Observable.empty();
+        return Rx.Observable.from([getPhotoCountActionPO()]);
     })
 
 /**
@@ -259,75 +259,42 @@ export const initProjectionsPOEpic = (actions$) => actions$.ofType(actions.INIT_
 export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions.SEARCH_FILTERS).switchMap(() => {
     /* eslint-disable */
     //valeur rose des vents
-    var roseValue = store.getState().photosObliques.roseValue;
+    var roseValue = getSelectedRoseValue(store.getState());
     //valeur année de début
-    var startDate = store.getState().photosObliques.startDate;
+    var startDate = getStartDate(store.getState());
     //valeur année de fin
-    var endDate = store.getState().photosObliques.endDate;
+    var endDate = getEndDate(store.getState());
+    var datas = [endDate[0], startDate[startDate.length-1], roseValue, '', '', '', '', '-relevance'];
     //emprise de la carte
-    var empriseRecherche = mapBboxSelector(store.getState());
-    var empriseRechercheGeom = new Polygon([
-        [[
-            empriseRecherche.bounds.minx, 
-            empriseRecherche.bounds.miny
-        ], 
-        [
-            empriseRecherche.bounds.minx, 
-            empriseRecherche.bounds.maxy
-        ], 
-        [
-            empriseRecherche.bounds.maxx, 
-            empriseRecherche.bounds.maxy
-        ], 
-        [
-            empriseRecherche.bounds.maxx, 
-            empriseRecherche.bounds.miny
-        ], 
-        [
-            empriseRecherche.bounds.minx, 
-            empriseRecherche.bounds.miny
-        ]]
-    ])
+    var wkt = getPerimeterPolygon(store);
+    
+    //on récupère les layers
     const vectorLayer = getSelectedTilesLayer(store.getState());
-    console.log("PREMIER VECTORLAYER");
-    console.log(vectorLayer);
-    var cloneDeEmpriseRechercheGeom = empriseRechercheGeom.clone();
-    cloneDeEmpriseRechercheGeom.transform(proj3857, proj4326);
-    searchPerimeter.setGeometry(cloneDeEmpriseRechercheGeom);
-    var geoJsonFeature = getGeoJsonFeature(searchPerimeter,styles.searchStyle);
-    console.log(geoJsonFeature);
-    // searchPerimeter.geometry={
-    //     type: "Polygon",
-    //     coordinates: [[[-1.88, 47.99],[-1.88,48.99],[0.88,48.99],[0.88,47.99],[-1.88,47.99]]]
-    // };
-    empriseRechercheGeom.transform(proj3857, proj3948);
-    const wkt = new WKT().writeGeometry(empriseRechercheGeom);
-    var values = [roseValue,startDate,endDate,wkt];
-    console.log("SECOND VECTORLAYER");
-    console.log(searchPerimeter);
-    vectorLayer.options.features = [geoJsonFeature, getGeoJsonFeature(hoveredItemPerimeter, styles.itemStyle)]
-    // var url = "/photosobliques/photos?";
-    // //add geometry
-    // url = url + "geometry=" + encodeURIComponent(wkt);
-    // //add start Date
-    // url = url + "&startDate=" + startDate;
-    // // add endDate
-    // url = url + "&endDate=" + endDate;
-    // // add degree
-    // roseValue = roseValue * 22.5 - 22.5;
-    // url = url + "&angleDegree=" + roseValue;
-    // // url = encodeURIComponent(url);
-    // console.log(url);
-    //Ceci va fonctionner
-    // return Rx.Observable.defer(()=>callServer(url).then(response=>searchValuesFilteredPO(response.data)));
-    return Rx.Observable.from([updateAdditionalLayer(
-            PO_PERIMETER_LAYER_ID,
-            "PO",
-            "overlay",
-            vectorLayer.options
-        ),
-        setPolygonPO(wkt)
-    ]);
+    //on crée un clone de l'emprise générée
+    var empriseRechercheGeom = new WKT().readGeometry(wkt);
+    //on reprojette le clone de l'emprise
+    empriseRechercheGeom.transform(proj3948, proj4326);
+    searchPerimeter.style = styles.searchStyle;
+    //on récupères les coordonnées du clone reprojeté
+    searchPerimeter = {...searchPerimeter, geometry: {type: "Polygon", coordinates: empriseRechercheGeom.getCoordinates()}};
+    var features = [searchPerimeter, hoveredItemPerimeter];
+    return Rx.Observable.forkJoin(
+        // getPhotoCount(getPolygon(store.getState()), datas);
+        getPhotos(wkt, datas)
+    ).switchMap((response) => {
+        return Rx.Observable.from(
+            [
+                updateAdditionalLayer(
+                    PO_PERIMETER_LAYER_ID,
+                    "PO",
+                    "overlay",
+                    {...vectorLayer.options, features}
+                ),
+                searchValuesFilteredPO(response[0])
+            // setPolygonPO(wkt),
+            ]
+        );
+    });
 })
 
 /**
@@ -602,7 +569,7 @@ export const selectEndDatePOEpic = (action$, store) => action$.ofType(actions.SE
  * @returns - observable which update the layer
  */
 export const getPhotoCountPOEpic = (action$, store) => action$.ofType(actions.GET_PHOTO_COUNT).switchMap((action) => {
-    var polygon = "POLYGON((1339160.5891883592 7214802.240614536,1340297.8535671984 7232887.074032368,1365875.1941123577 7231336.039120723,1364818.7971917638 7213246.301821241,1339160.5891883592 7214802.240614536))";
+    var polygon = getPerimeterPolygon(store);
     var endDate = getEndDate(store.getState());
     var startDate = getStartDate(store.getState());
     var roseValue = getSelectedRoseValue(store.getState());
@@ -611,7 +578,6 @@ export const getPhotoCountPOEpic = (action$, store) => action$.ofType(actions.GE
         // getPhotoCount(getPolygon(store.getState()), datas);
         getPhotoCount(polygon, datas)
     ).switchMap((response) => {
-        console.log(response[0].numberOfResult);
         return Rx.Observable.from([setPhotoCountActionPO(response[0].numberOfResult)]);
     });
     return Rx.Observable.from([]);
@@ -628,28 +594,33 @@ export const addOverlayLayerPOEpic = (action$, store) =>
     action$.ofType(actions.INIT_OVERLAY_LAYER)
         .switchMap(() => {
             if (!searchPerimeter.id) {
-                searchPerimeter = new Feature({
+                searchPerimeter = {
                     id: 'search',
-                    geometry: new Polygon([]),
+                    geometry: {type:"Polygon", coordinates:[[]]},
                     name:'searchPerimeter',
-                    properties: {}
-                });
+                    properties: {},
+                    type: "Feature",
+                    style: "hidden"
+                };
                 
             }
             if (!hoveredItemPerimeter.id) {
-                hoveredItemPerimeter  = new Feature({
+                hoveredItemPerimeter  = {
                     id: 'item',
-                    geometry: new Polygon([]),
-                    name:'searchPerimeter',
-                    properties: {}
-                });
+                    geometry: {type:"Polygon", coordinates:[[]]},
+                    name:'hoveredPerimeter',
+                    properties: {},
+                    type: "Feature",
+                    style: styles.itemStyle
+                };
                 
             }
             let vectorLayerOption = {
                 id: PO_PERIMETER_LAYER_ID,
                 features: [hoveredItemPerimeter,searchPerimeter],
                 name: "POPerimeterLayer",
-                visibility: true
+                visibility: true,
+                type: "vector"
             };
             return Rx.Observable.from([
                 updateAdditionalLayer(
@@ -669,3 +640,62 @@ function getGeoJsonFeature(feature, style) {
     geoJsonFeature.id = "toto" + Math.random();
     return geoJsonFeature;
 }
+
+function getPerimeterPolygon(store){
+    //emprise de la carte
+    var empriseRecherche = mapBboxSelector(store.getState());
+    var empriseRechercheGeom = new Polygon([
+        [[
+            empriseRecherche.bounds.minx, 
+            empriseRecherche.bounds.miny
+        ], 
+        [
+            empriseRecherche.bounds.minx, 
+            empriseRecherche.bounds.maxy
+        ], 
+        [
+            empriseRecherche.bounds.maxx, 
+            empriseRecherche.bounds.maxy
+        ], 
+        [
+            empriseRecherche.bounds.maxx, 
+            empriseRecherche.bounds.miny
+        ], 
+        [
+            empriseRecherche.bounds.minx, 
+            empriseRecherche.bounds.miny
+        ]]
+    ]);
+    //on reprojète l'emprise de départ en 3948
+    empriseRechercheGeom.transform(proj3857, proj3948);
+    //on génère le wkt
+    return new WKT().writeGeometry(empriseRechercheGeom);
+}
+
+/**
+ * pictureHoveredPOEpic on table click, selects the row selected and highlight it on the map
+ * @memberof photosObliques.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @param store - list the content of variables inputted with the actions
+ * @returns - observable which update the layer
+ */
+export const pictureHoveredPOEpic = (action$, store) => action$.ofType(actions.PICTURE_HOVERED).switchMap((action) => {
+    //on récupère les layers
+    const vectorLayer = getSelectedTilesLayer(store.getState());
+    if (action.item) {
+        const itemPolygon = new WKT().readGeometry(action.item.shape);
+        itemPolygon.transform(proj3948, proj4326);
+        hoveredItemPerimeter = {...hoveredItemPerimeter, geometry: {type: "Polygon", coordinates: itemPolygon.getCoordinates()}};
+    } else {
+        hoveredItemPerimeter = {...hoveredItemPerimeter, geometry: {type: "Polygon", coordinates: [[]]}};
+    }
+    var features = [searchPerimeter, hoveredItemPerimeter];
+    return Rx.Observable.from([
+        updateAdditionalLayer(
+            PO_PERIMETER_LAYER_ID,
+            "PO",
+            "overlay",
+            {...vectorLayer.options, features}
+        )
+    ]);
+});

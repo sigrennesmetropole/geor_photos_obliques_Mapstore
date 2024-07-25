@@ -1,10 +1,10 @@
 import axios from '@mapstore/libs/ajax';
 
-export function callServer(url){
-    return axios.get(url);
-}
+// export function callServer(url){
+//     return axios.get(url);
+// }
 
-export function getPhotos(polygon, datas, callback){
+export function getPhotos(polygon, datas){
     var slug = "/photosobliques/photos?geometry=" + polygon;
     if (datas[0]) {
         slug = slug + "&startDate=" + datas[0];
@@ -30,9 +30,8 @@ export function getPhotos(polygon, datas, callback){
     if (datas[7]) {
         slug = slug + "&order=" + datas[7];
     }
-    axios.get(slug).then(function (response) {
-        response = response.data;
-        callback([response]);
+    return axios.get(slug).then(function (response) {
+        return response.data;
     })
     .catch(function (error) {
         console.log(error);
