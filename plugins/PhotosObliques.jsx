@@ -8,19 +8,20 @@ import { photosObliques } from "../components/Component";
 import pluginIcon from "../assets/images/photosObliquesLogo.svg";
 
 import {
-    initConfigs,
-    poChangeTab,
-    windRoseClick,
-    validateSearchFilters,
-    cancelSearchFilters,
-    filterSearchedValues,
-    addBasket,
-    removeItemOfBasket,
-    removeSelectedItemsInBasket,
-    POClickPicture,
-    downloadBasket,
-    getStartDateValue,
-    getEndDateValue
+    initConfigsPO,
+    changeTabPO,
+    windRoseClickPO,
+    validateSearchFiltersPO,
+    cancelSearchFiltersPO,
+    filterSearchedValuesPO,
+    addBasketPO,
+    updateItemInBasketPO,
+    removeSelectedItemsInBasketPO,
+    clickPicturePO,
+    downloadBasketPO,
+    selectStartDateValuePO,
+    selectEndDateValuePO,
+    pictureHoveredPO
 } from "../actions/photosObliques-action";
 import photosObliquesReducer from "../reducers/photosObliques-reducer";
 import * as epics from "../epics/photosObliques-epics";
@@ -36,9 +37,12 @@ import {
     getItemToRemove,
     getItemCounterInBasket,
     getStartDate,
-    getEndDate
+    getEndDate,
+    getPolygon,
+    getPhotoCountSelector
 } from "../selectors/photosObliques-selectors";
 import '../assets/style.css';
+import { getPhotoCount } from '../api/api';
 
 export default createPlugin(name, {
     component: connect(state => ({
@@ -54,23 +58,26 @@ export default createPlugin(name, {
         basket: getBasket(state) || [],
         itemToRemove: getItemToRemove(state),
         itemCounterInBasket: getItemCounterInBasket(state) || 0,
-        startDate: getStartDate(state) || 0,
-        endDate: getEndDate(state) || 0
+        startDate: getStartDate(state) || [],
+        endDate: getEndDate(state) || [],
+        polygon: getPolygon(state) || '',
+        photoCount: getPhotoCountSelector(state) || 0
     }), {
         toggleControl: toggleControl,
-        poChangeTab: poChangeTab,
-        initConfigs,
-        windRoseClick: windRoseClick,
-        validateSearchFilters: validateSearchFilters,
-        cancelSearchFilters: cancelSearchFilters,
-        filterSearchedValues: filterSearchedValues,
-        addBasket: addBasket,
-        removeItemOfBasket: removeItemOfBasket,
-        removeSelectedItemsInBasket: removeSelectedItemsInBasket,
-        POClickPicture: POClickPicture,
-        downloadBasket: downloadBasket,
-        getStartDateValue: getStartDateValue,
-        getEndDateValue: getEndDateValue
+        changeTabPO: changeTabPO,
+        initConfigsPO,
+        windRoseClickPO: windRoseClickPO,
+        validateSearchFiltersPO: validateSearchFiltersPO,
+        cancelSearchFiltersPO: cancelSearchFiltersPO,
+        filterSearchedValuesPO: filterSearchedValuesPO,
+        addBasketPO: addBasketPO,
+        updateItemInBasketPO: updateItemInBasketPO,
+        removeSelectedItemsInBasketPO: removeSelectedItemsInBasketPO,
+        clickPicturePO: clickPicturePO,
+        downloadBasketPO: downloadBasketPO,
+        selectStartDateValuePO: selectStartDateValuePO,
+        selectEndDateValuePO: selectEndDateValuePO,
+        pictureHoveredPO: pictureHoveredPO
     })(photosObliques),
     reducers: {
         photosObliques: photosObliquesReducer

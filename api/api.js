@@ -1,10 +1,10 @@
 import axios from '@mapstore/libs/ajax';
 
-export function callServer(url){
-    return axios.get(url);
-}
+// export function callServer(url){
+//     return axios.get(url);
+// }
 
-export function getPhotos(polygon, datas, callback){
+export function getPhotos(polygon, datas){
     var slug = "/photosobliques/photos?geometry=" + polygon;
     if (datas[0]) {
         slug = slug + "&startDate=" + datas[0];
@@ -30,11 +30,8 @@ export function getPhotos(polygon, datas, callback){
     if (datas[7]) {
         slug = slug + "&order=" + datas[7];
     }
-    var content = [];
-    axios.get(slug).then(function (response) {
-        response = response.data;
-        console.log([response, content]);
-        callback([response, content]);
+    return axios.get(slug).then(function (response) {
+        return response.data;
     })
     .catch(function (error) {
         console.log(error);
@@ -54,7 +51,6 @@ export function downloadPicture(datas, callback){
     }
     axios.get(slug).then(function (response) {
         response = response.data;
-        console.log([response]);
         callback([response, coent]);
     })
     .catch(function (error) {
@@ -62,8 +58,8 @@ export function downloadPicture(datas, callback){
     });
 }
 
-export function getPhotoCount(polygon, datas, callback){
-    var slug = "/photosobliques/count?geometry=" + polygon;
+export function getPhotoCount(polygon, datas){
+    var slug = "/photosobliques/photos/count?geometry=" + polygon;
     if (datas[0]) {
         slug = slug + "&startDate=" + datas[0];
     }
@@ -79,9 +75,8 @@ export function getPhotoCount(polygon, datas, callback){
     if (datas[4]) {
         slug = slug + "&owner=" + datas[4];
     }
-    axios.get(slug).then(function (response) {
-        response = response.data;
-        callback([response]);
+    return axios.get(slug).then(function (response) {
+        return response.data;
     })
     .catch(function (error) {
         console.log(error);
@@ -92,7 +87,6 @@ export function getOwners(polygon, callback){
     var slug = "/photosobliques/owners?geometry=" + polygon;
     axios.get(slug).then(function (response) {
         response = response.data;
-        // console.log([response]);
         callback([response]);
     })
     .catch(function (error) {
@@ -100,19 +94,16 @@ export function getOwners(polygon, callback){
     });
 }
 
-export function getYears(polygon, callback){
+export function getYears(polygon){
     var slug = "/photosobliques/years?geometry=" + polygon;
     var content = [];
-    axios.get(slug).then(function (response) {
+    return axios.get(slug).then(function (response) {
         response = response.data;
-        response.forEach(element => {
-            content.push("<option value='" + element + "'>" + element + "</option>");
-        });
-        // console.log([response, content]);
-        callback([response, content]);
+        return response;
     })
     .catch(function (error) {
         console.log(error);
+        return null;
     });
 }
 
@@ -120,7 +111,6 @@ export function getProviders(polygon, callback){
     var slug = "/photosobliques/providers?geometry=" + polygon;
     axios.get(slug).then(function (response) {
         response = response.data;
-        // console.log([response]);
         callback([response]);
     })
     .catch(function (error) {
