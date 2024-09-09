@@ -14,6 +14,7 @@
     max-height: 473px;
     margin-right: 17px;
     cursor: pointer;
+    width: 100%;
 }
 
 .PHOTOSOBLIQUES_paragraphs{
@@ -135,7 +136,7 @@ body {
   /*boussole*/
 
   .compassMainStyle{
-    margin-top: 7%;
+    margin-top: 19%;
   }
   
   .compass {
@@ -544,7 +545,7 @@ body {
  .validateForm{
     margin: 10px;
     position: absolute;
-    /* left: 25%; */
+    left: 25%;
     width: 97%;
  }
 
@@ -562,7 +563,17 @@ body {
   padding: 3px;
  }
 
+ .PO_searchResultPicturesBasket{
+  height: 100px;
+  width: 140px;
+  padding: 3px;
+ }
+
  .PO_searchResultPictures:hover ~ .PO_searchResultPictures_apercu > img{
+  display: block;
+ }
+
+ .PO_searchResultPicturesBasket:hover ~ .PO_searchResultPictures_apercu > img{
   display: block;
  }
 
@@ -595,17 +606,30 @@ body {
   height: 135px;
  }
 
+ .PO_searchResults:hover{
+  box-shadow: 6px 6px 6px 6px darkgray;
+ }
+
  .PO_selected{
   border-color: lightblue;
   box-shadow: 3px 3px 3px 3px lightblue;
  }
 
- .PO_addBasket{
+ .PO_addBasket, .PO_removeBasket, .PO_downloadBasket, .PO_search{
   color: white;
   background-color: black;
   max-height: auto;
-  max-width: 100%;
+  max-width: 115%;
   padding: 5px;
+ }
+
+ .PO_downloadBasket, .PO_removeBasket, .PO_search{
+  margin: 5px;
+  width: 7%;
+ }
+
+ .PO_search{
+  width: 75%;
  }
 
  .PO_resultPrecision{
@@ -658,6 +682,7 @@ body {
 }
 .unfolder:checked ~ .fold {
   display: block;
+  margin-bottom: 40px;
 }
 
 .PO_bold{
@@ -692,4 +717,60 @@ hr{
 .basket_counter_position{
   text-align: left;
   margin-left: 10px;
+}
+
+.basket_sort_position{
+  margin-left: 15%;
+}
+
+.filterResults{
+  margin: 10px;
+  position: absolute;
+  /* left: 25%; */
+  /* width: 97%; */
+}
+
+#modal{
+	position: fixed;
+	z-index: 99999;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	/* display: none; */
+}
+
+#modal .mask{
+	background: black;
+	opacity: 0.8;
+	position: absolute;
+	top: 0;
+	right: 0;
+  width: 555px;
+}
+
+#modal .container{
+	position: relative;
+	background: lightgray;
+	top: 30%;
+	left: 48%;
+	transform: translateX(-50%) translateY(-50%);
+	width: 400px;
+	height: auto;
+	min-height: 50px;
+}
+
+#modal .container .message{
+	padding: 5% 5% 5% 5%;
+}
+
+#modal .container div.close{
+	position: absolute;
+	right: 5%;
+	top:5%;
+	color: #444;
+	font-size: 30px;
+}
+#modal .container div.close:hover{		
+	color: black;
 }

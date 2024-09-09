@@ -28,7 +28,12 @@ export const actions = {
     SET_POLYGON: 'PHOTOSOBLIQUES:SET_POLYGON',
     GET_PHOTO_COUNT: 'PHOTOSOBLIQUES:GET_PHOTO_COUNT',
     SET_PHOTO_COUNT: 'PHOTOSOBLIQUES:SET_PHOTO_COUNT',
-    PICTURE_HOVERED: 'PHOTOSOBLIQUES:PICTURE_HOVERED'
+    PICTURE_HOVERED: 'PHOTOSOBLIQUES:PICTURE_HOVERED',
+    ZOOM_ELEMENT: "PHOTOSOBLIQUES:ZOOM_ELEMENT",
+    FILTER_BASKET_VALUES: "PHOTOSOBLIQUES:FILTER_BASKET_VALUES",
+    ONSCROLL: "PHOTOSOBLIQUES:ONSCROLL",
+    SET_DATE_LIST: "PHOTOSOBLIQUES:SET_DATE_LIST",
+    MODAL_DISPLAY: "PHOTOSOBLIQUES:MODAL_DISPLAY"
 };
 
 export const tabTypes = {
@@ -106,10 +111,11 @@ export function windRoseClickPO(degree) {
  * @param section - the selected section
  * @returns - action change tab
  */
-export function validateSearchFiltersPO(filters) {
+export function validateSearchFiltersPO(filters, loadMore) {
     return {
         type: actions.SEARCH_FILTERS,
-        filters
+        filters,
+        loadMore
     };
 }
 
@@ -170,10 +176,10 @@ export function addBasketPO(item) {
  * @param itemId - the selected itemId
  * @returns - action change tab
  */
-export function updateItemInBasketPO(item) {
+export function updateItemInBasketPO(basket) {
     return {
         type: actions.UPDATE_ITEM_IN_BASKET,
-        item
+        basket
     };
 }
 
@@ -183,9 +189,10 @@ export function updateItemInBasketPO(item) {
  * @param itemId - the selected itemId
  * @returns - action change tab
  */
-export function removeSelectedItemsInBasketPO() {
+export function removeSelectedItemsInBasketPO(forceDeletionOnEmptySelection) {
     return {
-        type: actions.REMOVE_SELECTED_ITEMS_IN_BASKET
+        type: actions.REMOVE_SELECTED_ITEMS_IN_BASKET,
+        forceDeletionOnEmptySelection
     };
 }
 
@@ -355,5 +362,64 @@ export function pictureHoveredPO(item) {
     return {
         type: actions.PICTURE_HOVERED,
         item
+    };
+}
+
+/**
+ * zoomElementPO start action to change tab
+ * @memberof plugin.actions
+ * @returns - action change tab
+ */
+export function zoomElementPO(item) {
+    return {
+        type: actions.ZOOM_ELEMENT,
+        item
+    };
+}
+
+/**
+ * filterBasketValuesPO start action to change tab
+ * @memberof plugin.actions
+ * @returns - action change tab
+ */
+export function filterBasketValuesPO(filterValue) {
+    return {
+        type: actions.FILTER_BASKET_VALUES,
+        filterValue
+    };
+}
+
+/**
+ * onScrollPO start action to change tab
+ * @memberof plugin.actions
+ * @returns - action change tab
+ */
+export function onScrollPO() {
+    return {
+        type: actions.ONSCROLL
+    };
+}
+
+/**
+ * setDateList start action to change tab
+ * @memberof plugin.actions
+ * @returns - action change tab
+ */
+export function setDateList(dates) {
+    return {
+        type: actions.SET_DATE_LIST,
+        dates
+    };
+}
+
+/**
+ * modalDisplayPO start action to change tab
+ * @memberof plugin.actions
+ * @returns - action change tab
+ */
+export function modalDisplayPO(bool) {
+    return {
+        type: actions.MODAL_DISPLAY,
+        bool
     };
 }

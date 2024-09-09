@@ -13,7 +13,8 @@ const initialState = {
     itemToRemove: "",
     itemCounterInBasket: 0,
     startDate: [],
-    endDate: []
+    endDate: [],
+    modalDisplay: false,
 };
 
 /**
@@ -39,14 +40,12 @@ export default (state = initialState, action) => {
         return assign({}, state, { searchResult: action.searchResult });
     case actions.ADD_BASKET:
         return assign({}, state, { itemId: action.itemId });
-    case actions.SET_ITEM_IN_BASKET:
-        return assign({}, state, { basket: action.item });
-    case actions.REMOVE_ITEM_IN_BASKET:
-         return assign({}, state, { basket: action.item });
-    case actions.SELECT_ITEM_IN_BASKET:
-         return assign({}, state, { basket: action.item });
+    case actions.UPDATE_ITEM_IN_BASKET:
+        return assign({}, state, { basket: action.basket });
     case actions.COUNT_ITEMS_SELECTED_IN_BASKET:
          return assign({}, state, { itemCounterInBasket: action.count });
+    case actions.SET_DATE_LIST:
+        return assign({}, state, { dateList: action.dates });
     case actions.START_DATE_VALUE:
          return assign({}, state, { startDate: action.startDate });
     case actions.END_DATE_VALUE:
@@ -55,6 +54,12 @@ export default (state = initialState, action) => {
         return assign({}, state, { polygon: action.polygon });
     case actions.SET_PHOTO_COUNT:
         return assign({}, state, { photoCount: action.amount });
+    case actions.FILTER_SEARCH_VALUES:
+        console.log(action.value);
+        return assign({}, state , { filterSearchValues: action.value });
+    case actions.MODAL_DISPLAY:
+        console.log(action.bool);
+        return assign({}, state , { modalDisplay: action.bool });
     default:
         return state;
     }

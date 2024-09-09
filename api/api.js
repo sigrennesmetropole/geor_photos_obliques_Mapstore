@@ -38,10 +38,13 @@ export function getPhotos(polygon, datas){
     });
 }
 
-export function downloadPicture(datas, callback){
+export function downloadPicture(datas){
     var slug = "/photosobliques/photos/download";
     if (datas[0]) {
-        slug = slug + "?photoIds=" + datas[0];
+        slug = slug + "?";
+        datas[0].forEach(element => {
+            slug = slug + "&photoIds=" + element;
+        });
     }
     if (datas[1]) {
         slug = slug + "&zipName=" + datas[1];
@@ -49,9 +52,8 @@ export function downloadPicture(datas, callback){
     if (datas[2]) {
         slug = slug + "&prefix=" + datas[2];
     }
-    axios.get(slug).then(function (response) {
-        response = response.data;
-        callback([response, coent]);
+    return axios.get(slug, {responseType:"blob"}).then(function (response) {
+        return response.data;
     })
     .catch(function (error) {
         console.log(error);

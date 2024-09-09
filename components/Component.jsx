@@ -43,6 +43,7 @@ export class photosObliques extends React.Component {
         itemCounterInBasket: 0,
         itemId: "",
         basket: [],
+        startDate: [],
         toggleControl: ()=>{},
         changeTabPO: ()=>{},
         pictureHoveredPO: ()=>{}
@@ -105,7 +106,7 @@ export class photosObliques extends React.Component {
                 { this.props.filtersTriggered === false ? this.renderFiltersSection() : '' }
                 { 
                     this.props.filtersTriggered === true &&
-                    <div className="row validateForm">
+                    <div className="row filterResults">
                         { this.filterResults() }
                     </div>
                 }
@@ -117,6 +118,7 @@ export class photosObliques extends React.Component {
      * filterResults home tab content
      * @memberof photosObliques.component
      * @returns - dom of the home tab content
+     * this.props.onScrollPO()
      */
     filterResults(){
         return (
@@ -132,17 +134,17 @@ export class photosObliques extends React.Component {
                     <span className="PO_resultAmount">{this.props.searchResult.length} <Message msgId={'photosObliques.picturesFound'} /></span>
                     <span>
                         <span className="PO_bold">Trier par: </span>
-                        <select id="filterSearchedValues" className="startDate" onClick={() => this.props.filterSearchedValuesPO(document.getElementById("filterSearchedValues").value)}>
-                            <option value="0">Pertinence</option>
-                            <option value="1">Année</option>
-                            <option value="2">Date de prise de vue</option>
-                            <option value="3">Propriétaire</option>
-                            <option value="4">Prestataire</option>
-                            <option value="5">Taille</option>
+                        <select id="filterSearchedValues" className="startDate" onChange={() => this.props.filterSearchedValuesPO(document.getElementById("filterSearchedValues").value)}>
+                            <option value="-relevance">Pertinence</option>
+                            <option value="-year">Année</option>
+                            <option value="-date">Date de prise de vue</option>
+                            <option value="-owner">Propriétaire</option>
+                            <option value="-provider">Prestataire</option>
+                            <option value="-fileSize">Taille</option>
                         </select>
                     </span>
                 </div>
-                <div className="PHOTOSOBLIQUES_scrollBar">
+                <div className="PHOTOSOBLIQUES_scrollBar" onScroll={console.log('scrolling')}>
                     {
                         this.props.searchResult.map((val, key) => {
                             return (
@@ -161,6 +163,7 @@ export class photosObliques extends React.Component {
                                     <div className="col-sm-2 text-center">
                                         <div className={parseFloat(val.relevance).toFixed(0) >= 50 ? parseFloat(val.relevance).toFixed(0) >= 75 ? "PO_resultPrecision PO_high_high": "PO_resultPrecision PO_high_low" : parseFloat(val.relevance).toFixed(0) >= 25 ? "PO_resultPrecision PO_low_high": "PO_resultPrecision PO_low_low"}>{ parseFloat(val.relevance).toFixed(0) }%</div>
                                         <button className="PO_addBasket" onClick={() => this.props.addBasketPO(val)}><Message msgId={'photosObliques.addBasket'} /></button>
+                                        <button className="PO_search" onClick={() => this.props.zoomElementPO(val)}><Glyphicon glyph="search" /></button>
                                     </div>
                                 </div>
                             );
@@ -182,11 +185,11 @@ export class photosObliques extends React.Component {
                 <>
                     {
                         this.props.filtersTriggered === true &&
-                        <button onClick={() => this.props.cancelSearchFiltersPO()}>
+                        <button className="PO_addBasket" onClick={() => this.props.cancelSearchFiltersPO()}>
                             <Message msgId={'photosObliques.cancelSearch'}/>
                         </button>
                     }
-                    <button onClick={() => this.props.validateSearchFiltersPO(true)}>
+                    <button className="PO_addBasket" onClick={() => this.props.validateSearchFiltersPO(true, false)}>
                         <Message msgId={'photosObliques.ValidateSearch'}/>
                     </button>
                     <span>{ this.props.photoCount } <Message msgId={'photosObliques.picturesAvailable'}/></span>
@@ -246,12 +249,9 @@ export class photosObliques extends React.Component {
     renderCompass() {
         return (
             <div className="compassMainStyle">
-                <b>
-                    <Message msgId={'photosObliques.windRoseLabel'} />
-                </b>
+                <Message msgId={'photosObliques.windRoseLabel'} />
                 <div className="compass">
                     <div className="compass-main">
-                        {console.log(this.props.roseValue)}
                         <span className="north-label" style={this.props.roseValue === 0 ? {"font-weight": "bold"} : {"font-weight": "normal"}}>N</span>
                         <span class="dot part2" style={this.props.roseValue === 22.5 ? {"background-color": "#aaa"} : {"background-color": "#ddd"}}></span>
                         <span class="dot part3" style={this.props.roseValue === 45 ? {"background-color": "#aaa"} : {"background-color": "#ddd"}}></span>
@@ -356,35 +356,70 @@ export class photosObliques extends React.Component {
                     <div>
                         <div className="basket_counter_position">
                             {this.props.itemCounterInBasket} / {this.props.basket.length} <Message msgId={'photosObliques.pictureSelected'} />
+                            <span className="basket_sort_position">
+                                <span className="PO_bold">Trier par: </span>
+                                <select id="filterBasketValues" className="startDate" onChange={() => this.props.filterBasketValuesPO(document.getElementById("filterBasketValues").value)}>
+                                    <option value="-relevance">Pertinence</option>
+                                    <option value="-year">Année</option>
+                                    <option value="-date">Date de prise de vue</option>
+                                    <option value="-owner">Propriétaire</option>
+                                    <option value="-provider">Prestataire</option>
+                                    <option value="-fileSize">Taille</option>
+                                </select>
+                            </span>
                         </div>
                         <div className="basket_buttons_position">
-                            <button className="PO_addBasket" onClick={() => this.props.removeSelectedItemsInBasketPO()}><Glyphicon glyph="trash"/></button>
-                            <button className="PO_addBasket" onClick={() => this.props.downloadBasketPO()}><Glyphicon glyph="download"/></button>
+                            <button className="PO_removeBasket" onClick={() => this.props.removeSelectedItemsInBasketPO(false)}><Glyphicon glyph="trash"/></button>
+                            <button className="PO_downloadBasket" onClick={() => this.props.downloadBasketPO()}><Glyphicon glyph="download"/></button>
                         </div>
                         {
                             this.props.basket.map((val, key) => {
                                 return (
-                                    <div className={val.selected ? "row PO_searchResults PO_selected" : "row PO_searchResults"} key={key} onClick={(e) => this.props.clickPicturePO(val.id, e.ctrlKey, e.shiftKey)}>
-                                        <div className="col-sm-4">
-                                            <img src={ val.url_vignette } className="PO_searchResultPictures" />
+                                    <div className={val.selected ? "row PO_searchResults PO_selected" : "row PO_searchResults"} key={key} onClick={(e) => this.props.clickPicturePO(val.id, e.ctrlKey, e.shiftKey)} onMouseEnter={() => this.props.pictureHoveredPO(val)} onMouseLeave={() => this.props.pictureHoveredPO()}>
+                                        <div className="col-sm-4 PO_static">
+                                            <img src={ val.urlOverview } className="PO_searchResultPicturesBasket" />
+                                            <div className="PO_searchResultPictures_apercu" ><img src={val.urlOverview}/></div>
                                         </div>
                                         <div className="col-sm-6 text-align-left">
-                                        <span  className="PO_bold">{ val.date }</span><br/>
-                                            { val.proprio }, { val.presta }<br />
+                                            <div><span  className="PO_bold">{ val.date }</span></div><br/>
+                                            <div><i>{ val.owner }, { val.provider }</i></div><br />
                                             <hr />
-                                            <span  className="PO_bold">{ val.taille_fichier }</span> - { val.id }
+                                            <div><span  className="PO_bold">{ parseFloat(val.fileSize / 1000000).toFixed(1) + "Mo" }</span> - { val.id }</div>
                                         </div>
                                         <div className="col-sm-2 text-center">
-                                            <div className={val.pertinence >= 50 ? val.pertinence >= 75 ? "PO_resultPrecision PO_high_high": "PO_resultPrecision PO_high_low" : val.pertinence >= 25 ? "PO_resultPrecision PO_low_high": "PO_resultPrecision PO_low_low"}>{ val.pertinence }%</div>
+                                            <div className={parseFloat(val.relevance).toFixed(0) >= 50 ? parseFloat(val.relevance).toFixed(0) >= 75 ? "PO_resultPrecision PO_high_high": "PO_resultPrecision PO_high_low" : parseFloat(val.relevance).toFixed(0) >= 25 ? "PO_resultPrecision PO_low_high": "PO_resultPrecision PO_low_low"}>{ parseFloat(val.relevance).toFixed(0) }%</div>
+                                            <button className="PO_search" onClick={() => this.props.zoomElementPO(val)}><Glyphicon glyph="search" /></button>
                                         </div>
                                     </div>
                                 );
                             })
                         }
+                        {this.renderPopUp()}
                     </div>
                 </div>
             );
         }
+
+    /**
+     * renderTabMenu renders the selection tabs to get all plkugins sub parts
+     * @memberof photosObliques.component
+     * @returns - navbar like for the plugin
+     */
+    renderPopUp(){
+        if (this.props.modalDisplay) {
+            return (
+                <div id="modal">
+                    <div class="mask"></div>
+                    <div class="container auto">
+                        <div class="message">toto</div>
+                        <div onClick={() => this.props.modalDisplayPO(false)} class="close">x</div>
+                        <div onClick={() => this.props.removeSelectedItemsInBasketPO(true)} class="col-sl-6">OK</div>
+                        <div onClick={() => this.props.modalDisplayPO(false)} class="col-sm-6">Annuler</div>
+                    </div>
+                </div>
+            )
+        }
+    }
 
         /**
      * renderTabMenu renders the selection tabs to get all plkugins sub parts

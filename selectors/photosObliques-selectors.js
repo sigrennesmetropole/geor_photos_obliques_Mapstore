@@ -115,3 +115,27 @@ export const getPolygon = (state) => get(state, 'photosObliques.polygon');
 * @returns - returns the tabs state
 */
 export const getPhotoCountSelector = (state) => get(state, 'photosObliques.photoCount');
+
+/**
+* getFilterSearchValues checks which tab is open
+* @memberof plugin.selectors
+* @param state - application state
+* @returns - returns the tabs state
+*/
+export const getFilterSearchValues = (state) => get(state, 'photosObliques.filterSearchValues');
+
+/**
+* getDateList checks which tab is open
+* @memberof plugin.selectors
+* @param state - application state
+* @returns - returns the tabs state
+*/
+export const getDateList = (state) => get(state, 'photosObliques.dateList');
+
+/**
+* getModalDisplay checks which tab is open
+* @memberof plugin.selectors
+* @param state - application state
+* @returns - returns the tabs state
+*/
+export const getModalDisplay = (state) => get(state, 'photosObliques.modalDisplay');

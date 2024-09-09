@@ -14,7 +14,10 @@ import {
     getStartDateValuePO,
     setPolygonPO,
     getPhotoCountActionPO,
-    setPhotoCountActionPO
+    setPhotoCountActionPO,
+    validateSearchFiltersPO,
+    setDateList,
+    modalDisplayPO
 } from "../actions/photosObliques-action";
 import {
     TOGGLE_CONTROL
@@ -37,16 +40,20 @@ import {
     getEndDate,
     getStartDate,
     getPolygon,
-    getSelectedRoseValue
+    getSelectedRoseValue,
+    getFilterSearchValues,
+    getDateList
 } from "../selectors/photosObliques-selectors";
 
 import {
+    mapBboxSelector,
+    mapSelector,
     resizeMap
-} from "@mapstore/actions/map";
+} from "@mapstore/selectors/map";
 
 import {
-    mapBboxSelector
-} from "@mapstore/selectors/map";
+    zoomToExtent
+} from "@mapstore/actions/map";
 
 import {
     Polygon
@@ -77,9 +84,11 @@ import Proj4js from 'proj4';
 import {
     getYears, 
     getPhotos,
-    getPhotoCount
+    getPhotoCount,
+    downloadPicture
 } from '../api/api';
 import { ogcListField } from "@mapstore/utils/FilterUtils";
+import { reprojectBbox } from "@mapstore/utils/CoordinatesUtils";
 
 var currentLayout;
 var lastSelectedTile;
@@ -225,7 +234,7 @@ export function onUpdatingLayoutWhenPanelOpenedPOEpic(action$, store) {
  */
 export const windRoseClickedPOEpic = (action$, store) => action$.ofType(actions.ROSE_CLICKED).switchMap(() => {
         /* eslint-disable */
-        console.log('CURRENT ROSE SECTION SELECTED: ' + store.getState().photosObliques.roseValue);
+        // console.log('CURRENT ROSE SECTION SELECTED: ' + store.getState().photosObliques.roseValue);
         /* eslint-enable */
         return Rx.Observable.from([getPhotoCountActionPO()]);
     })
@@ -237,6 +246,9 @@ export const windRoseClickedPOEpic = (action$, store) => action$.ofType(actions.
  * @returns - empty observable
  */
 export const initProjectionsPOEpic = (actions$) => actions$.ofType(actions.INIT_PROJECTIONS).switchMap(() => {
+    if (!Proj4js.defs("EPSG:3857")) {
+        Proj4js.defs("EPSG:3857", "+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs +type=crs");
+    }
     if (!Proj4js.defs("EPSG:3948")) {
         Proj4js.defs("EPSG:3948", "+proj=lcc +lat_0=48 +lon_0=3 +lat_1=47.25 +lat_2=48.75 +x_0=1700000 +y_0=7200000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs");
     }
@@ -256,7 +268,7 @@ export const initProjectionsPOEpic = (actions$) => actions$.ofType(actions.INIT_
  * @param action$ - list of actions triggered in mapstore context
  * @returns - empty observable
  */
-export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions.SEARCH_FILTERS).switchMap(() => {
+export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions.SEARCH_FILTERS).switchMap((action) => {
     /* eslint-disable */
     //valeur rose des vents
     var roseValue = getSelectedRoseValue(store.getState());
@@ -264,9 +276,23 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
     var startDate = getStartDate(store.getState());
     //valeur année de fin
     var endDate = getEndDate(store.getState());
-    var datas = [endDate[0], startDate[startDate.length-1], roseValue, '', '', '', '', '-relevance'];
+    //valeur d'ordre de tri
+    var relevance = getFilterSearchValues(store.getState());
+    if (!relevance) {
+        relevance = '-relevance';
+    }
+    // console.log(startDate);
+    // console.log(endDate);
+    //mise en place des datas
+    var datas = [endDate[0], startDate[startDate.length-1], roseValue, '', '', 0, 10, relevance];
     //emprise de la carte
     var wkt = getPerimeterPolygon(store);
+
+    if (action.loadMore) {
+        var datas = [endDate[0], startDate[startDate.length-1], roseValue, '', '', getSearchResult(store.getState()).length, getSearchResult(store.getState()).length +10, relevance];
+    }
+
+    console.log(datas);
     
     //on récupère les layers
     const vectorLayer = getSelectedTilesLayer(store.getState());
@@ -290,7 +316,8 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
                     "overlay",
                     {...vectorLayer.options, features}
                 ),
-                searchValuesFilteredPO(response[0])
+                searchValuesFilteredPO(response[0]),
+                // getEndDateValuePO(newEndDate)
             // setPolygonPO(wkt),
             ]
         );
@@ -317,32 +344,7 @@ export const cancelSearchFiltersPOEpic = (action$, store) => action$.ofType(acti
  * @returns - empty observable
  */
 export const filterSearchedValuesPOEpic = (action$, store) => action$.ofType(actions.FILTER_SEARCH_VALUES).switchMap((action) => {
-    /* eslint-disable */
-    var filterValue = getSearchResult(store.getState());
-    switch (parseInt(action.value)) {
-        case 0:
-            filterValue = filterValue.sort((a,b) => (a.relevance < b.relevance) ? 1 : ((b.relevance < a.relevance) ? -1 : 0))
-            break;
-        case 1:
-            filterValue = filterValue.sort((a,b) => (a.date < b.date) ? 1 : ((b.date < a.date) ? -1 : 0))
-            break;
-        case 2:
-            filterValue = filterValue.sort((a,b) => (a.year < b.year) ? 1 : ((b.year < a.year) ? -1 : 0))
-            break;
-        case 3:
-            filterValue = filterValue.sort((a,b) => (a.owner < b.owner) ? 1 : ((b.owner < a.owner) ? -1 : 0))
-            break;
-        case 4:
-            filterValue = filterValue.sort((a,b) => (a.provider < b.provider) ? 1 : ((b.provider < a.provider) ? -1 : 0))
-            break;
-        case 5:
-            filterValue = filterValue.sort((a,b) => (a.fileSize < b.fileSize) ? 1 : ((b.fileSize < a.fileSize) ? -1 : 0))
-            break;
-        default:
-            console.log('la sélection à été mal effectuée et le tri est impossible...');
-            break;
-    }
-    return Rx.Observable.from([searchValuesFilteredPO(filterValue.slice())]);
+    return Rx.Observable.from([validateSearchFiltersPO(true, false)]);
 })
 
 /**
@@ -353,22 +355,24 @@ export const filterSearchedValuesPOEpic = (action$, store) => action$.ofType(act
  */
 export const addBasketPOEpic = (action$, store) => action$.ofType(actions.ADD_BASKET).switchMap((action) => {
     /* eslint-disable */
-    var basket = store.getState().photosObliques.basket;
+    var basket = getBasket(store.getState());
     var alreadyInBasket = false;
-    basket.map((item) => {
-        if (item.id === action.item.id) {
-            alreadyInBasket = true;
-        }
-    });
+    if (basket.length >= 1) {
+        basket.map((item) => {
+            if (item.id === action.item.id) {
+                alreadyInBasket = true;
+            }
+        });
+    }
     if (!alreadyInBasket) {
         basket.push(action.item);
     }
     /* eslint-enable */
-    return Rx.Observable.from([updateItemInBasketPO(item)]);
+    return Rx.Observable.from([updateItemInBasketPO(basket)]);
 })
 
 /**
- * removeBasketPOEpic 
+ * removeBasketPOEpic => called via this.props.removeSelectedItemsInBasketPO() in jsx
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
  * @returns - empty observable
@@ -377,11 +381,19 @@ export const removeBasketPOEpic = (action$, store) => action$.ofType(actions.REM
     /* eslint-disable */
     var item = getBasket(store.getState());
     var result = item.filter(elt => !elt.selected);
+    var resultSelected = item.filter(elt => elt.selected);
+    var observables = [];
+    console.log(item.length);
+    console.log(result.length);
     if (item.length === result.length) {
         result = [];
+        observables = [updateItemInBasketPO(result), countItemsSelectedInBasketPO(0), modalDisplayPO(false)];
+    }
+    if (resultSelected.length === 0 && !action.forceDeletionOnEmptySelection) {
+        observables = [modalDisplayPO(true)];
     }
     /* eslint-enable */
-    return Rx.Observable.from([updateItemInBasketPO(result), countItemsSelectedInBasketPO(0)]);
+    return Rx.Observable.from(observables);
 })
 
 /**
@@ -452,6 +464,14 @@ function pictureSelectionPO(currentItems, control, shift, intersectedItems) {
 
 }
 
+function str2bytes (str) {
+    var bytes = new Uint8Array(str.length);
+    for (var i=0; i<str.length; i++) {
+        bytes[i] = str.charCodeAt(i);
+    }
+    return bytes;
+}
+
 /**WIP
  * downloadBasketPOEpic on table click, selects the row selected and highlight it on the map
  * @memberof photosObliques.epics
@@ -460,32 +480,53 @@ function pictureSelectionPO(currentItems, control, shift, intersectedItems) {
  * @returns - observable which update the layer
  */
 export const downloadBasketPOEpic = (action$, store) => action$.ofType(actions.DOWNLOAD_BASKET).switchMap((action) => {
-    //try 2
-    let csv = "";
-    for(let row = 0; row < getBasket(store.getState()).length; row++){
-        let keysAmount = Object.keys(getBasket(store.getState())[row]).length
-        let keysCounter = 0
-        //generate headings
-        if(row === 0){
-            for(let key in getBasket(store.getState())[row]){
-                csv += key + (keysCounter+1 < keysAmount ? ',' : '\r\n' )
-                keysCounter++
-            }
-            keysCounter = 0;
-        }
-        //generate body
-        for(let key in getBasket(store.getState())[row]){
-            csv += getBasket(store.getState())[row][key] + (keysCounter+1 < keysAmount ? ',' : '\r\n' )
-            keysCounter++
-        }
-        keysCounter = 0;
-    }
-    let link = document.createElement('a')
-    link.id = 'download-csv'
-    link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(csv));
-    link.setAttribute('download', 'basket.csv');
-    link.click();
-    return Rx.Observable.empty();
+    // //try 2
+    // let csv = "";
+    // for(let row = 0; row < getBasket(store.getState()).length; row++){
+    //     let keysAmount = Object.keys(getBasket(store.getState())[row]).length
+    //     let keysCounter = 0
+    //     //generate headings
+    //     if(row === 0){
+    //         for(let key in getBasket(store.getState())[row]){
+    //             csv += key + (keysCounter+1 < keysAmount ? ',' : '\r\n' )
+    //             keysCounter++
+    //         }
+    //         keysCounter = 0;
+    //     }
+    //     //generate body
+    //     for(let key in getBasket(store.getState())[row]){
+    //         csv += getBasket(store.getState())[row][key] + (keysCounter+1 < keysAmount ? ',' : '\r\n' )
+    //         keysCounter++
+    //     }
+    //     keysCounter = 0;
+    // }
+    // let link = document.createElement('a')
+    // link.id = 'download-csv'
+    // link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(csv));
+    // link.setAttribute('download', 'basket.csv');
+    // link.click();
+    var basket = getBasket(store.getState());
+    var photoIds = [];
+    basket.forEach(element => {
+        photoIds.push(element.id);
+    });
+    console.log(photoIds);
+    var zipName = 'data';
+    var prefix = '';
+    var datas = [photoIds, zipName, prefix]
+    return Rx.Observable.forkJoin(
+        downloadPicture(datas)
+    ).switchMap((response) => {
+        console.log(response);
+        console.log(response[0]);
+        var url = window.URL.createObjectURL(response[0]);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = zipName + '.zip';
+        a.click();
+        window.URL.revokeObjectURL(url);
+        return Rx.Observable.empty();
+    });
 });
 
 /**
@@ -502,8 +543,20 @@ export const initDateSelectsPOEpic = (action$, store) => action$.ofType(actions.
             // getYears(getPolygon(store.getState()))
             getYears(polygon)
         ).switchMap((response) => {
-            return Rx.Observable.from([getStartDateValuePO(response[0]), getEndDateValuePO(response[0])]);
+            return Rx.Observable.from([setDateList(response[0])]);
         });
+    // return Rx.Observable.empty();
+});
+
+/**
+ * initDateSelectsPOEpic on table click, selects the row selected and highlight it on the map
+ * @memberof photosObliques.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @param store - list the content of variables inputted with the actions
+ * @returns - observable which update the layer
+ */
+export const initDateListPOEpic = (action$, store) => action$.ofType(actions.SET_DATE_LIST).switchMap((action) => {
+    return Rx.Observable.from([getStartDateValuePO(action.dates), getEndDateValuePO(action.dates)]);
     // return Rx.Observable.empty();
 });
 
@@ -515,22 +568,13 @@ export const initDateSelectsPOEpic = (action$, store) => action$.ofType(actions.
  * @returns - observable which update the layer
  */
 export const selectStartDatePOEpic = (action$, store) => action$.ofType(actions.SELECT_START_DATE_VALUE).switchMap((action) => {
-    var endDate = getEndDate(store.getState());
-    var startDate = getStartDate(store.getState());
+    var dateList = getDateList(store.getState());
     var newEndDate = [];
-    if (action.startDate < endDate[0]) {
-        startDate.map((item) => {
-            if (item >= action.startDate) {
-                newEndDate.push(item);
-            }
-        });
-    }else{
-        endDate.map((item) => {
-            if (item >= action.startDate) {
-                newEndDate.push(item);
-            }
-        });
-    }
+    dateList.map((item) => {
+        if (item >= action.startDate) {
+            newEndDate.push(item);
+        }
+    });
     return Rx.Observable.from([getEndDateValuePO(newEndDate), getPhotoCountActionPO()]);
 });
 
@@ -542,22 +586,13 @@ export const selectStartDatePOEpic = (action$, store) => action$.ofType(actions.
  * @returns - observable which update the layer
  */
 export const selectEndDatePOEpic = (action$, store) => action$.ofType(actions.SELECT_END_DATE_VALUE).switchMap((action) => {
-    var endDate = getEndDate(store.getState());
-    var startDate = getStartDate(store.getState());
+    var dateList = getDateList(store.getState());
     var newStartDate = [];
-    if (action.endDate > startDate[startDate.length-1]) {
-        endDate.map((item) => {
-            if (item <= action.endDate) {
-                newStartDate.push(item);
-            }
-        });
-    } else{
-        startDate.map((item) => {
-            if (item <= action.endDate) {
-                newStartDate.push(item);
-            }
-        });
-    }
+    dateList.map((item) => {
+        if (item <= action.endDate) {
+            newStartDate.push(item);
+        }
+    });
     return Rx.Observable.from([getStartDateValuePO(newStartDate), getPhotoCountActionPO()]);
 });
 
@@ -644,6 +679,8 @@ function getGeoJsonFeature(feature, style) {
 function getPerimeterPolygon(store){
     //emprise de la carte
     var empriseRecherche = mapBboxSelector(store.getState());
+    var map = mapSelector(store.getState());
+    var x = (map.size.width - (RIGHT_SIDEBAR_MARGIN_LEFT + PHOTOSOBLIQUES_PANEL_WIDTH)) * map.resolution + empriseRecherche.bounds.minx;
     var empriseRechercheGeom = new Polygon([
         [[
             empriseRecherche.bounds.minx, 
@@ -654,11 +691,11 @@ function getPerimeterPolygon(store){
             empriseRecherche.bounds.maxy
         ], 
         [
-            empriseRecherche.bounds.maxx, 
+            x, 
             empriseRecherche.bounds.maxy
         ], 
         [
-            empriseRecherche.bounds.maxx, 
+            x, 
             empriseRecherche.bounds.miny
         ], 
         [
@@ -699,3 +736,75 @@ export const pictureHoveredPOEpic = (action$, store) => action$.ofType(actions.P
         )
     ]);
 });
+
+/**
+ * zoomElementPOEpic 
+ * @memberof photosObliques.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @returns - empty observable
+ */
+export const zoomElementPOEpic = (action$, store) => action$.ofType(actions.ZOOM_ELEMENT).switchMap((action) => {
+    /* eslint-disable */
+    const format = new GeoJSON();
+    const feature = format.readFeature(hoveredItemPerimeter);
+    const polygon = feature.getGeometry();
+    // polygon.transform(proj4326, proj3857);
+
+    return Rx.Observable.from([zoomToExtent(polygon.getExtent(), "EPSG:4326", 20, {nearest: true})]);
+    /* eslint-enable */
+})
+
+/**
+ * filterBasketValuesPOEpic 
+ * @memberof photosObliques.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @returns - empty observable
+ */
+export const filterBasketValuesPOEpic = (action$, store) => action$.ofType(actions.FILTER_BASKET_VALUES).switchMap((action) => {
+    /* eslint-disable */
+    var filterValue = getBasket(store.getState());
+    console.log(filterValue);
+    console.log(action.filterValue);
+    switch (action.filterValue) {
+        case "-relevance":
+            filterValue = filterValue.sort((a,b) => (a.relevance < b.relevance) ? 1 : ((b.relevance < a.relevance) ? -1 : 0))
+            break;
+        case "-date":
+            filterValue = filterValue.sort((a,b) => (a.date < b.date) ? 1 : ((b.date < a.date) ? -1 : 0))
+            break;
+        case "-year":
+            filterValue = filterValue.sort((a,b) => (a.year < b.year) ? 1 : ((b.year < a.year) ? -1 : 0))
+            break;
+        case "-owner":
+            filterValue = filterValue.sort((a,b) => (a.owner < b.owner) ? 1 : ((b.owner < a.owner) ? -1 : 0))
+            break;
+        case "-provider":
+            filterValue = filterValue.sort((a,b) => (a.provider < b.provider) ? 1 : ((b.provider < a.provider) ? -1 : 0))
+            break;
+        case "-fileSize":
+            filterValue = filterValue.sort((a,b) => (a.fileSize < b.fileSize) ? 1 : ((b.fileSize < a.fileSize) ? -1 : 0))
+            break;
+        default:
+            console.log('la sélection à été mal effectuée et le tri est impossible...');
+            break;
+    }
+    console.log(filterValue);
+    return Rx.Observable.from([updateItemInBasketPO(filterValue.slice())]);
+    /* eslint-enable */
+})
+
+/**
+ * onScrollPOEpic 
+ * @memberof photosObliques.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @returns - empty observable
+ */
+export const onScrollPOEpic = (action$, store) => action$.ofType(actions.ONSCROLL).switchMap((action) => {
+    console.log(document.getElementById('PHOTOSOBLIQUES_scrollBar').innerHeight);
+    console.log(document.getElementById('PHOTOSOBLIQUES_scrollBar').scrollY);
+    console.log(document.getElementById('PHOTOSOBLIQUES_scrollBar').offsetHeight);
+    if ((document.getElementById('PHOTOSOBLIQUES_scrollBar').innerHeight + Math.round(document.getElementById('PHOTOSOBLIQUES_scrollBar').scrollY)) >= (document.getElementById('PHOTOSOBLIQUES_scrollBar').offsetHeight)) {
+       console.log('toto');
+    }
+    return Rx.Observable.from([]);
+})
