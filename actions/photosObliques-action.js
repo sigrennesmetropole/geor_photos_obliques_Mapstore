@@ -33,7 +33,14 @@ export const actions = {
     FILTER_BASKET_VALUES: "PHOTOSOBLIQUES:FILTER_BASKET_VALUES",
     ONSCROLL: "PHOTOSOBLIQUES:ONSCROLL",
     SET_DATE_LIST: "PHOTOSOBLIQUES:SET_DATE_LIST",
-    MODAL_DISPLAY: "PHOTOSOBLIQUES:MODAL_DISPLAY"
+    MODAL_DISPLAY: "PHOTOSOBLIQUES:MODAL_DISPLAY",
+    UPDATE_HOVERED_POLYGON_VISIBILITY_STATE: "PHOTOSOBLIQUES:UPDATE_HOVERED_POLYGON_VISIBILITY_STATE",
+    SET_DOWNLOADING: "PHOTOSOBLIQUES:SET_DOWNLOADING",
+    ACCUMULATE_SCROLL_EVENTS: "PHOTOSOBLIQUES:ACCUMULATE_SCROLL_EVENTS",
+    SAVE_DOWNLOAD_FIELDS: "PHOTOSOBLIQUES:SAVE_DOWNLOAD_FIELDS",
+    CLEAR_FILTERS: "PHOTOSOBLIQUES:CLEAR_FILTERS",
+    SET_PLUGIN_CONFIGS: "PHOTOSOBLIQUES:SET_PLUGIN_CONFIGS",
+    SET_PICTURES_IN_BASKET: "PHOTOSOBLIQUES:SET_PICTURES_IN_BASKET"
 };
 
 export const tabTypes = {
@@ -111,11 +118,12 @@ export function windRoseClickPO(degree) {
  * @param section - the selected section
  * @returns - action change tab
  */
-export function validateSearchFiltersPO(filters, loadMore) {
+export function validateSearchFiltersPO(filters, loadMore, newSearch) {
     return {
         type: actions.SEARCH_FILTERS,
         filters,
-        loadMore
+        loadMore,
+        newSearch
     };
 }
 
@@ -417,9 +425,97 @@ export function setDateList(dates) {
  * @memberof plugin.actions
  * @returns - action change tab
  */
-export function modalDisplayPO(bool) {
+export function modalDisplayPO(bool, modalType) {
     return {
         type: actions.MODAL_DISPLAY,
+        bool,
+        modalType
+    };
+}
+
+/**
+ * updateHoveredPolygonVisibilityStatePO start action to change tab
+ * @memberof plugin.actions
+ * @returns - action change tab
+ */
+export function updateHoveredPolygonVisibilityStatePO(visible) {
+    return {
+        type: actions.UPDATE_HOVERED_POLYGON_VISIBILITY_STATE,
+        visible
+    };
+}
+
+/**
+ * setDownloading start action to change tab
+ * @memberof plugin.actions
+ * @returns - action change tab
+ */
+export function setDownloadingPO(bool) {
+    return {
+        type: actions.SET_DOWNLOADING,
         bool
+    };
+}
+
+/**
+ * accumulateScrollEventsPO start action to change tab
+ * @memberof plugin.actions
+ * @returns - action change tab
+ */
+export function accumulateScrollEventsPO(bool) {
+    return {
+        type: actions.ACCUMULATE_SCROLL_EVENTS,
+        bool
+    };
+}
+
+/**
+ * saveDownloadFields start action to change tab
+ * @memberof plugin.actions
+ * @returns - action change tab
+ */
+export function saveDownloadFields(fileName, prefix) {
+    return {
+        type: actions.SAVE_DOWNLOAD_FIELDS,
+        fileName,
+        prefix
+    };
+}
+
+/**
+ * clearFiltersPO start action to change tab
+ * @memberof plugin.actions
+ * @returns - action change tab
+ */
+export function clearFiltersPO() {
+    return {
+        type: actions.CLEAR_FILTERS
+    };
+}
+
+/**
+ * setPluginConfigsPO action triggered to initialize or reinitialize plugin basic configs
+ * @memberof photosObliques.actions
+ * @param configs - configs object
+ * @returns - action init configs with those configs
+ */
+export function setPluginConfigsPO(configs) {
+    return {
+        type: actions.SET_PLUGIN_CONFIGS,
+        configs
+    };
+}
+
+/**
+ * setPicturesInBasket action triggered to initialize or reinitialize plugin basic configs
+ * @memberof photosObliques.actions
+ * @param configs - configs object
+ * @returns - action init configs with those configs
+ */
+export function setPicturesInBasket(amount, basketSize) {
+    return {
+        type: actions.SET_PICTURES_IN_BASKET,
+        amount,
+        basketSize
     };
 }

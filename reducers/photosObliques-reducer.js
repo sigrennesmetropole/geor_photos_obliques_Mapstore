@@ -30,6 +30,8 @@ export default (state = initialState, action) => {
     switch (action.type) {
     case actions.INIT_CONFIGS:
         return assign({}, state, { configs: action.configs });
+    case actions.SET_PLUGIN_CONFIGS:
+        return assign({}, state, { configs: action.configs });
     case actions.CHANGE_TAB:
         return assign({}, state, { activeTab: action.tab });
     case actions.ROSE_CLICKED:
@@ -55,11 +57,19 @@ export default (state = initialState, action) => {
     case actions.SET_PHOTO_COUNT:
         return assign({}, state, { photoCount: action.amount });
     case actions.FILTER_SEARCH_VALUES:
-        console.log(action.value);
         return assign({}, state , { filterSearchValues: action.value });
     case actions.MODAL_DISPLAY:
-        console.log(action.bool);
-        return assign({}, state , { modalDisplay: action.bool });
+        return assign({}, state , { modalDisplay: action.bool, modalType: action.modalType });
+    case actions.UPDATE_HOVERED_POLYGON_VISIBILITY_STATE:
+        return assign({}, state , { hoveredPolygonVisibilityState: action.visible });
+    case actions.SET_DOWNLOADING:
+        return assign({}, state , { downloading: action.bool });
+    case actions.ACCUMULATE_SCROLL_EVENTS:
+        return assign({}, state , { scrollIndicator: action.bool });
+    case actions.SAVE_DOWNLOAD_FIELDS:
+        return assign({}, state , { fileName: action.fileName, prefix: action.prefix });
+    case actions.SET_PICTURES_IN_BASKET:
+        return assign({}, state , { picturesInBasket: action.amount, basketSize: action.basketSize });
     default:
         return state;
     }

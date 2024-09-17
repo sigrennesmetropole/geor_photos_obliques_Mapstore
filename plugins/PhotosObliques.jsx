@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from "react-redux";
 import { name } from '../../../config';
 
-import {createPlugin} from "@mapstore/utils/PluginsUtils";
+import {createPlugin, getPluginConfiguration} from "@mapstore/utils/PluginsUtils";
 import { toggleControl } from '@mapstore/actions/controls';
 import { photosObliques } from "../components/Component";
 import pluginIcon from "../assets/images/photosObliquesLogo.svg";
@@ -26,7 +26,11 @@ import {
     filterBasketValuesPO,
     zoomElementPO,
     onScrollPO,
-    modalDisplayPO
+    modalDisplayPO,
+    updateHoveredPolygonVisibilityStatePO,
+    setDownloadingPO,
+    saveDownloadFields,
+    clearFiltersPO
 } from "../actions/photosObliques-action";
 import photosObliquesReducer from "../reducers/photosObliques-reducer";
 import * as epics from "../epics/photosObliques-epics";
@@ -47,10 +51,19 @@ import {
     getPolygon,
     getPhotoCountSelector,
     getFilterSearchValues,
-    getModalDisplay
+    getModalDisplay,
+    getModalType,
+    getHoveredPolygonVisibilityState,
+    getDownloading,
+    getPhotoCount,
+    getScrollIndicator,
+    getPrefix,
+    getFileName,
+    getPluginConfig,
+    getPicturesInBasket,
+    getBasketSize
 } from "../selectors/photosObliques-selectors";
 import '../assets/style.css';
-import { getPhotoCount } from '../api/api';
 
 export default createPlugin(name, {
     component: connect(state => ({
@@ -72,28 +85,41 @@ export default createPlugin(name, {
         polygon: getPolygon(state) || '',
         photoCount: getPhotoCountSelector(state) || 0,
         filterSearchValues: getFilterSearchValues(state) || '-relevance',
-        modalDisplay: getModalDisplay(state) || false
+        modalDisplay: getModalDisplay(state) || false,
+        modalType: getModalType(state) || '',
+        hoveredPolygonVisibilityState: getHoveredPolygonVisibilityState(state) || false,
+        downloading: getDownloading(state) || false,
+        scrollIndicator: getScrollIndicator(state) || false,
+        fileName: getFileName(state) || '',
+        prefix: getPrefix(state) || '',
+        configs: getPluginConfig(state) || '',
+        picturesInBasket: getPicturesInBasket(state) || '',
+        basketSize: getBasketSize(state) || 0
     }), {
-        toggleControl: toggleControl,
-        changeTabPO: changeTabPO,
+        toggleControl,
+        changeTabPO,
         initConfigsPO,
-        windRoseClickPO: windRoseClickPO,
-        validateSearchFiltersPO: validateSearchFiltersPO,
-        cancelSearchFiltersPO: cancelSearchFiltersPO,
-        filterSearchedValuesPO: filterSearchedValuesPO,
-        addBasketPO: addBasketPO,
-        updateItemInBasketPO: updateItemInBasketPO,
-        removeSelectedItemsInBasketPO: removeSelectedItemsInBasketPO,
-        clickPicturePO: clickPicturePO,
-        downloadBasketPO: downloadBasketPO,
-        setDateList: setDateList,
-        selectStartDateValuePO: selectStartDateValuePO,
-        selectEndDateValuePO: selectEndDateValuePO,
-        pictureHoveredPO: pictureHoveredPO,
-        filterBasketValuesPO: filterBasketValuesPO,
-        zoomElementPO: zoomElementPO,
-        onScrollPO: onScrollPO,
-        modalDisplayPO: modalDisplayPO
+        windRoseClickPO,
+        validateSearchFiltersPO,
+        cancelSearchFiltersPO,
+        filterSearchedValuesPO,
+        addBasketPO,
+        updateItemInBasketPO,
+        removeSelectedItemsInBasketPO,
+        clickPicturePO,
+        downloadBasketPO,
+        setDateList,
+        selectStartDateValuePO,
+        selectEndDateValuePO,
+        pictureHoveredPO,
+        filterBasketValuesPO,
+        zoomElementPO,
+        onScrollPO,
+        modalDisplayPO,
+        updateHoveredPolygonVisibilityStatePO,
+        setDownloadingPO,
+        saveDownloadFields,
+        clearFiltersPO
     })(photosObliques),
     reducers: {
         photosObliques: photosObliquesReducer

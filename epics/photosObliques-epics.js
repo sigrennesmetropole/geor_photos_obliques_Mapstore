@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import Rx from "rxjs";
+import { show } from "@mapstore/actions/notifications";
 import {
     actions,
     UpdateMapLayoutPO,
@@ -17,7 +18,17 @@ import {
     setPhotoCountActionPO,
     validateSearchFiltersPO,
     setDateList,
-    modalDisplayPO
+    modalDisplayPO,
+    cancelSearchFiltersPO,
+    updateHoveredPolygonVisibilityStatePO,
+    setDownloadingPO,
+    setPhotoCount,
+    accumulateScrollEventsPO,
+    windRoseClickPO,
+    selectEndDateValuePO,
+    selectStartDateValuePO,
+    setPluginConfigsPO,
+    setPicturesInBasket
 } from "../actions/photosObliques-action";
 import {
     TOGGLE_CONTROL
@@ -42,7 +53,11 @@ import {
     getPolygon,
     getSelectedRoseValue,
     getFilterSearchValues,
-    getDateList
+    getDateList,
+    getScrollIndicator,
+    getFileName,
+    getPrefix,
+    getPluginConfig
 } from "../selectors/photosObliques-selectors";
 
 import {
@@ -75,6 +90,8 @@ import {
     Feature
 } from "ol";
 
+import { containsExtent } from "ol/extent";
+
 import {
     updateAdditionalLayer
 } from "@mapstore/actions/additionallayers";
@@ -85,7 +102,8 @@ import {
     getYears, 
     getPhotos,
     getPhotoCount,
-    downloadPicture
+    downloadPicture,
+    getConfigs
 } from '../api/api';
 import { ogcListField } from "@mapstore/utils/FilterUtils";
 import { reprojectBbox } from "@mapstore/utils/CoordinatesUtils";
@@ -154,9 +172,9 @@ export const openPanelPOEpic = (action$, store) => action$.ofType(TOGGLE_CONTROL
         let observables = [
             UpdateMapLayoutPO(layout),
             updateDockPanelsList('photosObliques', 'add', 'right'),
-            initConfigsPO(),
             initProjectionsPO(),
-            initOverlayLayerPO()
+            initOverlayLayerPO(),
+            initConfigsPO(getPluginConfig(store.getState()))
         ];
         return Rx.Observable.from(observables);
     });
@@ -281,19 +299,18 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
     if (!relevance) {
         relevance = '-relevance';
     }
-    // console.log(startDate);
-    // console.log(endDate);
     //mise en place des datas
     var datas = [endDate[0], startDate[startDate.length-1], roseValue, '', '', 0, 10, relevance];
     //emprise de la carte
     var wkt = getPerimeterPolygon(store);
-
-    if (action.loadMore) {
-        var datas = [endDate[0], startDate[startDate.length-1], roseValue, '', '', getSearchResult(store.getState()).length, getSearchResult(store.getState()).length +10, relevance];
+    if (getPolygon(store.getState()) != undefined && action.newSearch != true) {
+        wkt = getPolygon(store.getState());
     }
-
-    console.log(datas);
     
+    if (action.loadMore) {
+        datas = [endDate[0], startDate[startDate.length-1], roseValue, '', '', getSearchResult(store.getState()).length, 10, relevance];
+    }
+        
     //on récupère les layers
     const vectorLayer = getSelectedTilesLayer(store.getState());
     //on crée un clone de l'emprise générée
@@ -305,22 +322,62 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
     searchPerimeter = {...searchPerimeter, geometry: {type: "Polygon", coordinates: empriseRechercheGeom.getCoordinates()}};
     var features = [searchPerimeter, hoveredItemPerimeter];
     return Rx.Observable.forkJoin(
-        // getPhotoCount(getPolygon(store.getState()), datas);
         getPhotos(wkt, datas)
     ).switchMap((response) => {
-        return Rx.Observable.from(
-            [
-                updateAdditionalLayer(
-                    PO_PERIMETER_LAYER_ID,
-                    "PO",
-                    "overlay",
-                    {...vectorLayer.options, features}
-                ),
-                searchValuesFilteredPO(response[0]),
-                // getEndDateValuePO(newEndDate)
-            // setPolygonPO(wkt),
-            ]
-        );
+        
+        response = response[0];
+        if (response.status === 200) {
+            return Rx.Observable.forkJoin(
+                getPhotoCount(wkt, datas)
+            ).switchMap((responsePhotoCount) => {
+                responsePhotoCount = responsePhotoCount[0];
+                if (responsePhotoCount.status === 200) {
+                
+                    var observablesReturned = [];
+                    if (action.loadMore) {
+                        observablesReturned = [
+                            updateAdditionalLayer(
+                                PO_PERIMETER_LAYER_ID,
+                                "PO",
+                                "overlay",
+                                {...vectorLayer.options, features}
+                            ),
+                            setPolygonPO(wkt),
+                            searchValuesFilteredPO(getSearchResult(store.getState()).concat(response.data)),
+                            setPhotoCountActionPO(responsePhotoCount.data.numberOfResult),
+                            accumulateScrollEventsPO(false)
+                        ]
+                    }else{
+                        observablesReturned = [
+                            updateAdditionalLayer(
+                                PO_PERIMETER_LAYER_ID,
+                                "PO",
+                                "overlay",
+                                {...vectorLayer.options, features}
+                            ),
+                            setPolygonPO(wkt),
+                            searchValuesFilteredPO(response.data),
+                            setPhotoCountActionPO(responsePhotoCount.data.numberOfResult),
+                            accumulateScrollEventsPO(false)
+                        ]
+                    }
+                } else {
+                    if (isOpen(store.getState())) {
+                        return dropPopUp(response.status, response.statusText);
+                    } else {
+                        return Rx.Observable.empty();
+                    }
+                }
+                return Rx.Observable.from(observablesReturned);
+            })
+        } else {
+            if (isOpen(store.getState())) {
+                return dropPopUp(response.status, response.statusText);
+            } else {
+                return Rx.Observable.empty();
+            }
+        }
+
     });
 })
 
@@ -372,7 +429,6 @@ export const addBasketPOEpic = (action$, store) => action$.ofType(actions.ADD_BA
 })
 
 /**
- * removeBasketPOEpic => called via this.props.removeSelectedItemsInBasketPO() in jsx
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
  * @returns - empty observable
@@ -383,14 +439,21 @@ export const removeBasketPOEpic = (action$, store) => action$.ofType(actions.REM
     var result = item.filter(elt => !elt.selected);
     var resultSelected = item.filter(elt => elt.selected);
     var observables = [];
-    console.log(item.length);
-    console.log(result.length);
-    if (item.length === result.length) {
+    //si on supprime tout
+    if (item.length === result.length && action.forceDeletionOnEmptySelection) {
+        // console.log("delete all");
         result = [];
-        observables = [updateItemInBasketPO(result), countItemsSelectedInBasketPO(0), modalDisplayPO(false)];
+        observables = [updateItemInBasketPO(result), countItemsSelectedInBasketPO(0), modalDisplayPO(false, '')];
     }
+    //si on annule la suppression
     if (resultSelected.length === 0 && !action.forceDeletionOnEmptySelection) {
-        observables = [modalDisplayPO(true)];
+        // console.log("close modal");
+        observables = [modalDisplayPO(true, 'deletionModal')];
+    }
+    //si on supprime les éléments sélectionnés
+    if (item.length != result.length) {
+        // console.log("delete selected elements");
+        observables = [updateItemInBasketPO(result), countItemsSelectedInBasketPO(0), modalDisplayPO(false, '')];
     }
     /* eslint-enable */
     return Rx.Observable.from(observables);
@@ -480,52 +543,37 @@ function str2bytes (str) {
  * @returns - observable which update the layer
  */
 export const downloadBasketPOEpic = (action$, store) => action$.ofType(actions.DOWNLOAD_BASKET).switchMap((action) => {
-    // //try 2
-    // let csv = "";
-    // for(let row = 0; row < getBasket(store.getState()).length; row++){
-    //     let keysAmount = Object.keys(getBasket(store.getState())[row]).length
-    //     let keysCounter = 0
-    //     //generate headings
-    //     if(row === 0){
-    //         for(let key in getBasket(store.getState())[row]){
-    //             csv += key + (keysCounter+1 < keysAmount ? ',' : '\r\n' )
-    //             keysCounter++
-    //         }
-    //         keysCounter = 0;
-    //     }
-    //     //generate body
-    //     for(let key in getBasket(store.getState())[row]){
-    //         csv += getBasket(store.getState())[row][key] + (keysCounter+1 < keysAmount ? ',' : '\r\n' )
-    //         keysCounter++
-    //     }
-    //     keysCounter = 0;
-    // }
-    // let link = document.createElement('a')
-    // link.id = 'download-csv'
-    // link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(csv));
-    // link.setAttribute('download', 'basket.csv');
-    // link.click();
     var basket = getBasket(store.getState());
     var photoIds = [];
     basket.forEach(element => {
         photoIds.push(element.id);
     });
-    console.log(photoIds);
-    var zipName = 'data';
-    var prefix = '';
-    var datas = [photoIds, zipName, prefix]
+    var zipName = getFileName(store.getState());
+    var prefix = getPrefix(store.getState());
+    var datas = [photoIds, zipName, prefix];
     return Rx.Observable.forkJoin(
         downloadPicture(datas)
     ).switchMap((response) => {
+        response = response[0];
         console.log(response);
-        console.log(response[0]);
-        var url = window.URL.createObjectURL(response[0]);
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = zipName + '.zip';
-        a.click();
-        window.URL.revokeObjectURL(url);
-        return Rx.Observable.empty();
+        if (response.status === 200) {
+            var url = window.URL.createObjectURL(response.data);
+            var a = document.createElement('a');
+            a.href = url;
+            if (zipName === '') {
+                zipName = response.headers["content-disposition"].split("filename=")[1];
+            }
+            a.download = zipName;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            return Rx.Observable.from([modalDisplayPO(false, ''), setDownloadingPO(false)]);
+        } else {
+            if (isOpen(store.getState())) {
+                return dropPopUp(response.status, response.statusText);
+            } else {
+                return Rx.Observable.empty();
+            }
+        }
     });
 });
 
@@ -537,15 +585,21 @@ export const downloadBasketPOEpic = (action$, store) => action$.ofType(actions.D
  * @returns - observable which update the layer
  */
 export const initDateSelectsPOEpic = (action$, store) => action$.ofType(actions.INIT_DATE_SELECT).switchMap((action) => {
-    var polygon = "POLYGON((1339160.5891883592 7214802.240614536,1340297.8535671984 7232887.074032368,1365875.1941123577 7231336.039120723,1364818.7971917638 7213246.301821241,1339160.5891883592 7214802.240614536))";
-    var formattedResponse;
+    // var polygon = "POLYGON((1339160.5891883592 7214802.240614536,1340297.8535671984 7232887.074032368,1365875.1941123577 7231336.039120723,1364818.7971917638 7213246.301821241,1339160.5891883592 7214802.240614536))";
     return Rx.Observable.forkJoin(
-            // getYears(getPolygon(store.getState()))
-            getYears(polygon)
-        ).switchMap((response) => {
-            return Rx.Observable.from([setDateList(response[0])]);
-        });
-    // return Rx.Observable.empty();
+        getYears(getPerimeterPolygon(store))
+    ).switchMap((response) => {
+        response = response[0];
+        if (response.status === 200) {
+            return Rx.Observable.from([setDateList(response.data)]);
+        } else {
+            if (isOpen(store.getState())) {
+                return dropPopUp(response.status, response.statusText);
+            } else {
+                return Rx.Observable.empty();
+            }
+        }
+    });
 });
 
 /**
@@ -610,10 +664,18 @@ export const getPhotoCountPOEpic = (action$, store) => action$.ofType(actions.GE
     var roseValue = getSelectedRoseValue(store.getState());
     var datas = [endDate[0], startDate[startDate.length-1], roseValue];
     return Rx.Observable.forkJoin(
-        // getPhotoCount(getPolygon(store.getState()), datas);
         getPhotoCount(polygon, datas)
     ).switchMap((response) => {
-        return Rx.Observable.from([setPhotoCountActionPO(response[0].numberOfResult)]);
+        response = response[0];
+        if (response.status === 200) {
+            return Rx.Observable.from([setPhotoCountActionPO(response.data.numberOfResult)]);
+        } else {
+            if (isOpen(store.getState())) {
+                return dropPopUp(response.status, response.statusText);
+            } else {
+                return Rx.Observable.empty();
+            }
+        }
     });
     return Rx.Observable.from([]);
 });
@@ -676,7 +738,7 @@ function getGeoJsonFeature(feature, style) {
     return geoJsonFeature;
 }
 
-function getPerimeterPolygon(store){
+function getPerimeterPolygonGeom(store){
     //emprise de la carte
     var empriseRecherche = mapBboxSelector(store.getState());
     var map = mapSelector(store.getState());
@@ -705,6 +767,12 @@ function getPerimeterPolygon(store){
     ]);
     //on reprojète l'emprise de départ en 3948
     empriseRechercheGeom.transform(proj3857, proj3948);
+    return empriseRechercheGeom;
+}
+
+function getPerimeterPolygon(store){
+    // on récupère la géometrie du périmètre
+    var empriseRechercheGeom = getPerimeterPolygonGeom(store);
     //on génère le wkt
     return new WKT().writeGeometry(empriseRechercheGeom);
 }
@@ -719,10 +787,14 @@ function getPerimeterPolygon(store){
 export const pictureHoveredPOEpic = (action$, store) => action$.ofType(actions.PICTURE_HOVERED).switchMap((action) => {
     //on récupère les layers
     const vectorLayer = getSelectedTilesLayer(store.getState());
+    var hoveredItemPerimeterTotallyVisible = false;
     if (action.item) {
         const itemPolygon = new WKT().readGeometry(action.item.shape);
         itemPolygon.transform(proj3948, proj4326);
         hoveredItemPerimeter = {...hoveredItemPerimeter, geometry: {type: "Polygon", coordinates: itemPolygon.getCoordinates()}};
+        var currentViewGeom = getPerimeterPolygonGeom(store);
+        currentViewGeom.transform(proj3948, proj4326);
+        hoveredItemPerimeterTotallyVisible = containsExtent(currentViewGeom.getExtent(), itemPolygon.getExtent());
     } else {
         hoveredItemPerimeter = {...hoveredItemPerimeter, geometry: {type: "Polygon", coordinates: [[]]}};
     }
@@ -733,7 +805,8 @@ export const pictureHoveredPOEpic = (action$, store) => action$.ofType(actions.P
             "PO",
             "overlay",
             {...vectorLayer.options, features}
-        )
+        ),
+        updateHoveredPolygonVisibilityStatePO(hoveredItemPerimeterTotallyVisible)
     ]);
 });
 
@@ -763,8 +836,6 @@ export const zoomElementPOEpic = (action$, store) => action$.ofType(actions.ZOOM
 export const filterBasketValuesPOEpic = (action$, store) => action$.ofType(actions.FILTER_BASKET_VALUES).switchMap((action) => {
     /* eslint-disable */
     var filterValue = getBasket(store.getState());
-    console.log(filterValue);
-    console.log(action.filterValue);
     switch (action.filterValue) {
         case "-relevance":
             filterValue = filterValue.sort((a,b) => (a.relevance < b.relevance) ? 1 : ((b.relevance < a.relevance) ? -1 : 0))
@@ -788,7 +859,6 @@ export const filterBasketValuesPOEpic = (action$, store) => action$.ofType(actio
             console.log('la sélection à été mal effectuée et le tri est impossible...');
             break;
     }
-    console.log(filterValue);
     return Rx.Observable.from([updateItemInBasketPO(filterValue.slice())]);
     /* eslint-enable */
 })
@@ -800,11 +870,95 @@ export const filterBasketValuesPOEpic = (action$, store) => action$.ofType(actio
  * @returns - empty observable
  */
 export const onScrollPOEpic = (action$, store) => action$.ofType(actions.ONSCROLL).switchMap((action) => {
-    console.log(document.getElementById('PHOTOSOBLIQUES_scrollBar').innerHeight);
-    console.log(document.getElementById('PHOTOSOBLIQUES_scrollBar').scrollY);
-    console.log(document.getElementById('PHOTOSOBLIQUES_scrollBar').offsetHeight);
-    if ((document.getElementById('PHOTOSOBLIQUES_scrollBar').innerHeight + Math.round(document.getElementById('PHOTOSOBLIQUES_scrollBar').scrollY)) >= (document.getElementById('PHOTOSOBLIQUES_scrollBar').offsetHeight)) {
-       console.log('toto');
+    if (!getScrollIndicator(store.getState())) {
+        if (document.getElementById('PHOTOSOBLIQUES_scrollBar').scrollTop >= (document.getElementById('PHOTOSOBLIQUES_scrollBar').clientHeight -200)) {
+           return Rx.Observable.from([validateSearchFiltersPO(true,true), accumulateScrollEventsPO(true)]);
+        }
+    } else{
+        return Rx.Observable.empty();
     }
-    return Rx.Observable.from([]);
+    return Rx.Observable.from([accumulateScrollEventsPO(false)]);
 })
+
+/**
+ * clearFiltersEpic 
+ * @memberof photosObliques.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @returns - empty observable
+ */
+export const clearFiltersEpic = (action$, store) => action$.ofType(actions.CLEAR_FILTERS).switchMap((action) => {
+    var dateList = getDateList(store.getState());
+    return Rx.Observable.from(
+        [
+            getStartDateValuePO(getDateList(store.getState())),
+            getEndDateValuePO(getDateList(store.getState())),
+            windRoseClickPO('')
+        ]
+    );
+})
+
+/**
+ * initConfigsPOEpic 
+ * @memberof photosObliques.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @returns - empty observable
+ */
+export const initConfigsPOEpic = (action$, store) => action$.ofType(actions.INIT_CONFIGS).switchMap((action) => {
+    return Rx.Observable.forkJoin(
+        getConfigs()
+    ).switchMap((response) => {
+        response = response[0];
+        console.log(response);
+        if (response.status === 200) {
+            response = response.data;
+            response.photosObliquesHomeText = action.configs.photosObliquesHomeText;
+            response.pictureAmount = action.configs.pictureAmount;
+            return Rx.Observable.from([
+                setPluginConfigsPO(response)
+            ]);
+        } else {
+            if (isOpen(store.getState())) {
+                return dropPopUp(response.status, response.statusText);
+            } else {
+                return Rx.Observable.empty();
+            }
+        }
+    })
+})
+
+/**
+ * updateItemInBasketPOEpic 
+ * @memberof photosObliques.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @returns - empty observable
+ */
+export const updateItemInBasketPOEpic = (action$, store) => action$.ofType(actions.UPDATE_ITEM_IN_BASKET).switchMap((action) => {
+    var basketSize = 0;
+    var basket = getBasket(store.getState());
+    basket.map((item) => {
+        basketSize += item.fileSize;
+    });
+    return Rx.Observable.from([setPicturesInBasket(basket.length, basketSize)]);
+})
+
+/**
+ * dropPopUp drop popup according to level
+ * @memberof photosObliques.epics
+ * @param level - popup level e.g: success | error
+ * @returns - observable containing popup or empty observable
+ */
+const dropPopUp = (code, errorMessage) => {
+    switch (code) {
+    case 400:
+        return Rx.Observable.from([
+            show({ title: "photosObliques.dropPopUp400.title", message: errorMessage }, "error")]);
+    case 500:
+        return Rx.Observable.from([
+            show({ title: "photosObliques.dropPopUp500.title", message: errorMessage }, "error")]);
+    default:
+        return Rx.Observable.from([
+            show({ title: "photosObliques.dropPopUpCustom.title", message: "photosObliques.dropPopUpCustom.message" }, "error")]);
+        break;
+    }
+    return Rx.Observable.empty();
+};

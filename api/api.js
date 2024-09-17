@@ -1,9 +1,5 @@
 import axios from '@mapstore/libs/ajax';
 
-// export function callServer(url){
-//     return axios.get(url);
-// }
-
 export function getPhotos(polygon, datas){
     var slug = "/photosobliques/photos?geometry=" + polygon;
     if (datas[0]) {
@@ -31,10 +27,10 @@ export function getPhotos(polygon, datas){
         slug = slug + "&order=" + datas[7];
     }
     return axios.get(slug).then(function (response) {
-        return response.data;
+        return response;
     })
     .catch(function (error) {
-        console.log(error);
+        return error;
     });
 }
 
@@ -53,10 +49,10 @@ export function downloadPicture(datas){
         slug = slug + "&prefix=" + datas[2];
     }
     return axios.get(slug, {responseType:"blob"}).then(function (response) {
-        return response.data;
+        return response;
     })
     .catch(function (error) {
-        console.log(error);
+        return error;
     });
 }
 
@@ -78,21 +74,20 @@ export function getPhotoCount(polygon, datas){
         slug = slug + "&owner=" + datas[4];
     }
     return axios.get(slug).then(function (response) {
-        return response.data;
+        return response;
     })
     .catch(function (error) {
-        console.log(error);
+        return error;
     });
 }
 
-export function getOwners(polygon, callback){
+export function getOwners(polygon){
     var slug = "/photosobliques/owners?geometry=" + polygon;
     axios.get(slug).then(function (response) {
-        response = response.data;
-        callback([response]);
+        return response;
     })
     .catch(function (error) {
-        console.log(error);
+        return error;
     });
 }
 
@@ -100,22 +95,29 @@ export function getYears(polygon){
     var slug = "/photosobliques/years?geometry=" + polygon;
     var content = [];
     return axios.get(slug).then(function (response) {
-        response = response.data;
         return response;
     })
     .catch(function (error) {
-        console.log(error);
-        return null;
+        return error;
     });
 }
 
-export function getProviders(polygon, callback){
+export function getProviders(polygon){
     var slug = "/photosobliques/providers?geometry=" + polygon;
     axios.get(slug).then(function (response) {
-        response = response.data;
-        callback([response]);
+        return response;
     })
     .catch(function (error) {
-        console.log(error);
+        return error
+    });
+}
+
+export function getConfigs(){
+    var slug = "/photosobliques/configuration";
+    return axios.get(slug).then(function (response) {
+        return response;
+    })
+    .catch(function (error) {
+        return error;
     });
 }

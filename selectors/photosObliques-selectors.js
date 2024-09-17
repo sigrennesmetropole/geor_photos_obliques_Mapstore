@@ -139,3 +139,75 @@ export const getDateList = (state) => get(state, 'photosObliques.dateList');
 * @returns - returns the tabs state
 */
 export const getModalDisplay = (state) => get(state, 'photosObliques.modalDisplay');
+
+/**
+* getModalType checks which tab is open
+* @memberof plugin.selectors
+* @param state - application state
+* @returns - returns the tabs state
+*/
+export const getModalType = (state) => get(state, 'photosObliques.modalType');
+
+/**
+* getHoveredPolygonVisibilityState checks which tab is open
+* @memberof plugin.selectors
+* @param state - application state
+* @returns - returns the tabs state
+*/
+export const getHoveredPolygonVisibilityState = (state) => get(state, 'photosObliques.hoveredPolygonVisibilityState');
+
+/**
+* getDownloading checks which tab is open
+* @memberof plugin.selectors
+* @param state - application state
+* @returns - returns the tabs state
+*/
+export const getDownloading = (state) => get(state, 'photosObliques.downloading');
+
+/**
+* getScrollIndicator checks which tab is open
+* @memberof plugin.selectors
+* @param state - application state
+* @returns - returns the tabs state
+*/
+export const getScrollIndicator = (state) => get(state, 'photosObliques.scrollIndicator');
+
+/**
+* getPrefix checks which tab is open
+* @memberof plugin.selectors
+* @param state - application state
+* @returns - returns the tabs state
+*/
+export const getPrefix = (state) => get(state, 'photosObliques.prefix');
+
+/**
+* getFileName checks which tab is open
+* @memberof plugin.selectors
+* @param state - application state
+* @returns - returns the tabs state
+*/
+export const getFileName = (state) => get(state, 'photosObliques.fileName');
+
+/**
+* getPluginConfig checks which tab is open
+* @memberof plugin.selectors
+* @param state - application state
+* @returns - returns the tabs state
+*/
+export const getPluginConfig = (state) => get(state, 'photosObliques.configs');
+
+/**
+* getPicturesInBasket checks which tab is open
+* @memberof plugin.selectors
+* @param state - application state
+* @returns - returns the tabs state
+*/
+export const getPicturesInBasket = (state) => get(state, 'photosObliques.picturesInBasket');
+
+/**
+* getBasketSize checks which tab is open
+* @memberof plugin.selectors
+* @param state - application state
+* @returns - returns the tabs state
+*/
+export const getBasketSize = (state) => get(state, 'photosObliques.basketSize');
