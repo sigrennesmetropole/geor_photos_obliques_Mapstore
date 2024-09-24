@@ -70,6 +70,10 @@ export default (state = initialState, action) => {
         return assign({}, state , { fileName: action.fileName, prefix: action.prefix });
     case actions.SET_PICTURES_IN_BASKET:
         return assign({}, state , { picturesInBasket: action.amount, basketSize: action.basketSize });
+    case actions.SET_STARTDATE_VALUE:
+        return assign({}, state , { startDateValue: action.startDateValue });
+    case actions.SET_ENDDATE_VALUE:
+        return assign({}, state , { endDateValue: action.endDateValue });
     default:
         return state;
     }

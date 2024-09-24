@@ -40,7 +40,9 @@ export const actions = {
     SAVE_DOWNLOAD_FIELDS: "PHOTOSOBLIQUES:SAVE_DOWNLOAD_FIELDS",
     CLEAR_FILTERS: "PHOTOSOBLIQUES:CLEAR_FILTERS",
     SET_PLUGIN_CONFIGS: "PHOTOSOBLIQUES:SET_PLUGIN_CONFIGS",
-    SET_PICTURES_IN_BASKET: "PHOTOSOBLIQUES:SET_PICTURES_IN_BASKET"
+    SET_PICTURES_IN_BASKET: "PHOTOSOBLIQUES:SET_PICTURES_IN_BASKET",
+    SET_ENDDATE_VALUE: 'PHOTOSOBLIQUES:SET_ENDDATE_VALUE',
+    SET_STARTDATE_VALUE: 'PHOTOSOBLIQUES:SET_STARTDATE_VALUE'
 };
 
 export const tabTypes = {
@@ -517,5 +519,31 @@ export function setPicturesInBasket(amount, basketSize) {
         type: actions.SET_PICTURES_IN_BASKET,
         amount,
         basketSize
+    };
+}
+
+/**
+ * setStartDateValue action triggered to initialize or reinitialize plugin basic configs
+ * @memberof photosObliques.actions
+ * @param configs - configs object
+ * @returns - action init configs with those configs
+ */
+export function setStartDateValue(startDateValue) {
+    return {
+        type: actions.SET_STARTDATE_VALUE,
+        startDateValue
+    };
+}
+
+/**
+ * setEndDateValue action triggered to initialize or reinitialize plugin basic configs
+ * @memberof photosObliques.actions
+ * @param configs - configs object
+ * @returns - action init configs with those configs
+ */
+export function setEndDateValue(endDateValue) {
+    return {
+        type: actions.SET_ENDDATE_VALUE,
+        endDateValue
     };
 }

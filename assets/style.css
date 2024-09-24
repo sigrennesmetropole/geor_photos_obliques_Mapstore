@@ -139,8 +139,12 @@ body {
     margin-top: 19%;
   }
 
+  .compassMainStyle .deletionGlyph{
+    margin-left: 17%;
+  }
+
   .compassMainStyle span {
-    margin-right: 17%;
+    margin-right: 5%;
   }
   
   .compass {
@@ -215,6 +219,16 @@ body {
     left: 53%;
     margin-left: -14px;
   }
+
+  .backgroundSquare{
+    width: 20px;
+    height: 20px;
+    border: 10px solid;
+    position: absolute;
+    top: 38%;
+    left: 41%;
+    border-color: #DDD;
+  }
   
   .north-label {
     position: absolute;
@@ -242,7 +256,8 @@ body {
   /*fin boussole*/
   
   /*aiguille à tourner*/
-  .testrotate{    
+  .testrotate{
+    visibility: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -275,6 +290,11 @@ body {
     left: 65px;
     position: absolute;
   }
+
+.testrotate2Hidden{
+  visibility: hidden;
+}
+
   .losangeSelected{
     width: 60px;
     height: 60px;
@@ -389,51 +409,67 @@ body {
   
   /*Animation de l'aiguille*/
   #part1:hover ~ .testrotate{
+    visibility: visible;
     transform: rotate(-77.75deg);
   }
   #part2:hover ~ .testrotate{
+    visibility: visible;
     transform: rotate(-55.25deg);
   }
   #part3:hover ~ .testrotate{
+    visibility: visible;
     transform: rotate(-32.75deg);
   }
   #part4:hover ~ .testrotate{
+    visibility: visible;
     transform: rotate(-10.25deg);
   }
   #part5:hover ~ .testrotate{
+    visibility: visible;
     transform: rotate(12.25deg);
   }
   #part6:hover ~ .testrotate{
+    visibility: visible;
     transform: rotate(34.75deg);
   }
   #part7:hover ~ .testrotate{
+    visibility: visible;
     transform: rotate(57.25deg);
   }
   #part8:hover ~ .testrotate{
+    visibility: visible;
     transform: rotate(79.75deg);
   }
   #part9:hover ~ .testrotate{
+    visibility: visible;
     transform: rotate(102.25deg);
   }
   #part10:hover ~ .testrotate{
+    visibility: visible;
     transform: rotate(124.75deg);
   }
   #part11:hover ~ .testrotate{
+    visibility: visible;
     transform: rotate(147.25deg);
   }
   #part12:hover ~ .testrotate{
+    visibility: visible;
     transform: rotate(169.75deg);
   }
   #part13:hover ~ .testrotate{
+    visibility: visible;
     transform: rotate(192.25deg);
   }
   #part14:hover ~ .testrotate{
+    visibility: visible;
     transform: rotate(214.75deg);
   }
   #part15:hover ~ .testrotate{
+    visibility: visible;
     transform: rotate(237.25deg);
   }
   #part16:hover ~ .testrotate{
+    visibility: visible;
     transform: rotate(259.75deg);
   }
 
@@ -628,6 +664,7 @@ body {
  .PO_downloadBasket, .PO_removeBasket, .PO_search{
   margin: 5px;
   width: 7%;
+  width: 35px;
  }
 
  .PO_search{
@@ -637,6 +674,7 @@ body {
  .PO_resultPrecision{
   border-radius: 25px;
   margin: 5px;
+  color: white;
  }
 
  .PO_high_high{
@@ -812,6 +850,79 @@ hr{
   border-color: transparent transparent black transparent;
 }
 
+.tooltipDeletionBasket {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltipDeletionBasket .tooltiptext {
+  visibility: hidden;
+  width: 110px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: 5px;
+  right: 105%;
+}
+
+.tooltipDeletionBasket:hover .tooltiptext {
+  visibility: visible;
+}
+
+.tooltipDeletionBasket .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  left: 100%; /* To the right of the tooltip */
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent black;
+}
+
+.tooltipDownloadBasket {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltipDownloadBasket .tooltiptext {
+  visibility: hidden;
+  width: 100px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: 100%;
+  left: 20%;
+  margin-left: -60px;
+}
+
+.tooltipDownloadBasket:hover .tooltiptext {
+  visibility: visible;
+}
+
+.tooltipDownloadBasket .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  bottom: 100%;  /* At the top of the tooltip */
+  left: 75%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
 /* Show the tooltip text when you mouse over the tooltip container */
 .PO_searchResults:hover .tooltiptext {
   visibility: visible;
@@ -821,16 +932,36 @@ hr{
   visibility: hidden!important;
 }
 
-.PO_loadingContainer{
-  position: fixed;
-  left: 0px;
-  top: 0px;
-  width: 100%;
-  height: 100%;
-  z-index: 9999;
+.RTGE_loadingContainer .RTGE_loading {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -40%);
+	white-space: nowrap;
+	text-align: center;
 }
 
-.PO_loading{}
+.PO_loadingContainer .PO_loading .mapstore-inline-loader {
+	display: block !important;
+	margin: auto;
+	height: 300px;
+	width: 300px;
+	border: 15px solid transparent !important;
+	border-top-color: rgba(7, 138, 163, 0.2) !important;
+	border-right-color: rgba(7, 138, 163, 0.2) !important;
+	border-bottom-color: rgba(7, 138, 163, 0.2) !important;
+	border-left-color: #078aa3 !important;
+}
+
+.PO_loadingContainer .PO_loading span {
+	font-size: 22px;
+  margin: 0 auto;
+  display: table;
+}
+
+.PO_loadingContainer .PO_loading .sk-circle:before {
+	background-color: white;
+}
 
 .popupTextLabels{
   font-size: 10px;
@@ -846,4 +977,15 @@ hr{
   position: absolute;
   transform: translateY(100%);
   font-size: 60px;
+}
+
+.filterSelectionMainDiv select {
+  width: 100%;
+  max-width: 250px;
+  margin: 5px;
+}
+
+.zoomToGlyph{
+  font-size: 25px;
+  color: black;
 }

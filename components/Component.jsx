@@ -31,6 +31,9 @@ export class photosObliques extends React.Component {
         itemId: PropTypes.string,
         itemCounterInBasket: PropTypes.number,
         basket: PropTypes.array,
+        roseValue: PropTypes.string,
+        startDateValue: PropTypes.number,
+        endDateValue: PropTypes.number,
         toggleControl: PropTypes.func,
         changeTabPO: PropTypes.func,
         pictureHoveredPO: PropTypes.func
@@ -48,6 +51,9 @@ export class photosObliques extends React.Component {
         itemId: "",
         basket: [],
         startDate: [],
+        roseValue: '',
+        startDateValue: 0,
+        endDateValue: 0,
         toggleControl: ()=>{},
         changeTabPO: ()=>{},
         pictureHoveredPO: ()=>{}
@@ -57,7 +63,10 @@ export class photosObliques extends React.Component {
         super(props);
         this.state = {
             photosObliquesHomeText: props.photosObliquesHomeText,
-            pictureAmount: props.pictureAmount
+            pictureAmount: props.pictureAmount,
+            maxMoAmount: props.maxMoAmount,
+            downloadInformationMessage: props.downloadInformationMessage,
+            backendURLAccess: props.backendURLAccess
         };
         props.initConfigsPO({
             ...props
@@ -135,6 +144,7 @@ export class photosObliques extends React.Component {
                     { this.renderFiltersSection() }
                 </div>
                 <div className="PO_resultOrganizationFilters">
+                    {/* { console.log(this.props.searchResult)} */}
                     <span className="PO_resultAmount">{this.props.searchResult.length} / {this.props.photoCount} <Message msgId={'photosObliques.picturesFound'} /></span>
                     <span>
                         <span className="PO_bold">Trier par: </span>
@@ -167,9 +177,9 @@ export class photosObliques extends React.Component {
                                     <div className="col-sm-3 tooltipZoom">
                                         <div className="row">
                                             <div className={parseFloat(val.relevance).toFixed(0) >= 50 ? parseFloat(val.relevance).toFixed(0) >= 75 ? "PO_resultPrecision PO_high_high col-sm-6": "PO_resultPrecision PO_high_low col-sm-6" : parseFloat(val.relevance).toFixed(0) >= 25 ? "PO_resultPrecision PO_low_high col-sm-6": "PO_resultPrecision PO_low_low col-sm-6"}>{ parseFloat(val.relevance).toFixed(0) }%</div>
-                                            <button className="PO_search" onClick={() => this.props.zoomElementPO(val)}>
+                                            <div className="zoomToGlyph col-sm-5" onClick={() => this.props.zoomElementPO(val)}>
                                                 <Glyphicon glyph="zoom-to" />
-                                            </button>
+                                            </div>
                                         </div>
                                         <span className={this.props.hoveredPolygonVisibilityState ? "tooltiptext tooltipHidden" : "tooltiptext"}><Message msgId={'photosObliques.zoomTooltip'} /></span>
                                         <button className="PO_addBasket" onClick={() => this.props.addBasketPO(val)}><Message msgId={'photosObliques.addBasket'} /></button>
@@ -231,19 +241,30 @@ export class photosObliques extends React.Component {
     searchFilters() {
         return (
             <>
-                <h3 className="filterTitle">Filtres de recherche</h3>
-                <p>Années</p>
+                <h3 className="filterTitle"><Message msgId={'photosObliques.filterTitle'} /></h3>
+                <p><Message msgId={'photosObliques.filterYears'} /></p>
                 <select id="startDate" className="rw-input" onChange={(e) => this.props.selectStartDateValuePO(e.target.value)} >
+                    <option value="start" key="start">Année de début</option>
+                    {console.log(parseInt(this.props.startDateValue))}
                     {
                         this.props.startDate.map((val) => {
-                            return (<option value={ val } key={ val }>{ val }</option>);
+                            if (val === parseInt(this.props.startDateValue)) {
+                                return (<option value={ val } selected key={ val }>{ val }</option>);
+                            } else{
+                                return (<option value={ val } key={ val }>{ val }</option>);
+                            }
                         })
                     }
                 </select>
                 <select id="endDate" className="rw-input" onChange={(e) => this.props.selectEndDateValuePO(e.target.value)} >
+                    <option value="start" key="start">Année de fin</option>
                     {
                         this.props.endDate.map((val) => {
-                            return (<option value={ val } key={ val }>{ val }</option>);
+                            if (val === parseInt(this.props.endDateValue)) {
+                                return (<option value={ val } selected key={ val }>{ val }</option>);
+                            } else{
+                                return (<option value={ val } key={ val }>{ val }</option>);
+                            }
                         })
                     }
                 </select>
@@ -260,7 +281,8 @@ export class photosObliques extends React.Component {
         return (
             <div className="compassMainStyle">
                 <Message msgId={'photosObliques.windRoseLabel'} />
-                <Glyphicon glyph="clear-filter" onClick={() => this.props.clearFiltersPO()} />
+                {(this.props.roseValue != '' || this.props.startDateValue != 0 || this.props.endDateValue != 0) 
+                    && <Glyphicon glyph="clear-filter" className="deletionGlyph" onClick={() => this.props.clearFiltersPO()} />}
                 <div className="compass">
                     <div className="compass-main">
                         <span className="north-label" style={this.props.roseValue === 0 ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>N</span>
@@ -292,6 +314,7 @@ export class photosObliques extends React.Component {
                                 <div className="southeast-pointer"></div>
                                 <div className="south-west-pointer"></div>
                             </div>
+                            <div className="backgroundSquare"></div>
                         </div>
                         <div className="bt-center"></div>
                         <ul className="circle">
@@ -342,7 +365,7 @@ export class photosObliques extends React.Component {
                             <li id="part16" onClick={() => this.props.windRoseClickPO(337.5)}>
                                 <div className="text">16</div>
                             </li>
-                            <div className="testrotate2" style={this.props.roseValue >= 0 ? {transform: "rotate(" + (this.props.roseValue - 80) + "deg)"} : {display: "none"} }>
+                            <div className={this.props.roseValue != '' ? "testrotate2": "testrotate2 testrotate2Hidden"} style={this.props.roseValue >= 0 ? {transform: "rotate(" + (this.props.roseValue - 80) + "deg)"} : {display: "none"} }>
                                 <div className={this.props.roseValue >= 0 ? "losangeSelected" : "hideLosangeSelected"}></div>
                             </div>
                             <div className="testrotate">
@@ -381,11 +404,18 @@ export class photosObliques extends React.Component {
                         </div>
                         <div>
                             <div className="basket_counter_position">
-                                {this.props.picturesInBasket} / {this.props.configs.pictureAmount} <Message msgId={'photosObliques.pictureAmount'} /> - {parseFloat(this.props.basketSize / 1000000).toFixed(1)} / {this.props.configs.maxCartSize  + " Mo"} <Message msgId={'photosObliques.maxCartSize'} />
+                                {this.props.picturesInBasket} / {this.props.configs.pictureAmount} <Message msgId={'photosObliques.pictureAmount'} /> - {parseFloat(this.props.basketSize / 1000000).toFixed(1)} / {this.props.configs.maxMoAmount  + " Mo"} <Message msgId={'photosObliques.maxCartSize'} />
                             </div>
                             <div className="basket_buttons_position">
-                                <button className="PO_removeBasket" onClick={() => this.props.removeSelectedItemsInBasketPO(false)}><Glyphicon glyph="trash"/></button>
-                                <button className="PO_downloadBasket" onClick={() => this.props.modalDisplayPO(true, 'downloadModal')}><Glyphicon glyph="download"/></button>
+                                <div className="tooltipDeletionBasket">
+                                    <button className="PO_removeBasket" onClick={() => this.props.removeSelectedItemsInBasketPO(false)}><Glyphicon glyph="trash"/></button>
+                                    <span className="tooltiptext"><Message msgId={'photosObliques.removeEverythingFromBasket'} /></span>
+                                    {/* <span className="tooltiptext"><Message msgId={'photosObliques.removeSelectedElements'} /></span> */}
+                                </div>
+                                <div className="tooltipDownloadBasket">
+                                    <button className="PO_downloadBasket" onClick={() => this.props.modalDisplayPO(true, 'downloadModal')}><Glyphicon glyph="download"/></button>
+                                    <span className="tooltiptext"><Message msgId={'photosObliques.downloadButton'} /></span>
+                                </div>
                             </div>
                         </div>
                         {
@@ -400,12 +430,13 @@ export class photosObliques extends React.Component {
                                             <div><span  className="PO_bold">{ val.date }</span></div><br/>
                                             <div><i>{ val.owner }, { val.provider }</i></div><br />
                                             <hr />
-                                            {/* {/* <div>{val.fileSize != undefined && <span  className="PO_bold">{ parseFloat(val.fileSize / 1000000).toFixed(1) + "Mo" }</span>*/ } - { val.id }{/* </div> */}
+                                            {console.log(val.fileSize)}
+                                            <div>{val.fileSize != undefined && <span  className="PO_bold">{ parseFloat(val.fileSize / 1000000).toFixed(1) + "Mo" }</span> } - { val.id } </div>
                                         </div>
                                         <div className="col-sm-3 text-center">
                                             <div className="row">
                                                 <div className={parseFloat(val.relevance).toFixed(0) >= 50 ? parseFloat(val.relevance).toFixed(0) >= 75 ? "PO_resultPrecision PO_high_high col-sm-6": "PO_resultPrecision PO_high_low col-sm-6" : parseFloat(val.relevance).toFixed(0) >= 25 ? "PO_resultPrecision PO_low_high col-sm-6": "PO_resultPrecision PO_low_low col-sm-6"}>{ parseFloat(val.relevance).toFixed(0) }%</div>
-                                                <button className="PO_search col-sm-6" onClick={() => this.props.zoomElementPO(val)}><Glyphicon glyph="zoom-to" /></button>
+                                                <div className="col-sm-5 zoomToGlyph" onClick={() => this.props.zoomElementPO(val)}><Glyphicon glyph="zoom-to" /></div>
                                             </div>
                                         </div>
                                     </div>
@@ -480,7 +511,6 @@ export class photosObliques extends React.Component {
                                 <button onClick={() => this.props.modalDisplayPO(false, '')} className="col-sm-3 PO_addBasket"><Message msgId={'photosObliques.cancel'}/></button>
                                 <div className="col-sm-2"></div>
                             </div>
-                            {this.props.downloading && this.renderSpinner("photosObliques.spinnerMsg")}
                         </div>
                     </div>
                 )
@@ -491,21 +521,22 @@ export class photosObliques extends React.Component {
                     <div id="modal">
                         <div className="mask"></div>
                         <div className="container auto">
-                            <div className="row">
+                            {!this.props.downloading && <div className="row">
                                 <div className="col-sm-3">
                                     <Glyphicon glyph="info-sign" className="glyph-info-sign" />
                                 </div>
                                 <div className="col-sm-9 message">
                                     <Message msgId={'photosObliques.downloadIUnderstand'}/>
                                 </div>
-                            </div>
-                            <div className="row modal-validation">
+                            </div>}
+                            {!this.props.downloading && <div className="row modal-validation">
                                 <div className="col-sm-4"></div>
                                 <div className="col-sm-4">
                                     <button onClick={() => {this.props.downloadBasketPO(), this.props.setDownloadingPO(true)}} className="PO_addBasket"><Message msgId={'photosObliques.understood'}/></button>
                                 </div>
                                 <div className="col-sm-4"></div>
-                            </div>
+                            </div>}
+                            {this.props.downloading && this.renderSpinner("photosObliques.spinnerDownloadMsg")}
                         </div>
                     </div>
                 )

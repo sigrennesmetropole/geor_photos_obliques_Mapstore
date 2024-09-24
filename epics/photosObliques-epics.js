@@ -28,7 +28,9 @@ import {
     selectEndDateValuePO,
     selectStartDateValuePO,
     setPluginConfigsPO,
-    setPicturesInBasket
+    setPicturesInBasket,
+    setStartDateValue,
+    setEndDateValue
 } from "../actions/photosObliques-action";
 import {
     TOGGLE_CONTROL
@@ -57,7 +59,9 @@ import {
     getScrollIndicator,
     getFileName,
     getPrefix,
-    getPluginConfig
+    getPluginConfig,
+    getBasketSize,
+    getPicturesInBasket
 } from "../selectors/photosObliques-selectors";
 
 import {
@@ -413,7 +417,10 @@ export const filterSearchedValuesPOEpic = (action$, store) => action$.ofType(act
 export const addBasketPOEpic = (action$, store) => action$.ofType(actions.ADD_BASKET).switchMap((action) => {
     /* eslint-disable */
     var basket = getBasket(store.getState());
+    var config = getPluginConfig(store.getState());
+    var basketSize = 0;
     var alreadyInBasket = false;
+    var observable = [];
     if (basket.length >= 1) {
         basket.map((item) => {
             if (item.id === action.item.id) {
@@ -421,11 +428,24 @@ export const addBasketPOEpic = (action$, store) => action$.ofType(actions.ADD_BA
             }
         });
     }
+    basket.map((item) => {
+        basketSize += item.fileSize;
+    });
     if (!alreadyInBasket) {
-        basket.push(action.item);
+        if (basket.length +1 <= config.pictureAmount && parseFloat((basketSize + action.item.fileSize) / 1000000).toFixed(1) <= config.maxMoAmount) {
+            basketSize = 0;
+            basket.push(action.item);
+            basket.map((item) => {
+                basketSize += item.fileSize;
+                observable = [updateItemInBasketPO(basket), setPicturesInBasket(basket.length, basketSize)];
+            });
+        } else{
+            return dropPopUp('Erreur ajout panier', 'Vous avez dépassé l\'une des bornes limites d\'ajout dans le panier');
+        }
     }
+
     /* eslint-enable */
-    return Rx.Observable.from([updateItemInBasketPO(basket)]);
+    return Rx.Observable.from(observable);
 })
 
 /**
@@ -441,18 +461,15 @@ export const removeBasketPOEpic = (action$, store) => action$.ofType(actions.REM
     var observables = [];
     //si on supprime tout
     if (item.length === result.length && action.forceDeletionOnEmptySelection) {
-        // console.log("delete all");
         result = [];
         observables = [updateItemInBasketPO(result), countItemsSelectedInBasketPO(0), modalDisplayPO(false, '')];
     }
     //si on annule la suppression
     if (resultSelected.length === 0 && !action.forceDeletionOnEmptySelection) {
-        // console.log("close modal");
         observables = [modalDisplayPO(true, 'deletionModal')];
     }
     //si on supprime les éléments sélectionnés
     if (item.length != result.length) {
-        // console.log("delete selected elements");
         observables = [updateItemInBasketPO(result), countItemsSelectedInBasketPO(0), modalDisplayPO(false, '')];
     }
     /* eslint-enable */
@@ -545,9 +562,17 @@ function str2bytes (str) {
 export const downloadBasketPOEpic = (action$, store) => action$.ofType(actions.DOWNLOAD_BASKET).switchMap((action) => {
     var basket = getBasket(store.getState());
     var photoIds = [];
+    var photoIdsNoSelection = [];
     basket.forEach(element => {
-        photoIds.push(element.id);
+        if (element.selected) {
+            photoIds.push(element.id);
+        }else{
+            photoIdsNoSelection.push(element.id);
+        }
     });
+    if (photoIds.length < 1) {
+        photoIds = photoIdsNoSelection;
+    }
     var zipName = getFileName(store.getState());
     var prefix = getPrefix(store.getState());
     var datas = [photoIds, zipName, prefix];
@@ -555,7 +580,6 @@ export const downloadBasketPOEpic = (action$, store) => action$.ofType(actions.D
         downloadPicture(datas)
     ).switchMap((response) => {
         response = response[0];
-        console.log(response);
         if (response.status === 200) {
             var url = window.URL.createObjectURL(response.data);
             var a = document.createElement('a');
@@ -629,7 +653,7 @@ export const selectStartDatePOEpic = (action$, store) => action$.ofType(actions.
             newEndDate.push(item);
         }
     });
-    return Rx.Observable.from([getEndDateValuePO(newEndDate), getPhotoCountActionPO()]);
+    return Rx.Observable.from([getEndDateValuePO(newEndDate), getPhotoCountActionPO(), setStartDateValue(action.startDate)]);
 });
 
 /**
@@ -647,7 +671,7 @@ export const selectEndDatePOEpic = (action$, store) => action$.ofType(actions.SE
             newStartDate.push(item);
         }
     });
-    return Rx.Observable.from([getStartDateValuePO(newStartDate), getPhotoCountActionPO()]);
+    return Rx.Observable.from([getStartDateValuePO(newStartDate), getPhotoCountActionPO(), setEndDateValue(action.endDate)]);
 });
 
 /**
@@ -856,7 +880,7 @@ export const filterBasketValuesPOEpic = (action$, store) => action$.ofType(actio
             filterValue = filterValue.sort((a,b) => (a.fileSize < b.fileSize) ? 1 : ((b.fileSize < a.fileSize) ? -1 : 0))
             break;
         default:
-            console.log('la sélection à été mal effectuée et le tri est impossible...');
+            return dropPopUp('Erreur Filtres', 'La sélection à été mal effectuée et le tri est impossible...');
             break;
     }
     return Rx.Observable.from([updateItemInBasketPO(filterValue.slice())]);
@@ -892,7 +916,9 @@ export const clearFiltersEpic = (action$, store) => action$.ofType(actions.CLEAR
         [
             getStartDateValuePO(getDateList(store.getState())),
             getEndDateValuePO(getDateList(store.getState())),
-            windRoseClickPO('')
+            windRoseClickPO(''),
+            setStartDateValue(),
+            setEndDateValue()
         ]
     );
 })
@@ -908,11 +934,13 @@ export const initConfigsPOEpic = (action$, store) => action$.ofType(actions.INIT
         getConfigs()
     ).switchMap((response) => {
         response = response[0];
-        console.log(response);
         if (response.status === 200) {
             response = response.data;
             response.photosObliquesHomeText = action.configs.photosObliquesHomeText;
             response.pictureAmount = action.configs.pictureAmount;
+            response.maxMoAmount = action.configs.maxMoAmount;
+            response.downloadInformationMessage = action.configs.downloadInformationMessage;
+            response.backendURLAccess = action.configs.backendURLAccess;
             return Rx.Observable.from([
                 setPluginConfigsPO(response)
             ]);
@@ -924,21 +952,6 @@ export const initConfigsPOEpic = (action$, store) => action$.ofType(actions.INIT
             }
         }
     })
-})
-
-/**
- * updateItemInBasketPOEpic 
- * @memberof photosObliques.epics
- * @param action$ - list of actions triggered in mapstore context
- * @returns - empty observable
- */
-export const updateItemInBasketPOEpic = (action$, store) => action$.ofType(actions.UPDATE_ITEM_IN_BASKET).switchMap((action) => {
-    var basketSize = 0;
-    var basket = getBasket(store.getState());
-    basket.map((item) => {
-        basketSize += item.fileSize;
-    });
-    return Rx.Observable.from([setPicturesInBasket(basket.length, basketSize)]);
 })
 
 /**
@@ -955,6 +968,12 @@ const dropPopUp = (code, errorMessage) => {
     case 500:
         return Rx.Observable.from([
             show({ title: "photosObliques.dropPopUp500.title", message: errorMessage }, "error")]);
+    case 'Erreur ajout panier':
+        return Rx.Observable.from([
+            modalDisplayPO(false, ''),
+            show({ title: code, message: errorMessage }, "error")]);
+    case 'Erreur Filtres':
+        return Rx.Observable.from([show({ title: code, message: errorMessage }, "error")]);
     default:
         return Rx.Observable.from([
             show({ title: "photosObliques.dropPopUpCustom.title", message: "photosObliques.dropPopUpCustom.message" }, "error")]);

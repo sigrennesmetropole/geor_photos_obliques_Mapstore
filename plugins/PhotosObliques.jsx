@@ -61,7 +61,9 @@ import {
     getFileName,
     getPluginConfig,
     getPicturesInBasket,
-    getBasketSize
+    getBasketSize,
+    getEndDateValue,
+    getStartDateValue
 } from "../selectors/photosObliques-selectors";
 import '../assets/style.css';
 
@@ -94,7 +96,9 @@ export default createPlugin(name, {
         prefix: getPrefix(state) || '',
         configs: getPluginConfig(state) || '',
         picturesInBasket: getPicturesInBasket(state) || '',
-        basketSize: getBasketSize(state) || 0
+        basketSize: getBasketSize(state) || 0,
+        startDateValue: getStartDateValue(state) || '',
+        endDateValue: getEndDateValue(state) || ''
     }), {
         toggleControl,
         changeTabPO,

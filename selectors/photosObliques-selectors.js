@@ -211,3 +211,19 @@ export const getPicturesInBasket = (state) => get(state, 'photosObliques.picture
 * @returns - returns the tabs state
 */
 export const getBasketSize = (state) => get(state, 'photosObliques.basketSize');
+
+/**
+* getStartDateValue checks which tab is open
+* @memberof plugin.selectors
+* @param state - application state
+* @returns - returns the tabs state
+*/
+export const getStartDateValue = (state) => get(state, 'photosObliques.startDateValue');
+
+/**
+* getEndDateValue checks which tab is open
+* @memberof plugin.selectors
+* @param state - application state
+* @returns - returns the tabs state
+*/
+export const getEndDateValue = (state) => get(state, 'photosObliques.endDateValue');
