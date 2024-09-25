@@ -618,10 +618,10 @@ body {
 
  .PO_searchResultPictures_apercu > img{
   position: absolute;
-  width: 500px;
-  height: 400px;
+  width: 40em;
+  height: 40em;
   top: -500px;
-  left: -525px;
+  left: -575px;
   right: 0;
   bottom: 0;
   display: none;
@@ -637,7 +637,8 @@ body {
   border-radius: 5px;
   /* border: 1px black solid; */
   box-shadow: 3px 3px 3px 3px lightgray;
-  height: 170px;
+  /* height: 150px; */
+  height: 100%;
  }
 
  .PO_searchResults:hover{
@@ -988,4 +989,8 @@ hr{
 .zoomToGlyph{
   font-size: 25px;
   color: black;
+}
+
+.greyed{
+  background-color: lightgrey!important;
 }

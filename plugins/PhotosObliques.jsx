@@ -74,7 +74,7 @@ export default createPlugin(name, {
         activeTab: getActiveTab(state),
         dockStyle: mapLayoutValuesSelector(state, {right: true, height: true}, true),
         pluginIcon,
-        roseValue: getSelectedRoseValue(state),
+        roseValue: getSelectedRoseValue(state) || '',
         filtersTriggered: getFiltersTriggered(state) || false,
         searchResult: getSearchResult(state),
         itemId: getItemId(state),

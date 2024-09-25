@@ -144,7 +144,6 @@ export class photosObliques extends React.Component {
                     { this.renderFiltersSection() }
                 </div>
                 <div className="PO_resultOrganizationFilters">
-                    {/* { console.log(this.props.searchResult)} */}
                     <span className="PO_resultAmount">{this.props.searchResult.length} / {this.props.photoCount} <Message msgId={'photosObliques.picturesFound'} /></span>
                     <span>
                         <span className="PO_bold">Trier par: </span>
@@ -158,7 +157,10 @@ export class photosObliques extends React.Component {
                         </select>
                     </span>
                 </div>
-                <div className="PHOTOSOBLIQUES_scrollBar" id="PHOTOSOBLIQUES_scrollBar" onScroll={() => this.props.onScrollPO()}>
+                {this.props.searchResult.length === 0 && <div>
+                    {this.renderSpinner("photosObliques.spinnerResultLoadingMessage")}
+                </div>}
+                {this.props.searchResult.length != 0 && <div className="PHOTOSOBLIQUES_scrollBar" id="PHOTOSOBLIQUES_scrollBar" onScroll={() => this.props.onScrollPO()}>
                     {
                         this.props.searchResult.map((val, key) => {
                             return (
@@ -168,11 +170,13 @@ export class photosObliques extends React.Component {
                                         <div className="PO_searchResultPictures_apercu" ><img src={val.urlOverview}/></div>
                                     </div>
                                     <div className="col-sm-5">
-                                        <p><span  className="PO_bold"><Message msgId={'photosObliques.yearTaken'} />:</span> { val.year }<br/>
-                                        <span  className="PO_bold"><Message msgId={'photosObliques.date'} className="PO_bold" />:</span> { val.date }<br/>
-                                        <span  className="PO_bold"><Message msgId={'photosObliques.provider'} className="PO_bold" />:</span> { val.provider }<br/>
-                                        <span  className="PO_bold"><Message msgId={'photosObliques.owner'} className="PO_bold" />:</span> { val.owner }<br/>
-                                        <span  className="PO_bold"><Message msgId={'photosObliques.weight'} className="PO_bold" />:</span> { parseFloat(val.fileSize / 1000000).toFixed(1) + "Mo" }</p>
+                                        <p>
+                                            {val.year && <span  className="PO_bold"><Message msgId={'photosObliques.yearTaken'} />:</span>} <span>{ val.year }</span>{val.year && <br/>}
+                                            {val.date && <span  className="PO_bold"><Message msgId={'photosObliques.date'} className="PO_bold" />:</span>} <span>{ val.date }</span> {val.date && <br/>}
+                                            {val.provider && <span  className="PO_bold"><Message msgId={'photosObliques.provider'} className="PO_bold" />:</span>}<span>{ val.provider }</span>{val.provider &&<br/>}
+                                            {val.owner && <span  className="PO_bold"><Message msgId={'photosObliques.owner'} className="PO_bold" />:</span>}<span>{ val.owner }</span>{val.owner && <br/>}
+                                            {val.fileSize && <span  className="PO_bold"><Message msgId={'photosObliques.weight'} className="PO_bold" />:</span>}<span>{ parseFloat(val.fileSize / 1000000).toFixed(1) + "Mo" }</span>
+                                        </p>
                                     </div>
                                     <div className="col-sm-3 tooltipZoom">
                                         <div className="row">
@@ -188,7 +192,7 @@ export class photosObliques extends React.Component {
                             );
                         })
                     }
-                </div>
+                </div>}
             </>
         )
     }
@@ -245,7 +249,6 @@ export class photosObliques extends React.Component {
                 <p><Message msgId={'photosObliques.filterYears'} /></p>
                 <select id="startDate" className="rw-input" onChange={(e) => this.props.selectStartDateValuePO(e.target.value)} >
                     <option value="start" key="start">Année de début</option>
-                    {console.log(parseInt(this.props.startDateValue))}
                     {
                         this.props.startDate.map((val) => {
                             if (val === parseInt(this.props.startDateValue)) {
@@ -285,7 +288,7 @@ export class photosObliques extends React.Component {
                     && <Glyphicon glyph="clear-filter" className="deletionGlyph" onClick={() => this.props.clearFiltersPO()} />}
                 <div className="compass">
                     <div className="compass-main">
-                        <span className="north-label" style={this.props.roseValue === 0 ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>N</span>
+                        <span className="north-label" style={this.props.roseValue === '0' ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>N</span>
                         <span className="dot part2" style={this.props.roseValue === 22.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
                         <span className="dot part3" style={this.props.roseValue === 45 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
                         <span className="dot part4" style={this.props.roseValue === 67.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
@@ -318,7 +321,7 @@ export class photosObliques extends React.Component {
                         </div>
                         <div className="bt-center"></div>
                         <ul className="circle">
-                            <li id="part1" onClick={() => this.props.windRoseClickPO(0)}>
+                            <li id="part1" onClick={() => this.props.windRoseClickPO('0')}>
                             </li>
                             <li id="part2" onClick={() => this.props.windRoseClickPO(22.5)}>
                                 <div className="text">2</div>
@@ -365,8 +368,8 @@ export class photosObliques extends React.Component {
                             <li id="part16" onClick={() => this.props.windRoseClickPO(337.5)}>
                                 <div className="text">16</div>
                             </li>
-                            <div className={this.props.roseValue != '' ? "testrotate2": "testrotate2 testrotate2Hidden"} style={this.props.roseValue >= 0 ? {transform: "rotate(" + (this.props.roseValue - 80) + "deg)"} : {display: "none"} }>
-                                <div className={this.props.roseValue >= 0 ? "losangeSelected" : "hideLosangeSelected"}></div>
+                            <div className={this.props.roseValue != '' ? "testrotate2": "testrotate2 testrotate2Hidden"} style={this.props.roseValue != '' ? {transform: "rotate(" + (this.props.roseValue - 80) + "deg)"} : {display: "none"} }>
+                                <div className={this.props.roseValue != '' ? "losangeSelected" : "hideLosangeSelected"}></div>
                             </div>
                             <div className="testrotate">
                                 <div className="losange"></div>
@@ -427,11 +430,10 @@ export class photosObliques extends React.Component {
                                             <div className="PO_searchResultPictures_apercu PO_searchResultPicturesBasket_apercu" ><img src={val.urlOverview}/></div>
                                         </div>
                                         <div className="col-sm-5 text-align-left">
-                                            <div><span  className="PO_bold">{ val.date }</span></div><br/>
-                                            <div><i>{ val.owner }, { val.provider }</i></div><br />
+                                            <div><span  className="PO_bold">{ val.date }</span></div>
+                                            <div><i>{ val.owner }, { val.provider }</i></div>
                                             <hr />
-                                            {console.log(val.fileSize)}
-                                            <div>{val.fileSize != undefined && <span  className="PO_bold">{ parseFloat(val.fileSize / 1000000).toFixed(1) + "Mo" }</span> } - { val.id } </div>
+                                            <div>{val.fileSize && <span  className="PO_bold">{ parseFloat(val.fileSize / 1000000).toFixed(1) + "Mo" }</span> } {val.id && <span> - {val.id}</span> }</div>
                                         </div>
                                         <div className="col-sm-3 text-center">
                                             <div className="row">
@@ -490,7 +492,7 @@ export class photosObliques extends React.Component {
                                             <label htmlFor="fname" className="popupTextLabels"><Message msgId={'photosObliques.fileName'}/></label>
                                         </div>
                                         <div className="col-sm-5">
-                                            <input type="text" id="fname" name="fname" />
+                                            <input type="text" id="fname" name="fname" placeholder="date du jour" />
                                         </div>
                                     </div>
                                     <div className="row top-spacing">
@@ -498,7 +500,7 @@ export class photosObliques extends React.Component {
                                             <label htmlFor="pname" className="popupTextLabels"><Message msgId={'photosObliques.prefixLabel'}/></label>
                                         </div>
                                         <div className="col-sm-5">
-                                            <input type="text" id="pname" name="pname" />
+                                            <input type="text" id="pname" name="pname" placeholder="pas de préfixe" />
                                         </div>
                                     </div>
                                 </div>
@@ -576,11 +578,16 @@ export class photosObliques extends React.Component {
                         </button>
                     </div>
                     <div className="col-sm-6 text-center">
-                        <button className={this.props.activeTab === "PHOTOSOBLIQUES:SELECT"
+                        {this.props.basket.length != 0 && <button className={this.props.activeTab === "PHOTOSOBLIQUES:SELECT"
                             ? "PHOTOSOBLIQUES_selectButton PHOTOSOBLIQUES_active"
                             : "PHOTOSOBLIQUES_selectButton"} onClick={() => this.props.changeTabPO(tabTypes.SELECT)}>
                             <Message msgId={'photosObliques.selection'}/>
-                        </button>
+                        </button>}
+                        {this.props.basket.length === 0 && <button className={this.props.activeTab === "PHOTOSOBLIQUES:SELECT"
+                            ? "PHOTOSOBLIQUES_selectButton PHOTOSOBLIQUES_active greyed"
+                            : "PHOTOSOBLIQUES_selectButton greyed"} disabled onClick={() => this.props.changeTabPO(tabTypes.SELECT)}>
+                            <Message msgId={'photosObliques.selection'}/>
+                        </button>}
                     </div>
                 </div>
             );

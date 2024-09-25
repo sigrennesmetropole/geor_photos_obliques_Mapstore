@@ -112,6 +112,7 @@ import {
 import { ogcListField } from "@mapstore/utils/FilterUtils";
 import { reprojectBbox } from "@mapstore/utils/CoordinatesUtils";
 
+
 var currentLayout;
 var lastSelectedTile;
 var proj3857;
@@ -209,10 +210,18 @@ export const closePanelPOEpic = (action$, store) => action$.ofType(TOGGLE_CONTRO
             },
             boundingSidebarRect: layout.boundingSidebarRect
         };
+        var vectorLayerToHide = getSelectedTilesLayer(store.getState());
+        vectorLayerToHide.visibility = false;
         currentLayout = layout;
         return Rx.Observable.from([
             updateDockPanelsList('photosObliques', 'remove', 'right'),
-            UpdateMapLayoutPO(currentLayout)
+            UpdateMapLayoutPO(currentLayout),
+            updateAdditionalLayer(
+                PO_PERIMETER_LAYER_ID,
+                "PO",
+                "overlay",
+                vectorLayerToHide
+            )
         ]);
     });
 
@@ -895,7 +904,7 @@ export const filterBasketValuesPOEpic = (action$, store) => action$.ofType(actio
  */
 export const onScrollPOEpic = (action$, store) => action$.ofType(actions.ONSCROLL).switchMap((action) => {
     if (!getScrollIndicator(store.getState())) {
-        if (document.getElementById('PHOTOSOBLIQUES_scrollBar').scrollTop >= (document.getElementById('PHOTOSOBLIQUES_scrollBar').clientHeight -200)) {
+        if (document.getElementById('PHOTOSOBLIQUES_scrollBar').scrollTop >= (document.getElementById('PHOTOSOBLIQUES_scrollBar').clientHeight * (-0.8))) {
            return Rx.Observable.from([validateSearchFiltersPO(true,true), accumulateScrollEventsPO(true)]);
         }
     } else{
