@@ -137,9 +137,9 @@ export class photosObliques extends React.Component {
         return (
             <>
                 <input type="checkbox" id="toggle" className="unfolder"/>
-                <label htmlFor="toggle" className="toggle-label">
-                <Message msgId={'photosObliques.updateSearch'} />
-                </label>
+                <button className="btn-primary" onClick={() => this.props.cancelSearchFiltersPO()}>
+                    <Message msgId={'photosObliques.updateSearch'} />
+                </button>
                 <div className="fold">
                     { this.renderFiltersSection() }
                 </div>
@@ -164,18 +164,18 @@ export class photosObliques extends React.Component {
                     {
                         this.props.searchResult.map((val, key) => {
                             return (
-                                <div className="row PO_searchResults" key={key} onMouseEnter={() => this.props.pictureHoveredPO(val)} onMouseLeave={() => this.props.pictureHoveredPO()}>
+                                <div className="row mapstore-side-card PO_searchResults" key={key} onMouseEnter={() => this.props.pictureHoveredPO(val)} onMouseLeave={() => this.props.pictureHoveredPO()}>
                                     <div className="col-sm-4 PO_static">
                                         <img src={ val.urlOverview } className="PO_searchResultPictures" />
                                         <div className="PO_searchResultPictures_apercu" ><img src={val.urlOverview}/></div>
                                     </div>
                                     <div className="col-sm-5">
                                         <p>
-                                            {val.year && <span  className="PO_bold"><Message msgId={'photosObliques.yearTaken'} />:</span>} <span>{ val.year }</span>{val.year && <br/>}
-                                            {val.date && <span  className="PO_bold"><Message msgId={'photosObliques.date'} className="PO_bold" />:</span>} <span>{ val.date }</span> {val.date && <br/>}
-                                            {val.provider && <span  className="PO_bold"><Message msgId={'photosObliques.provider'} className="PO_bold" />:</span>}<span>{ val.provider }</span>{val.provider &&<br/>}
-                                            {val.owner && <span  className="PO_bold"><Message msgId={'photosObliques.owner'} className="PO_bold" />:</span>}<span>{ val.owner }</span>{val.owner && <br/>}
-                                            {val.fileSize && <span  className="PO_bold"><Message msgId={'photosObliques.weight'} className="PO_bold" />:</span>}<span>{ parseFloat(val.fileSize / 1000000).toFixed(1) + "Mo" }</span>
+                                            {val.year && <span  className="PO_bold"><Message msgId={'photosObliques.yearTaken'} />: </span>} <span>{ val.year }</span>{val.year && <br/>}
+                                            {val.date && <span  className="PO_bold"><Message msgId={'photosObliques.date'} className="PO_bold" />: </span>} <span>{ val.date }</span> {val.date && <br/>}
+                                            {val.provider && <span  className="PO_bold"><Message msgId={'photosObliques.provider'} className="PO_bold" />: </span>}<span>{ val.provider }</span>{val.provider &&<br/>}
+                                            {val.owner && <span  className="PO_bold"><Message msgId={'photosObliques.owner'} className="PO_bold" />: </span>}<span>{ val.owner }</span>{val.owner && <br/>}
+                                            {val.fileSize && <span  className="PO_bold"><Message msgId={'photosObliques.weight'} className="PO_bold" />: </span>}<span>{ parseFloat(val.fileSize / 1000000).toFixed(1) + "Mo" }</span>
                                         </p>
                                     </div>
                                     <div className="col-sm-3 tooltipZoom">
@@ -186,7 +186,7 @@ export class photosObliques extends React.Component {
                                             </div>
                                         </div>
                                         <span className={this.props.hoveredPolygonVisibilityState ? "tooltiptext tooltipHidden" : "tooltiptext"}><Message msgId={'photosObliques.zoomTooltip'} /></span>
-                                        <button className="PO_addBasket" onClick={() => this.props.addBasketPO(val)}><Message msgId={'photosObliques.addBasket'} /></button>
+                                        <button className="btn-primary PO_addBasket" onClick={() => this.props.addBasketPO(val)}><Message msgId={'photosObliques.addBasket'} /></button>
                                     </div>
                                 </div>
                             );
@@ -209,11 +209,11 @@ export class photosObliques extends React.Component {
                 <>
                     {
                         this.props.filtersTriggered === true &&
-                        <button className="PO_addBasket" onClick={() => this.props.cancelSearchFiltersPO()}>
+                        <button className="btn-primary PO_addBasket" onClick={() => this.props.cancelSearchFiltersPO()}>
                             <Message msgId={'photosObliques.cancelSearch'}/>
                         </button>
                     }
-                    <button className="PO_addBasket" onClick={() => this.props.validateSearchFiltersPO(true, false, true)}>
+                    <button className="btn-primary PO_addBasket" onClick={() => {this.props.validateSearchFiltersPO(true, false, true), this.props.searchValuesFilteredPO(""), this.props.cancelSearchFiltersPO()}}>
                         <Message msgId={'photosObliques.ValidateSearch'}/>
                     </button>
                     <span>{ this.props.photoCount } <Message msgId={'photosObliques.picturesAvailable'}/></span>
@@ -224,11 +224,11 @@ export class photosObliques extends React.Component {
                 <>
                     {
                         this.props.filtersTriggered === true &&
-                        <button onClick={() => this.props.cancelSearchFiltersPO()}>
+                        <button className="btn-primary PO_addBasket" onClick={() => this.props.cancelSearchFiltersPO()}>
                             <Message msgId={'photosObliques.cancelSearch'}/>
                         </button>
                     }
-                    <button disabled>
+                    <button className="btn-primary PO_addBasket" disabled>
                         <Message msgId={'photosObliques.ValidateSearch'}/>
                     </button>
                     <span>{ this.props.photoCount } <Message msgId={'photosObliques.picturesAvailable'}/></span>
@@ -390,7 +390,7 @@ export class photosObliques extends React.Component {
         renderSelectionTab() {
             return (
                 <div id="PHOTOSOBLIQUES_EXTENSION PHOTOSOBLIQUES_scrollBar">
-                    <div>
+                    {!this.props.downloading && <div>
                         <div className="basket_counter_position">
                             {this.props.itemCounterInBasket} / {this.props.basket.length} <Message msgId={'photosObliques.pictureSelected'} />
                             <span className="basket_sort_position">
@@ -411,20 +411,19 @@ export class photosObliques extends React.Component {
                             </div>
                             <div className="basket_buttons_position">
                                 <div className="tooltipDeletionBasket">
-                                    <button className="PO_removeBasket" onClick={() => this.props.removeSelectedItemsInBasketPO(false)}><Glyphicon glyph="trash"/></button>
-                                    <span className="tooltiptext"><Message msgId={'photosObliques.removeEverythingFromBasket'} /></span>
-                                    {/* <span className="tooltiptext"><Message msgId={'photosObliques.removeSelectedElements'} /></span> */}
+                                    <button className="btn-primary PO_removeBasket" onClick={() => this.props.removeSelectedItemsInBasketPO(false)}><Glyphicon glyph="trash"/></button>
+                                    { this.selectTooltipForDeletion() }
                                 </div>
                                 <div className="tooltipDownloadBasket">
-                                    <button className="PO_downloadBasket" onClick={() => this.props.modalDisplayPO(true, 'downloadModal')}><Glyphicon glyph="download"/></button>
-                                    <span className="tooltiptext"><Message msgId={'photosObliques.downloadButton'} /></span>
+                                    <button className="btn-primary PO_downloadBasket" onClick={() => this.props.modalDisplayPO(true, 'downloadModal')}><Glyphicon glyph="download"/></button>
+                                    { this.selectTooltipForDownload() }
                                 </div>
                             </div>
                         </div>
                         {
                             this.props.basket.map((val, key) => {
                                 return (
-                                    <div className={val.selected ? "row PO_searchResults PO_selected" : "row PO_searchResults"} key={key} onClick={(e) => this.props.clickPicturePO(val.id, e.ctrlKey, e.shiftKey)} onMouseEnter={() => this.props.pictureHoveredPO(val)} onMouseLeave={() => this.props.pictureHoveredPO()}>
+                                    <div className={val.selected ? "row mapstore-side-card PO_searchResults PO_selected" : "row mapstore-side-card PO_searchResults"} key={key} onClick={(e) => this.props.clickPicturePO(val.id, e.ctrlKey, e.shiftKey)} onMouseEnter={() => this.props.pictureHoveredPO(val)} onMouseLeave={() => this.props.pictureHoveredPO()}>
                                         <div className="col-sm-4 PO_static">
                                             <img src={ val.urlOverview } className="PO_searchResultPictures" />
                                             <div className="PO_searchResultPictures_apercu PO_searchResultPicturesBasket_apercu" ><img src={val.urlOverview}/></div>
@@ -446,10 +445,62 @@ export class photosObliques extends React.Component {
                             })
                         }
                         {this.renderPopUp()}
-                    </div>
+                    </div>}
+                    {this.props.downloading && this.renderSpinner("photosObliques.spinnerDownloadMsg")}
                 </div>
             );
         }
+
+    /**
+     * countBasketSelectedElements renders the selection tabs to get all plkugins sub parts
+     * @memberof photosObliques.component
+     * @returns - navbar like for the plugin
+     */
+    countBasketSelectedElements(){
+        var counter = 0;
+        this.props.basket.map((val, key) => {
+            if (val.selected === true) {
+                counter = counter +1;
+            }
+        })
+        return counter;
+    }
+
+    /**
+     * selectTooltipForDeletion renders the selection tabs to get all plkugins sub parts
+     * @memberof photosObliques.component
+     * @returns - navbar like for the plugin
+     */
+    selectTooltipForDeletion(){
+        if (this.countBasketSelectedElements() === 1) {
+            return (<span className="tooltiptext"><Message msgId={'photosObliques.removeSelectedElement'} /></span>)
+        }
+        if (this.countBasketSelectedElements() > 1) {
+            return (<span className="tooltiptext bigTooltipDownload"><Message msgId={'photosObliques.removeSelectedElements'} /></span>)
+            
+        }
+        if (this.countBasketSelectedElements() === 0) {
+            return (<span className="tooltiptext bigTooltipDownload"><Message msgId={'photosObliques.removeEverythingFromBasket'} /></span>)
+        }
+    }
+
+    /**
+     * selectTooltipForDownload renders the selection tabs to get all plkugins sub parts
+     * @memberof photosObliques.component
+     * @returns - navbar like for the plugin
+     */
+    selectTooltipForDownload(){
+        if (this.countBasketSelectedElements() === 1) {
+            return (<span className="tooltiptext"><Message msgId={'photosObliques.downloadOneButton'} /></span>)
+        }
+        if (this.countBasketSelectedElements() > 1) {
+            return (<span className="tooltiptext"><Message msgId={'photosObliques.downloadMultipleButton'} /></span>)
+            
+        }
+        if (this.countBasketSelectedElements() === 0) {
+            return (<span className="tooltiptext"><Message msgId={'photosObliques.downloadAllButton'} /></span>)
+        }
+    }
 
     /**
      * renderTabMenu renders the selection tabs to get all plkugins sub parts
@@ -467,9 +518,9 @@ export class photosObliques extends React.Component {
                             <div onClick={() => this.props.modalDisplayPO(false, '')} className="close">x</div>
                             <div className="modal-validation">
                                 <div className="col-sm-2"></div>
-                                <button onClick={() => this.props.removeSelectedItemsInBasketPO(true)} className="col-sm-3 PO_addBasket"><Message msgId={'photosObliques.ok'} /></button>
+                                <button onClick={() => this.props.removeSelectedItemsInBasketPO(true)} className="btn-primary col-sm-3 PO_addBasket"><Message msgId={'photosObliques.ok'} /></button>
                                 <div className="col-sm-2"></div>
-                                <button onClick={() => this.props.modalDisplayPO(false, '')} className="col-sm-3 PO_addBasket"><Message msgId={'photosObliques.cancel'} /></button>
+                                <button onClick={() => this.props.modalDisplayPO(false, '')} className="col-sm-3 btn-primary PO_addBasket"><Message msgId={'photosObliques.cancel'} /></button>
                                 <div className="col-sm-2"></div>
                             </div>
                         </div>
@@ -508,9 +559,9 @@ export class photosObliques extends React.Component {
                             </div>
                             <div className="row modal-validation">
                                 <div className="col-sm-2"></div>
-                                <button onClick={() => {this.props.modalDisplayPO(true, 'iUnderstand'), this.props.saveDownloadFields(document.getElementById("fname").value,document.getElementById("pname").value)}} className="col-sm-3 PO_addBasket"><Message msgId={'photosObliques.ok'}/></button>
+                                <button onClick={() => {this.props.modalDisplayPO(true, 'iUnderstand'), this.props.saveDownloadFields(document.getElementById("fname").value,document.getElementById("pname").value)}} className="col-sm-3 btn-primary PO_addBasket"><Message msgId={'photosObliques.ok'}/></button>
                                 <div className="col-sm-2"></div>
-                                <button onClick={() => this.props.modalDisplayPO(false, '')} className="col-sm-3 PO_addBasket"><Message msgId={'photosObliques.cancel'}/></button>
+                                <button onClick={() => this.props.modalDisplayPO(false, '')} className="col-sm-3 btn-primary PO_addBasket"><Message msgId={'photosObliques.cancel'}/></button>
                                 <div className="col-sm-2"></div>
                             </div>
                         </div>
@@ -523,22 +574,21 @@ export class photosObliques extends React.Component {
                     <div id="modal">
                         <div className="mask"></div>
                         <div className="container auto">
-                            {!this.props.downloading && <div className="row">
+                            <div className="row">
                                 <div className="col-sm-3">
                                     <Glyphicon glyph="info-sign" className="glyph-info-sign" />
                                 </div>
                                 <div className="col-sm-9 message">
                                     <Message msgId={'photosObliques.downloadIUnderstand'}/>
                                 </div>
-                            </div>}
-                            {!this.props.downloading && <div className="row modal-validation">
+                            </div>
+                            <div className="row modal-validation">
                                 <div className="col-sm-4"></div>
                                 <div className="col-sm-4">
-                                    <button onClick={() => {this.props.downloadBasketPO(), this.props.setDownloadingPO(true)}} className="PO_addBasket"><Message msgId={'photosObliques.understood'}/></button>
+                                    <button onClick={() => {this.props.downloadBasketPO(), this.props.setDownloadingPO(true)}} className="btn-primary PO_addBasket"><Message msgId={'photosObliques.understood'}/></button>
                                 </div>
                                 <div className="col-sm-4"></div>
-                            </div>}
-                            {this.props.downloading && this.renderSpinner("photosObliques.spinnerDownloadMsg")}
+                            </div>
                         </div>
                     </div>
                 )
@@ -584,7 +634,7 @@ export class photosObliques extends React.Component {
                             <Message msgId={'photosObliques.selection'}/>
                         </button>}
                         {this.props.basket.length === 0 && <button className={this.props.activeTab === "PHOTOSOBLIQUES:SELECT"
-                            ? "PHOTOSOBLIQUES_selectButton PHOTOSOBLIQUES_active greyed"
+                            ? "PHOTOSOBLIQUES_selectButton PHOTOSOBLIQUES_active greyed "
                             : "PHOTOSOBLIQUES_selectButton greyed"} disabled onClick={() => this.props.changeTabPO(tabTypes.SELECT)}>
                             <Message msgId={'photosObliques.selection'}/>
                         </button>}

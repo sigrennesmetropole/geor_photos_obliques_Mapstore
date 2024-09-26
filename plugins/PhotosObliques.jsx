@@ -30,7 +30,8 @@ import {
     updateHoveredPolygonVisibilityStatePO,
     setDownloadingPO,
     saveDownloadFields,
-    clearFiltersPO
+    clearFiltersPO,
+    searchValuesFilteredPO
 } from "../actions/photosObliques-action";
 import photosObliquesReducer from "../reducers/photosObliques-reducer";
 import * as epics from "../epics/photosObliques-epics";
@@ -63,7 +64,8 @@ import {
     getPicturesInBasket,
     getBasketSize,
     getEndDateValue,
-    getStartDateValue
+    getStartDateValue,
+    getCounter
 } from "../selectors/photosObliques-selectors";
 import '../assets/style.css';
 
@@ -123,7 +125,8 @@ export default createPlugin(name, {
         updateHoveredPolygonVisibilityStatePO,
         setDownloadingPO,
         saveDownloadFields,
-        clearFiltersPO
+        clearFiltersPO,
+        searchValuesFilteredPO
     })(photosObliques),
     reducers: {
         photosObliques: photosObliquesReducer

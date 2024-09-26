@@ -110,14 +110,14 @@ button.PHOTOSOBLIQUES_active{
     color: black;
 }
 
-button.PO_active{
+/* button.PO_active{
     border-bottom: 1px solid white;
     border-top: 1px solid #ddd;
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
     background-color: white;
     color: black;
-}
+} */
 
 /* Filtres de recherche */ 
 
@@ -140,7 +140,9 @@ body {
   }
 
   .compassMainStyle .deletionGlyph{
-    margin-left: 17%;
+    /* margin-left: 17%; */
+    cursor: pointer;
+    right: 0;
   }
 
   .compassMainStyle span {
@@ -639,10 +641,8 @@ body {
   box-shadow: 3px 3px 3px 3px lightgray;
   /* height: 150px; */
   height: 100%;
- }
-
- .PO_searchResults:hover{
-  box-shadow: 6px 6px 6px 6px darkgray;
+  display: block;
+  width: auto;
  }
 
  .PO_selected{
@@ -650,9 +650,12 @@ body {
   box-shadow: 3px 3px 3px 3px lightblue;
  }
 
+ .PO_selected:hover{
+  border-color: lightblue;
+  box-shadow: 0px 14px 28px lightblue;
+ }
+
  .PO_addBasket, .PO_removeBasket, .PO_downloadBasket, .PO_search{
-  color: white;
-  background-color: black;
   max-height: auto;
   max-width: 115%;
   padding: 5px;
@@ -664,7 +667,6 @@ body {
 
  .PO_downloadBasket, .PO_removeBasket, .PO_search{
   margin: 5px;
-  width: 7%;
   width: 35px;
  }
 
@@ -703,7 +705,7 @@ body {
 
 .unfolder { display: none; }
 
-.toggle-label {
+/* .toggle-label {
 	display: inline-block;
 	cursor: pointer;
 	font-size: 11px;
@@ -711,7 +713,7 @@ body {
   color: white;
   margin: 10px;
   padding: 5px;
-}
+} */
 .unfold-icon, .fold-icon {
   color: #999;
   /* fixed width to stop the icon from wiggling*/
@@ -840,6 +842,10 @@ hr{
   right: 137%;
 }
 
+.bigTooltipDownload{
+  top: -15px!important;
+}
+
 .tooltipZoom .tooltiptext::after {
   content: " ";
   position: absolute;
@@ -868,7 +874,7 @@ hr{
   /* Position the tooltip */
   position: absolute;
   z-index: 1;
-  top: 5px;
+  top: -5px;
   right: 105%;
 }
 
@@ -899,7 +905,7 @@ hr{
   color: #fff;
   text-align: center;
   border-radius: 6px;
-  padding: 5px 0;
+  padding: 5px;
   
   /* Position the tooltip */
   position: absolute;
@@ -993,4 +999,8 @@ hr{
 
 .greyed{
   background-color: lightgrey!important;
+}
+
+button{
+  border: none;  
 }

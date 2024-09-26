@@ -348,18 +348,34 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
                 
                     var observablesReturned = [];
                     if (action.loadMore) {
-                        observablesReturned = [
-                            updateAdditionalLayer(
-                                PO_PERIMETER_LAYER_ID,
-                                "PO",
-                                "overlay",
-                                {...vectorLayer.options, features}
-                            ),
-                            setPolygonPO(wkt),
-                            searchValuesFilteredPO(getSearchResult(store.getState()).concat(response.data)),
-                            setPhotoCountActionPO(responsePhotoCount.data.numberOfResult),
-                            accumulateScrollEventsPO(false)
-                        ]
+                        console.log(getSearchResult(store.getState()).concat(response.data).length);
+                        console.log(responsePhotoCount.data.numberOfResult);
+                        if (getSearchResult(store.getState()).concat(response.data).length > responsePhotoCount.data.numberOfResult) {
+                            observablesReturned = [
+                                updateAdditionalLayer(
+                                    PO_PERIMETER_LAYER_ID,
+                                    "PO",
+                                    "overlay",
+                                    {...vectorLayer.options, features}
+                                ),
+                                setPolygonPO(wkt),
+                                setPhotoCountActionPO(responsePhotoCount.data.numberOfResult),
+                                accumulateScrollEventsPO(false)
+                            ]
+                        } else {
+                            observablesReturned = [
+                                updateAdditionalLayer(
+                                    PO_PERIMETER_LAYER_ID,
+                                    "PO",
+                                    "overlay",
+                                    {...vectorLayer.options, features}
+                                ),
+                                setPolygonPO(wkt),
+                                searchValuesFilteredPO(getSearchResult(store.getState()).concat(response.data)),
+                                setPhotoCountActionPO(responsePhotoCount.data.numberOfResult),
+                                accumulateScrollEventsPO(false)
+                            ]
+                        }
                     }else{
                         observablesReturned = [
                             updateAdditionalLayer(
