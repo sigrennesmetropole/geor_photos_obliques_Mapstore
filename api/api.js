@@ -1,7 +1,15 @@
 import axios from '@mapstore/libs/ajax';
+import { getPluginConfig } from "../selectors/photosObliques-selectors";
+
+var photosObliquesURL;
+
+export const setAPIURL = (backendURL) => {
+    photosObliquesURL = backendURL;
+    console.log(photosObliquesURL);
+};
 
 export function getPhotos(polygon, datas){
-    var slug = "/photosobliques/photos?geometry=" + polygon;
+    var slug = `${photosObliquesURL}` + "/photos?geometry=" + polygon;
     if (datas[0]) {
         slug = slug + "&startDate=" + datas[0];
     }
@@ -35,7 +43,7 @@ export function getPhotos(polygon, datas){
 }
 
 export function downloadPicture(datas){
-    var slug = "/photosobliques/photos/download";
+    var slug = `${photosObliquesURL}` + "/photos/download";
     if (datas[0]) {
         slug = slug + "?";
         datas[0].forEach(element => {
@@ -57,7 +65,7 @@ export function downloadPicture(datas){
 }
 
 export function getPhotoCount(polygon, datas){
-    var slug = "/photosobliques/photos/count?geometry=" + polygon;
+    var slug = `${photosObliquesURL}` + "/photos/count?geometry=" + polygon;
     if (datas[0]) {
         slug = slug + "&startDate=" + datas[0];
     }
@@ -82,7 +90,7 @@ export function getPhotoCount(polygon, datas){
 }
 
 export function getOwners(polygon){
-    var slug = "/photosobliques/owners?geometry=" + polygon;
+    var slug = `${photosObliquesURL}` + "/owners?geometry=" + polygon;
     axios.get(slug).then(function (response) {
         return response;
     })
@@ -92,7 +100,7 @@ export function getOwners(polygon){
 }
 
 export function getYears(polygon){
-    var slug = "/photosobliques/years?geometry=" + polygon;
+    var slug = `${photosObliquesURL}` + "/years?geometry=" + polygon;
     var content = [];
     return axios.get(slug).then(function (response) {
         return response;
@@ -103,7 +111,7 @@ export function getYears(polygon){
 }
 
 export function getProviders(polygon){
-    var slug = "/photosobliques/providers?geometry=" + polygon;
+    var slug = `${photosObliquesURL}` + "/providers?geometry=" + polygon;
     axios.get(slug).then(function (response) {
         return response;
     })
@@ -113,7 +121,8 @@ export function getProviders(polygon){
 }
 
 export function getConfigs(){
-    var slug = "/photosobliques/configuration";
+    console.log(`${photosObliquesURL}`);
+    var slug = `${photosObliquesURL}` + "/configuration";
     return axios.get(slug).then(function (response) {
         return response;
     })

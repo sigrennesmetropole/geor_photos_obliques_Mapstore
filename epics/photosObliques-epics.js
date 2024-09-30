@@ -107,7 +107,8 @@ import {
     getPhotos,
     getPhotoCount,
     downloadPicture,
-    getConfigs
+    getConfigs,
+    setAPIURL
 } from '../api/api';
 import { ogcListField } from "@mapstore/utils/FilterUtils";
 import { reprojectBbox } from "@mapstore/utils/CoordinatesUtils";
@@ -955,6 +956,7 @@ export const clearFiltersEpic = (action$, store) => action$.ofType(actions.CLEAR
  * @returns - empty observable
  */
 export const initConfigsPOEpic = (action$, store) => action$.ofType(actions.INIT_CONFIGS).switchMap((action) => {
+    setAPIURL(action.configs.backendURLAccess);
     return Rx.Observable.forkJoin(
         getConfigs()
     ).switchMap((response) => {
