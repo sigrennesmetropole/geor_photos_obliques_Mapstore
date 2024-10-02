@@ -135,18 +135,14 @@ body {
   
   /*boussole*/
 
-  .compassMainStyle{
+  .compassMainStyle, .deletionGlyph {
     margin-top: 19%;
   }
 
-  .compassMainStyle .deletionGlyph{
-    /* margin-left: 17%; */
+  .deletionGlyph{
     cursor: pointer;
-    right: 0;
-  }
-
-  .compassMainStyle span {
-    margin-right: 5%;
+    right: 10%;
+    position: absolute;
   }
   
   .compass {
@@ -154,6 +150,7 @@ body {
     height: 130px;
     position: relative;
     margin: auto auto;
+    margin-top: 10px;
     border-radius: 50%;
     box-shadow: 0 2px 6px .8px #999;
     animation: sliding 1.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -273,7 +270,7 @@ body {
   .losange{
     width: 60px;
     height: 60px;
-    background-color: #444;
+    background-color: #777;
     transform: rotateX(80deg) rotateZ(45deg);
     pointer-events: none;
   }
@@ -300,7 +297,7 @@ body {
   .losangeSelected{
     width: 60px;
     height: 60px;
-    background-color: #777;
+    background-color: #444;
     transform: rotateX(80deg) rotateZ(45deg);
     pointer-events: none;
     position: absolute;
@@ -643,6 +640,11 @@ body {
   height: 100%;
   display: block;
   width: auto;
+  font-size: 11px;
+ }
+
+ .ellipsis {
+  text-overflow: ellipsis;
  }
 
  .PO_selected{
@@ -699,7 +701,6 @@ body {
  .fold {
 	padding: 10px;
   margin: 10px;
-	color: #999;
 	transition: all .5s linear .5s;
 }
 
@@ -770,7 +771,7 @@ hr{
   margin: 10px;
   position: absolute;
   /* left: 25%; */
-  /* width: 97%; */
+  width: 97%;
 }
 
 #modal{
@@ -993,7 +994,7 @@ hr{
 }
 
 .zoomToGlyph{
-  font-size: 25px;
+  font-size: 20px;
   color: black;
 }
 

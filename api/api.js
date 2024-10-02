@@ -5,7 +5,6 @@ var photosObliquesURL;
 
 export const setAPIURL = (backendURL) => {
     photosObliquesURL = backendURL;
-    console.log(photosObliquesURL);
 };
 
 export function getPhotos(polygon, datas){
@@ -121,7 +120,6 @@ export function getProviders(polygon){
 }
 
 export function getConfigs(){
-    console.log(`${photosObliquesURL}`);
     var slug = `${photosObliquesURL}` + "/configuration";
     return axios.get(slug).then(function (response) {
         return response;

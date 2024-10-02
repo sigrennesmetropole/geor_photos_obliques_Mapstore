@@ -7,15 +7,6 @@ import { tabTypes } from "../actions/photosObliques-action.js";
 import ResponsivePanel from "@mapstore/components/misc/panels/ResponsivePanel";
 import { Glyphicon } from 'react-bootstrap';
 import LoadingSpinner from '@mapstore/components/misc/LoadingSpinner';
-
-// import {
-//     Form,
-//     FormControl,
-//     FormGroup,
-//     Glyphicon,
-//     InputGroup,
-//     Checkbox
-// } from 'react-bootstrap';
 export class photosObliques extends React.Component {
 
     static propTypes= {
@@ -138,7 +129,7 @@ export class photosObliques extends React.Component {
             <>
                 <input type="checkbox" id="toggle" className="unfolder"/>
                 <button className="btn-primary" onClick={() => this.props.cancelSearchFiltersPO()}>
-                    <Message msgId={'photosObliques.updateSearch'} />
+                    <Glyphicon glyph="search" /> <Message msgId={'photosObliques.updateSearch'} />
                 </button>
                 <div className="fold">
                     { this.renderFiltersSection() }
@@ -157,9 +148,9 @@ export class photosObliques extends React.Component {
                         </select>
                     </span>
                 </div>
-                {this.props.searchResult.length === 0 && <div>
+                { this.props.searchResult.length === 0 && <div>
                     {this.renderSpinner("photosObliques.spinnerResultLoadingMessage")}
-                </div>}
+                </div> }
                 {this.props.searchResult.length != 0 && <div className="PHOTOSOBLIQUES_scrollBar" id="PHOTOSOBLIQUES_scrollBar" onScroll={() => this.props.onScrollPO()}>
                     {
                         this.props.searchResult.map((val, key) => {
@@ -171,11 +162,11 @@ export class photosObliques extends React.Component {
                                     </div>
                                     <div className="col-sm-5">
                                         <p>
-                                            {val.year && <span  className="PO_bold"><Message msgId={'photosObliques.yearTaken'} />: </span>} <span>{ val.year }</span>{val.year && <br/>}
-                                            {val.date && <span  className="PO_bold"><Message msgId={'photosObliques.date'} className="PO_bold" />: </span>} <span>{ val.date }</span> {val.date && <br/>}
-                                            {val.provider && <span  className="PO_bold"><Message msgId={'photosObliques.provider'} className="PO_bold" />: </span>}<span>{ val.provider }</span>{val.provider &&<br/>}
-                                            {val.owner && <span  className="PO_bold"><Message msgId={'photosObliques.owner'} className="PO_bold" />: </span>}<span>{ val.owner }</span>{val.owner && <br/>}
-                                            {val.fileSize && <span  className="PO_bold"><Message msgId={'photosObliques.weight'} className="PO_bold" />: </span>}<span>{ parseFloat(val.fileSize / 1000000).toFixed(1) + "Mo" }</span>
+                                            <span  className="PO_bold"><Message msgId={'photosObliques.yearTaken'} />: </span> {val.year && <span className=" ellipsis">{ val.year }</span>}{val.year && <br/>}
+                                            <span  className="PO_bold"><Message msgId={'photosObliques.date'} className="PO_bold" />: </span>{!val.date && <br />} {val.date && <span className=" ellipsis">{ val.date }</span>} {val.date && <br/>}
+                                            <span  className="PO_bold"><Message msgId={'photosObliques.provider'} className="PO_bold" />: </span> {val.provider && <span className=" ellipsis">{ val.provider }</span>}{val.provider &&<br/>}
+                                            <span  className="PO_bold"><Message msgId={'photosObliques.owner'} className="PO_bold" />: </span> {val.owner && <span className=" ellipsis">{ val.owner }</span>}{val.owner && <br/>}
+                                            <span  className="PO_bold"><Message msgId={'photosObliques.weight'} className="PO_bold" />: </span> {val.fileSize && <span className=" ellipsis">{ parseFloat(val.fileSize / 1000000).toFixed(1) + "Mo" }</span>}
                                         </p>
                                     </div>
                                     <div className="col-sm-3 tooltipZoom">
@@ -282,102 +273,104 @@ export class photosObliques extends React.Component {
      */
     renderCompass() {
         return (
-            <div className="compassMainStyle">
-                <Message msgId={'photosObliques.windRoseLabel'} />
+            <>
                 {(this.props.roseValue != '' || this.props.startDateValue != 0 || this.props.endDateValue != 0) 
                     && <Glyphicon glyph="clear-filter" className="deletionGlyph" onClick={() => this.props.clearFiltersPO()} />}
-                <div className="compass">
-                    <div className="compass-main">
-                        <span className="north-label" style={this.props.roseValue === '0' ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>N</span>
-                        <span className="dot part2" style={this.props.roseValue === 22.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                        <span className="dot part3" style={this.props.roseValue === 45 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                        <span className="dot part4" style={this.props.roseValue === 67.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                        <span className="east-label" style={this.props.roseValue === 90 ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>E</span>
-                        <span className="dot part6" style={this.props.roseValue === 112.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                        <span className="dot part7" style={this.props.roseValue === 135 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                        <span className="dot part8" style={this.props.roseValue === 157.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                        <span className="south-label" style={this.props.roseValue === 180 ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>S</span>
-                        <span className="dot part10" style={this.props.roseValue === 202.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                        <span className="dot part11" style={this.props.roseValue === 225 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                        <span className="dot part12" style={this.props.roseValue === 247.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                        <span className="west-label" style={this.props.roseValue === 270 ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>W</span>
-                        <span className="dot part14" style={this.props.roseValue === 292.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                        <span className="dot part15" style={this.props.roseValue === 315 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                        <span className="dot part16" style={this.props.roseValue === 337.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                        <div className="compass-rose">
-                            <div className="cardial-points">
-                                <div className="north-pointer pointer"></div>
-                                <div className="east-pointer pointer"></div>
-                                <div className="south-pointer pointer"></div>
-                                <div className="west-pointer pointer"></div>          
+                <div className="compassMainStyle">
+                    <Message className="windRoseText" msgId={'photosObliques.windRoseLabel'} />
+                    <div className="compass">
+                        <div className="compass-main">
+                            <span className="north-label" style={this.props.roseValue === '0' ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>N</span>
+                            <span className="dot part2" style={this.props.roseValue === 22.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
+                            <span className="dot part3" style={this.props.roseValue === 45 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
+                            <span className="dot part4" style={this.props.roseValue === 67.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
+                            <span className="east-label" style={this.props.roseValue === 90 ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>E</span>
+                            <span className="dot part6" style={this.props.roseValue === 112.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
+                            <span className="dot part7" style={this.props.roseValue === 135 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
+                            <span className="dot part8" style={this.props.roseValue === 157.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
+                            <span className="south-label" style={this.props.roseValue === 180 ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>S</span>
+                            <span className="dot part10" style={this.props.roseValue === 202.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
+                            <span className="dot part11" style={this.props.roseValue === 225 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
+                            <span className="dot part12" style={this.props.roseValue === 247.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
+                            <span className="west-label" style={this.props.roseValue === 270 ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>W</span>
+                            <span className="dot part14" style={this.props.roseValue === 292.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
+                            <span className="dot part15" style={this.props.roseValue === 315 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
+                            <span className="dot part16" style={this.props.roseValue === 337.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
+                            <div className="compass-rose">
+                                <div className="cardial-points">
+                                    <div className="north-pointer pointer"></div>
+                                    <div className="east-pointer pointer"></div>
+                                    <div className="south-pointer pointer"></div>
+                                    <div className="west-pointer pointer"></div>          
+                                </div>
+                                <div className="ordinal-points">
+                                    <div className="northeast-pointer"></div>
+                                    <div className="northwest-pointer"></div>
+                                    <div className="southeast-pointer"></div>
+                                    <div className="south-west-pointer"></div>
+                                </div>
+                                <div className="backgroundSquare"></div>
                             </div>
-                            <div className="ordinal-points">
-                                <div className="northeast-pointer"></div>
-                                <div className="northwest-pointer"></div>
-                                <div className="southeast-pointer"></div>
-                                <div className="south-west-pointer"></div>
-                            </div>
-                            <div className="backgroundSquare"></div>
+                            <div className="bt-center"></div>
+                            <ul className="circle">
+                                <li id="part1" onClick={() => this.props.windRoseClickPO('0')}>
+                                </li>
+                                <li id="part2" onClick={() => this.props.windRoseClickPO(22.5)}>
+                                    <div className="text">2</div>
+                                </li>
+                                <li id="part3" onClick={() => this.props.windRoseClickPO(45)}>
+                                    <div className="text">3</div>
+                                </li>
+                                <li id="part4" onClick={() => this.props.windRoseClickPO(67.5)}>
+                                    <div className="text">4</div>
+                                </li>
+                                <li id="part5" onClick={() => this.props.windRoseClickPO(90)}>
+                                    <div className="text">5</div>
+                                </li>
+                                <li id="part6" onClick={() => this.props.windRoseClickPO(112.5)}>
+                                    <div className="text">6</div>
+                                </li>
+                                <li id="part7" onClick={() => this.props.windRoseClickPO(135)}>
+                                    <div className="text">7</div>
+                                </li>
+                                <li id="part8" onClick={() => this.props.windRoseClickPO(157.5)}>
+                                    <div className="text">8</div>
+                                </li>
+                                <li id="part9" onClick={() => this.props.windRoseClickPO(180)}>
+                                    <div className="text">9</div>
+                                </li>
+                                <li id="part10" onClick={() => this.props.windRoseClickPO(202.5)}>
+                                    <div className="text">10</div>
+                                </li>
+                                <li id="part11" onClick={() => this.props.windRoseClickPO(225)}>
+                                    <div className="text">11</div>
+                                </li>
+                                <li id="part12" onClick={() => this.props.windRoseClickPO(247.5)}>
+                                    <div className="text">12</div>
+                                </li>
+                                <li id="part13" onClick={() => this.props.windRoseClickPO(270)}>
+                                    <div className="text">13</div>
+                                </li>
+                                <li id="part14" onClick={() => this.props.windRoseClickPO(292.5)}>
+                                    <div className="text">14</div>
+                                </li>
+                                <li id="part15" onClick={() => this.props.windRoseClickPO(315)}>
+                                    <div className="text">15</div>
+                                </li>
+                                <li id="part16" onClick={() => this.props.windRoseClickPO(337.5)}>
+                                    <div className="text">16</div>
+                                </li>
+                                <div className={this.props.roseValue != '' ? "testrotate2": "testrotate2 testrotate2Hidden"} style={this.props.roseValue != '' ? {transform: "rotate(" + (this.props.roseValue - 80) + "deg)"} : {display: "none"} }>
+                                    <div className={this.props.roseValue != '' ? "losangeSelected" : "hideLosangeSelected"}></div>
+                                </div>
+                                <div className="testrotate">
+                                    <div className="losange"></div>
+                                </div>
+                            </ul>
                         </div>
-                        <div className="bt-center"></div>
-                        <ul className="circle">
-                            <li id="part1" onClick={() => this.props.windRoseClickPO('0')}>
-                            </li>
-                            <li id="part2" onClick={() => this.props.windRoseClickPO(22.5)}>
-                                <div className="text">2</div>
-                            </li>
-                            <li id="part3" onClick={() => this.props.windRoseClickPO(45)}>
-                                <div className="text">3</div>
-                            </li>
-                            <li id="part4" onClick={() => this.props.windRoseClickPO(67.5)}>
-                                <div className="text">4</div>
-                            </li>
-                            <li id="part5" onClick={() => this.props.windRoseClickPO(90)}>
-                                <div className="text">5</div>
-                            </li>
-                            <li id="part6" onClick={() => this.props.windRoseClickPO(112.5)}>
-                                <div className="text">6</div>
-                            </li>
-                            <li id="part7" onClick={() => this.props.windRoseClickPO(135)}>
-                                <div className="text">7</div>
-                            </li>
-                            <li id="part8" onClick={() => this.props.windRoseClickPO(157.5)}>
-                                <div className="text">8</div>
-                            </li>
-                            <li id="part9" onClick={() => this.props.windRoseClickPO(180)}>
-                                <div className="text">9</div>
-                            </li>
-                            <li id="part10" onClick={() => this.props.windRoseClickPO(202.5)}>
-                                <div className="text">10</div>
-                            </li>
-                            <li id="part11" onClick={() => this.props.windRoseClickPO(225)}>
-                                <div className="text">11</div>
-                            </li>
-                            <li id="part12" onClick={() => this.props.windRoseClickPO(247.5)}>
-                                <div className="text">12</div>
-                            </li>
-                            <li id="part13" onClick={() => this.props.windRoseClickPO(270)}>
-                                <div className="text">13</div>
-                            </li>
-                            <li id="part14" onClick={() => this.props.windRoseClickPO(292.5)}>
-                                <div className="text">14</div>
-                            </li>
-                            <li id="part15" onClick={() => this.props.windRoseClickPO(315)}>
-                                <div className="text">15</div>
-                            </li>
-                            <li id="part16" onClick={() => this.props.windRoseClickPO(337.5)}>
-                                <div className="text">16</div>
-                            </li>
-                            <div className={this.props.roseValue != '' ? "testrotate2": "testrotate2 testrotate2Hidden"} style={this.props.roseValue != '' ? {transform: "rotate(" + (this.props.roseValue - 80) + "deg)"} : {display: "none"} }>
-                                <div className={this.props.roseValue != '' ? "losangeSelected" : "hideLosangeSelected"}></div>
-                            </div>
-                            <div className="testrotate">
-                                <div className="losange"></div>
-                            </div>
-                        </ul>
                     </div>
                 </div>
-            </div>
+            </>
         )
     }
 
