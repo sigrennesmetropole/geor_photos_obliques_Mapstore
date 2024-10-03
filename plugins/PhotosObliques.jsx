@@ -136,7 +136,7 @@ export default createPlugin(name, {
         SidebarMenu: {
             name: "photosObliques",
             position: 10,
-            icon: <img src={pluginIcon} className="iconSize" />,
+            icon: <img src={pluginIcon} className="PO_iconSize" />,
             doNotHide: true,
             tooltip: "photosObliques.title",
             toggle: true,

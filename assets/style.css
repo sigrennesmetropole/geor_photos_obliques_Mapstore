@@ -11,9 +11,9 @@
 
 .PHOTOSOBLIQUES_scrollBar{
     overflow-y: scroll;
-    max-height: 800px;
+    overflow-x: hidden;
+    max-height: 70vh;
     height: 100%;
-    margin-right: 17px;
     cursor: pointer;
     width: 100%;
 }
@@ -24,17 +24,17 @@
     max-width: 500px;
 }
 
-.iconSize{
+.PO_iconSize{
     width: 25px;
     height: 25px;
 }
 
 /* https://isotropic.co/tool/hex-color-to-css-filter/ */
-button .iconSize{
+button .PO_iconSize{
     filter: invert(26%) sepia(4%) saturate(8%) hue-rotate(334deg) brightness(104%) contrast(87%);;
 }
 
-button.active .iconSize{
+button.active .PO_iconSize{
     filter: invert(100%) sepia(100%) saturate(100%) hue-rotate(100deg) brightness(100%) contrast(100%);
 }
 
@@ -121,31 +121,32 @@ button.PHOTOSOBLIQUES_active{
 
 /* Filtres de recherche */ 
 
-.filterSelectionMainDiv{
+.PO_filterSelectionMainDiv{
   margin: 5px;
+  margin-left: 10px!important;
 }
 
 /* Compass */
 
-body {
+/* body {
     font: 17px 'Raleway Light', sans-serif;
     background: rgba(200,200,200,.3);
     color: #888;
-  }
+  } */
   
   /*boussole*/
 
-  .compassMainStyle, .deletionGlyph {
+  .PO_compassMainStyle, .PO_deletionGlyph {
     margin-top: 19%;
   }
 
-  .deletionGlyph{
+  .PO_deletionGlyph{
     cursor: pointer;
     right: 10%;
-    position: absolute;
+    position: absolute!important;
   }
   
-  .compass {
+  .PO_compass {
     width: 130px;
     height: 130px;
     position: relative;
@@ -157,7 +158,7 @@ body {
     -webkit-animation: sliding 1.9s ease-in-out;
   }
   
-  .compass-main {
+  .PO_compass-main {
     width: 94%;
     height: 94%;
     position: absolute;
@@ -167,7 +168,7 @@ body {
     border-radius: 50%;
   }
   
-  .compass-rose {
+  .PO_compass-rose {
     width: 70%;
     height: 70%;
     position: absolute;
@@ -175,22 +176,22 @@ body {
     margin-top: -35%; margin-left: -35%;
   }
   
-  .pointer {
+  .PO_pointer {
     width: 0; height: 0;
     position: absolute;
     border: 40px solid;
     border-left: 14px solid; border-right: 14px solid;
   }
   
-  .cardial-points .pointer {
+  .cardial-points .PO_pointer {
     border-color: #DDD transparent transparent transparent;
   }
   
-  .ordinal-points .pointer {
+  .ordinal-points .PO_pointer {
     border-color: #AAA transparent transparent transparent;
   }
   
-  .north-pointer {
+  .PO_north-pointer {
     /* top: -50px; */
     margin-top: -40px;
     left: 53%;
@@ -198,28 +199,28 @@ body {
     transform: rotate(180deg);
   }
   
-  .east-pointer {
+  .PO_east-pointer {
     top: 53%;
     right: -20px; 
     margin-top: -43px;
     transform: rotate(-90deg);
   }
 
-  .west-pointer {
+  .PO_west-pointer {
     top: 53%;
     left: -15px; 
     margin-top: -43px;
     transform: rotate(90deg);
   }
 
-  .south-pointer {
+  .PO_south-pointer {
     bottom: 0px;
     margin-bottom: -43px;
     left: 53%;
     margin-left: -14px;
   }
 
-  .backgroundSquare{
+  .PO_backgroundSquare{
     width: 20px;
     height: 20px;
     border: 10px solid;
@@ -229,25 +230,25 @@ body {
     border-color: #DDD;
   }
   
-  .north-label {
+  .PO_north-label {
     position: absolute;
     /* top: 10px; */
     left: 58px;
   }
   
-  .east-label {
+  .PO_east-label {
     position: absolute;
     top: 50px;
     right: 0px;
   }
   
-  .west-label {
+  .PO_west-label {
     position: absolute;
     top: 50px;
     left: 2px;
   }
   
-  .south-label {
+  .PO_south-label {
     position: absolute;
     top: 105px;
     left: 58px;
@@ -255,7 +256,7 @@ body {
   /*fin boussole*/
   
   /*aiguille à tourner*/
-  .testrotate{
+  .PO_testrotate{
     visibility: hidden;
     display: flex;
     justify-content: center;
@@ -267,7 +268,7 @@ body {
     transform: rotate(102.25deg);
     pointer-events: none;
   }
-  .losange{
+  .PO_losange{
     width: 60px;
     height: 60px;
     background-color: #777;
@@ -275,7 +276,7 @@ body {
     pointer-events: none;
   }
 
-  .testrotate2{    
+  .PO_testrotate2{    
     display: flex;
     justify-content: center;
     align-items: center;
@@ -290,11 +291,11 @@ body {
     position: absolute;
   }
 
-.testrotate2Hidden{
+.PO_testrotate2Hidden{
   visibility: hidden;
 }
 
-  .losangeSelected{
+  .PO_losangeSelected{
     width: 60px;
     height: 60px;
     background-color: #444;
@@ -303,13 +304,13 @@ body {
     position: absolute;
   }
 
-  .hideLosangeSelected{
+  .PO_hideLosangeSelected{
     display: none;
   }
   /*fin aiguille*/
   
   /*zones de survol*/
-  .circle {
+  .PO_circle {
     position: absolute;
     padding: 0;
     width: 130px;
@@ -332,7 +333,7 @@ body {
     opacity: 0; /*changer pour voir les portions*/
   }
   
-  .text {
+  .PO_text {
     position: absolute;
     left: -100%;
     width: 200%;
@@ -407,77 +408,77 @@ body {
   }
   
   /*Animation de l'aiguille*/
-  #part1:hover ~ .testrotate{
+  #PO_part1:hover ~ .PO_testrotate{
     visibility: visible;
     transform: rotate(-77.75deg);
   }
-  #part2:hover ~ .testrotate{
+  #PO_part2:hover ~ .PO_testrotate{
     visibility: visible;
     transform: rotate(-55.25deg);
   }
-  #part3:hover ~ .testrotate{
+  #PO_part3:hover ~ .PO_testrotate{
     visibility: visible;
     transform: rotate(-32.75deg);
   }
-  #part4:hover ~ .testrotate{
+  #PO_part4:hover ~ .PO_testrotate{
     visibility: visible;
     transform: rotate(-10.25deg);
   }
-  #part5:hover ~ .testrotate{
+  #PO_part5:hover ~ .PO_testrotate{
     visibility: visible;
     transform: rotate(12.25deg);
   }
-  #part6:hover ~ .testrotate{
+  #PO_part6:hover ~ .PO_testrotate{
     visibility: visible;
     transform: rotate(34.75deg);
   }
-  #part7:hover ~ .testrotate{
+  #PO_part7:hover ~ .PO_testrotate{
     visibility: visible;
     transform: rotate(57.25deg);
   }
-  #part8:hover ~ .testrotate{
+  #PO_part8:hover ~ .PO_testrotate{
     visibility: visible;
     transform: rotate(79.75deg);
   }
-  #part9:hover ~ .testrotate{
+  #PO_part9:hover ~ .PO_testrotate{
     visibility: visible;
     transform: rotate(102.25deg);
   }
-  #part10:hover ~ .testrotate{
+  #PO_part10:hover ~ .PO_testrotate{
     visibility: visible;
     transform: rotate(124.75deg);
   }
-  #part11:hover ~ .testrotate{
+  #PO_part11:hover ~ .PO_testrotate{
     visibility: visible;
     transform: rotate(147.25deg);
   }
-  #part12:hover ~ .testrotate{
+  #PO_part12:hover ~ .PO_testrotate{
     visibility: visible;
     transform: rotate(169.75deg);
   }
-  #part13:hover ~ .testrotate{
+  #PO_part13:hover ~ .PO_testrotate{
     visibility: visible;
     transform: rotate(192.25deg);
   }
-  #part14:hover ~ .testrotate{
+  #PO_part14:hover ~ .PO_testrotate{
     visibility: visible;
     transform: rotate(214.75deg);
   }
-  #part15:hover ~ .testrotate{
+  #PO_part15:hover ~ .PO_testrotate{
     visibility: visible;
     transform: rotate(237.25deg);
   }
-  #part16:hover ~ .testrotate{
+  #PO_part16:hover ~ .PO_testrotate{
     visibility: visible;
     transform: rotate(259.75deg);
   }
 
-  .filterTitle{
+  .PO_filterTitle{
     font-weight: bold;
     font-size: medium;
   }
 
-  .startDate, .endDate{
+  .PO_startDate, .PO_endDate{
     margin: 5px;
     width: 175px;
     /* styling */
@@ -510,7 +511,7 @@ body {
     background-repeat: no-repeat;
   }
 
-  .dot {
+  .PO_dot {
     height: 5px;
     width: 5px;
     background-color: #ddd;
@@ -519,76 +520,76 @@ body {
     position: absolute;
   }
 
-  .part2{
+  .PO_part2{
     top: 10px;
     left: 85px;
   }
 
-  .part3{
+  .PO_part3{
     top: 22px;
     left: 102px;
   }
 
-  .part4{
+  .PO_part4{
     top: 40px;
     left: 112px;
   }
 
-  .part6{
+  .PO_part6{
     top: 80px;
     left: 112px;
   }
 
-  .part7{
+  .PO_part7{
     top: 97px;
     left: 102px;
   }
 
-  .part8{
+  .PO_part8{
     top: 110px;
     left: 85px;
   }
 
-  .part10{
+  .PO_part10{
     top: 111px;
     left: 35px;
   }
 
-  .part11{
+  .PO_part11{
     top: 97px;
     left: 18px;
   }
 
-  .part12{
+  .PO_part12{
     top: 80px;
     left: 6px;
   }
 
-  .part14{
+  .PO_part14{
     top: 38px;
     left: 8px;
   }
 
-  .part15{
+  .PO_part15{
     top: 20px;
     left: 20px;
   }
 
-  .part16{
+  .PO_part16{
     top: 8px;
     left: 38px;
   }
 
   /* validateForm */
 
- .validateForm{
+ .PO_validateForm{
     margin: 10px;
     position: absolute;
     left: 25%;
     width: 97%;
  }
 
- .validateForm > button {
+ .PO_validateForm > button {
      margin: auto;
      margin-top: 15px;
      margin-right: 5px;
@@ -624,6 +625,7 @@ body {
   right: 0;
   bottom: 0;
   display: none;
+  object-fit: contain;
 }
 
 .PO_searchResultPicturesBasket_apercu > img {
@@ -638,12 +640,13 @@ body {
   box-shadow: 3px 3px 3px 3px lightgray;
   /* height: 150px; */
   height: 100%;
-  display: block;
-  width: auto;
+  display: block!important;
+  width: 95%!important;
   font-size: 11px;
+  margin-left: 10px!important;
  }
 
- .ellipsis {
+ .PO_ellipsis {
   text-overflow: ellipsis;
  }
 
@@ -698,13 +701,13 @@ body {
   background-color: red;
  }
 
- .fold {
+ .PO_fold {
 	padding: 10px;
   margin: 10px;
 	transition: all .5s linear .5s;
 }
 
-.unfolder { display: none; }
+.PO_unfolder { display: none; }
 
 /* .toggle-label {
 	display: inline-block;
@@ -715,16 +718,16 @@ body {
   margin: 10px;
   padding: 5px;
 } */
-.unfold-icon, .fold-icon {
+.PO_unfold-icon, .PO_fold-icon {
   color: #999;
   /* fixed width to stop the icon from wiggling*/
   width: 10px;
   display: inline-block;
 }
-.unfolder ~ .fold {
+.PO_unfolder ~ .PO_fold {
   display: none;
 }
-.unfolder:checked ~ .fold {
+.PO_unfolder:checked ~ .PO_fold {
   display: block;
   margin-bottom: 40px;
 }
@@ -749,32 +752,33 @@ hr{
   margin-bottom: 0px;
 }
 
-.text-align-left{
+.PO_text-align-left{
   text-align: left;
 }
 
-.basket_buttons_position{
+.PO_basket_buttons_position{
   text-align: right;
   margin-right: 10px;
 }
 
-.basket_counter_position{
+.PO_basket_counter_position{
   text-align: left;
   margin-left: 10px;
 }
 
-.basket_sort_position{
+.PO_basket_sort_position{
   margin-left: 15%;
 }
 
-.filterResults{
+.PO_filterResults{
   margin: 10px;
   position: absolute;
   /* left: 25%; */
   width: 97%;
+  margin-left: 10px!important;
 }
 
-#modal{
+#PO_modal{
 	position: fixed;
 	z-index: 99999;
 	top: 0;
@@ -785,7 +789,7 @@ hr{
 	/* display: none; */
 }
 
-#modal .mask{
+#PO_modal .PO_mask{
 	background: black;
 	opacity: 0.8;
 	position: absolute;
@@ -795,7 +799,7 @@ hr{
   height: 100%;
 }
 
-#modal .container{
+#PO_modal .container{
 	position: relative;
 	background: white;
 	top: 30%;
@@ -807,29 +811,29 @@ hr{
   border: solid 1px lightgrey;
 }
 
-#modal .container .message{
+#PO_modal .container .message{
 	padding: 10% 5% 5% 5%;
 }
 
-#modal .container div.close{
+#PO_modal .container div.PO_close{
 	position: absolute;
 	right: 3%;
 	top:0%;
 	color: #444;
 	font-size: 30px;
 }
-#modal .container div.close:hover{		
+#PO_modal .container div.PO_close:hover{		
 	color: red;
 }
 
 /* Tooltip container */
-.tooltipZoom {
+.PO_tooltipZoom {
   position: relative;
   display: inline-block;
 }
 
 /* Tooltip text */
-.tooltipZoom .tooltiptext {
+.PO_tooltipZoom .PO_tooltiptext {
   visibility: hidden;
   background-color: black;
   color: #fff;
@@ -843,11 +847,11 @@ hr{
   right: 137%;
 }
 
-.bigTooltipDownload{
+.PO_bigTooltipDownload{
   top: -15px!important;
 }
 
-.tooltipZoom .tooltiptext::after {
+.PO_tooltipZoom .PO_tooltiptext::after {
   content: " ";
   position: absolute;
   bottom: 100%;  /* At the top of the tooltip */
@@ -858,12 +862,12 @@ hr{
   border-color: transparent transparent black transparent;
 }
 
-.tooltipDeletionBasket {
+.PO_tooltipDeletionBasket {
   position: relative;
   display: inline-block;
 }
 
-.tooltipDeletionBasket .tooltiptext {
+.PO_tooltipDeletionBasket .PO_tooltiptext {
   visibility: hidden;
   width: 110px;
   background-color: black;
@@ -879,11 +883,11 @@ hr{
   right: 105%;
 }
 
-.tooltipDeletionBasket:hover .tooltiptext {
+.PO_tooltipDeletionBasket:hover .PO_tooltiptext {
   visibility: visible;
 }
 
-.tooltipDeletionBasket .tooltiptext::after {
+.PO_tooltipDeletionBasket .PO_tooltiptext::after {
   content: " ";
   position: absolute;
   top: 50%;
@@ -894,12 +898,12 @@ hr{
   border-color: transparent transparent transparent black;
 }
 
-.tooltipDownloadBasket {
+.PO_tooltipDownloadBasket {
   position: relative;
   display: inline-block;
 }
 
-.tooltipDownloadBasket .tooltiptext {
+.PO_tooltipDownloadBasket .PO_tooltiptext {
   visibility: hidden;
   width: 100px;
   background-color: black;
@@ -916,11 +920,11 @@ hr{
   margin-left: -60px;
 }
 
-.tooltipDownloadBasket:hover .tooltiptext {
+.PO_tooltipDownloadBasket:hover .PO_tooltiptext {
   visibility: visible;
 }
 
-.tooltipDownloadBasket .tooltiptext::after {
+.PO_tooltipDownloadBasket .PO_tooltiptext::after {
   content: " ";
   position: absolute;
   bottom: 100%;  /* At the top of the tooltip */
@@ -932,21 +936,12 @@ hr{
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
-.PO_searchResults:hover .tooltiptext {
+.PO_searchResults:hover .PO_tooltiptext {
   visibility: visible;
 }
 
-.tooltipHidden{
+.PO_tooltipHidden{
   visibility: hidden!important;
-}
-
-.RTGE_loadingContainer .RTGE_loading {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -40%);
-	white-space: nowrap;
-	text-align: center;
 }
 
 .PO_loadingContainer .PO_loading .mapstore-inline-loader {
@@ -971,15 +966,15 @@ hr{
 	background-color: white;
 }
 
-.popupTextLabels{
+.PO_popupTextLabels{
   font-size: 10px;
 }
 
-.top-spacing{
+.PO_top-spacing{
   margin-top: 5px;
 }
 
-.glyph-info-sign{
+.PO_glyph-info-sign{
   padding-left: 15px;
   margin: 0;
   position: absolute;
@@ -987,18 +982,18 @@ hr{
   font-size: 60px;
 }
 
-.filterSelectionMainDiv select {
+.PO_filterSelectionMainDiv select {
   width: 100%;
   max-width: 250px;
   margin: 5px;
 }
 
-.zoomToGlyph{
+.PO_zoomToGlyph{
   font-size: 20px;
   color: black;
 }
 
-.greyed{
+.PO_greyed{
   background-color: lightgrey!important;
 }
 
