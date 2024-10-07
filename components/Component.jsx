@@ -168,11 +168,16 @@ export class photosObliques extends React.Component {
                                         */}
                                         <div className="PO_searchResultPictures_apercu" style={{
                                                 position: "absolute",
-                                                left: `calc(${this.state.xoffset}px - 40em - 5em)`,
-                                                top: window.innerHeight /2 > this.state.yoffset ? `calc(${this.state.yoffset}px + 20em)` : `${this.state.yoffset}px`,
+                                                left: '0px',
+                                                top: '0px',
                                             }}>
-                                                <img src={val.urlOverview} />
-                                            </div>
+                                                <img  style={{
+                                                    position: "fixed",
+                                                    right: '560px',
+                                                    top: window.innerHeight /2 > this.state.yoffset ? `${this.state.yoffset -200}px` : `${this.state.yoffset -300}px`,
+                                                }}
+                                                src={val.urlOverview} />
+                                        </div>
                                     </div>
                                     <div className="col-sm-5">
                                         <p>
@@ -323,7 +328,6 @@ export class photosObliques extends React.Component {
                                     <div className="PO_southeast-pointer"></div>
                                     <div className="PO_south-west-pointer"></div>
                                 </div>
-                                <div className="PO_backgroundSquare"></div>
                             </div>
                             <div className="bt-center"></div>
                             <ul className="PO_circle">
@@ -432,8 +436,21 @@ export class photosObliques extends React.Component {
                                 return (
                                     <div className={val.selected ? "row mapstore-side-card PO_searchResults PO_selected" : "row mapstore-side-card PO_searchResults"} key={key} onClick={(e) => this.props.clickPicturePO(val.id, e.ctrlKey, e.shiftKey)} onMouseEnter={() => this.props.pictureHoveredPO(val)} onMouseLeave={() => this.props.pictureHoveredPO()}>
                                         <div className="col-sm-4 PO_static">
-                                            <img src={ val.urlOverview } className="PO_searchResultPictures" />
-                                            <div className="PO_searchResultPictures_apercu PO_searchResultPicturesBasket_apercu" ><img src={val.urlOverview}/></div>
+                                            <img src={ val.urlOverview } className="PO_searchResultPictures" onMouseEnter={(event) => {
+                                                this.setState({xoffset: event.clientX, yoffset: event.clientY})
+                                            }}/>
+                                            <div className="PO_searchResultPictures_apercu PO_searchResultPicturesBasket_apercu" style={{
+                                                position: "absolute",
+                                                left: '0px',
+                                                top: '0px',
+                                            }}>
+                                                <img  style={{
+                                                    position: "fixed",
+                                                    right: '560px',
+                                                    top: window.innerHeight /2 > this.state.yoffset ? `${this.state.yoffset -200}px` : `${this.state.yoffset -300}px`,
+                                                }}
+                                                src={val.urlOverview} />
+                                        </div>
                                         </div>
                                         <div className="col-sm-5 PO_text-align-left">
                                             <div><span  className="PO_bold">{ val.date }</span></div>
