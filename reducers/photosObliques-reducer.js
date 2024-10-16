@@ -25,7 +25,7 @@ const initialState = {
  * @returns - returns the current actions to be made from the current action
  */
 export default (state = initialState, action) => {
-    // console.log(action.type);
+    console.log(action.type);
     // console.log(state);
     switch (action.type) {
     case actions.INIT_CONFIGS:
@@ -74,6 +74,10 @@ export default (state = initialState, action) => {
         return assign({}, state , { startDateValue: action.startDateValue });
     case actions.SET_ENDDATE_VALUE:
         return assign({}, state , { endDateValue: action.endDateValue });
+    case actions.CANCEL_SEARCH_FILTERS:
+        return assign({}, state , { displayFilters: false });
+    case actions.OPEN_SEARCH_FILTERS:
+        return assign({}, state , { displayFilters: true });
     default:
         return state;
     }

@@ -30,7 +30,9 @@ import {
     setPluginConfigsPO,
     setPicturesInBasket,
     setStartDateValue,
-    setEndDateValue
+    setEndDateValue,
+    changeTabPO,
+    openSearchFiltersPO
 } from "../actions/photosObliques-action";
 import {
     TOGGLE_CONTROL
@@ -113,7 +115,6 @@ import {
 import { ogcListField } from "@mapstore/utils/FilterUtils";
 import { reprojectBbox } from "@mapstore/utils/CoordinatesUtils";
 
-
 var currentLayout;
 var lastSelectedTile;
 var proj3857;
@@ -180,7 +181,8 @@ export const openPanelPOEpic = (action$, store) => action$.ofType(TOGGLE_CONTROL
             updateDockPanelsList('photosObliques', 'add', 'right'),
             initProjectionsPO(),
             initOverlayLayerPO(),
-            initConfigsPO(getPluginConfig(store.getState()))
+            initConfigsPO(getPluginConfig(store.getState())),
+            validateSearchFiltersPO()
         ];
         return Rx.Observable.from(observables);
     });
@@ -254,7 +256,17 @@ export function onUpdatingLayoutWhenPanelOpenedPOEpic(action$, store) {
                 },
                 boundingSidebarRect: layout.boundingSidebarRect};
             currentLayout = layout;
-            return Rx.Observable.of(UpdateMapLayoutPO(layout));
+            var vectorLayerToHide = getSelectedTilesLayer(store.getState());
+            vectorLayerToHide.visibility = false;
+            return Rx.Observable.from([
+                UpdateMapLayoutPO(layout),
+                updateAdditionalLayer(
+                    PO_PERIMETER_LAYER_ID,
+                    "PO",
+                    "overlay",
+                    vectorLayerToHide
+                )
+            ]);
         });
     }
 
@@ -349,8 +361,6 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
                 
                     var observablesReturned = [];
                     if (action.loadMore) {
-                        console.log(getSearchResult(store.getState()).concat(response.data).length);
-                        console.log(responsePhotoCount.data.numberOfResult);
                         if (getSearchResult(store.getState()).concat(response.data).length > responsePhotoCount.data.numberOfResult) {
                             observablesReturned = [
                                 updateAdditionalLayer(
@@ -361,7 +371,8 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
                                 ),
                                 setPolygonPO(wkt),
                                 setPhotoCountActionPO(responsePhotoCount.data.numberOfResult),
-                                accumulateScrollEventsPO(false)
+                                accumulateScrollEventsPO(false),
+                                cancelSearchFiltersPO()
                             ]
                         } else {
                             observablesReturned = [
@@ -374,7 +385,8 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
                                 setPolygonPO(wkt),
                                 searchValuesFilteredPO(getSearchResult(store.getState()).concat(response.data)),
                                 setPhotoCountActionPO(responsePhotoCount.data.numberOfResult),
-                                accumulateScrollEventsPO(false)
+                                accumulateScrollEventsPO(false),
+                                cancelSearchFiltersPO()
                             ]
                         }
                     }else{
@@ -388,7 +400,8 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
                             setPolygonPO(wkt),
                             searchValuesFilteredPO(response.data),
                             setPhotoCountActionPO(responsePhotoCount.data.numberOfResult),
-                            accumulateScrollEventsPO(false)
+                            accumulateScrollEventsPO(false),
+                            cancelSearchFiltersPO()
                         ]
                     }
                 } else {
@@ -409,19 +422,6 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
         }
 
     });
-})
-
-/**
- * cancelSearchFiltersPOEpic 
- * @memberof photosObliques.epics
- * @param action$ - list of actions triggered in mapstore context
- * @returns - empty observable
- */
-export const cancelSearchFiltersPOEpic = (action$, store) => action$.ofType(actions.CANCEL_SEARCH_FILTERS).switchMap(() => {
-    /* eslint-disable */
-    document.getElementById("toggle").checked = !document.getElementById("toggle").checked;
-    /* eslint-enable */
-    return Rx.Observable.empty();
 })
 
 /**
@@ -488,7 +488,7 @@ export const removeBasketPOEpic = (action$, store) => action$.ofType(actions.REM
     //si on supprime tout
     if (item.length === result.length && action.forceDeletionOnEmptySelection) {
         result = [];
-        observables = [updateItemInBasketPO(result), countItemsSelectedInBasketPO(0), modalDisplayPO(false, '')];
+        observables = [updateItemInBasketPO(result), countItemsSelectedInBasketPO(0), modalDisplayPO(false, ''), changeTabPO("PHOTOSOBLIQUES:HOME")];
     }
     //si on annule la suppression
     if (resultSelected.length === 0 && !action.forceDeletionOnEmptySelection) {
@@ -496,7 +496,7 @@ export const removeBasketPOEpic = (action$, store) => action$.ofType(actions.REM
     }
     //si on supprime les éléments sélectionnés
     if (item.length != result.length) {
-        observables = [updateItemInBasketPO(result), countItemsSelectedInBasketPO(0), modalDisplayPO(false, '')];
+        observables = [updateItemInBasketPO(result), countItemsSelectedInBasketPO(0), modalDisplayPO(false, ''), changeTabPO("PHOTOSOBLIQUES:HOME")];
     }
     /* eslint-enable */
     return Rx.Observable.from(observables);
@@ -674,11 +674,15 @@ export const initDateListPOEpic = (action$, store) => action$.ofType(actions.SET
 export const selectStartDatePOEpic = (action$, store) => action$.ofType(actions.SELECT_START_DATE_VALUE).switchMap((action) => {
     var dateList = getDateList(store.getState());
     var newEndDate = [];
-    dateList.map((item) => {
-        if (item >= action.startDate) {
-            newEndDate.push(item);
-        }
-    });
+    if (action.startDate != 'start') {
+        dateList.map((item) => {
+            if (item >= action.startDate) {
+                newEndDate.push(item);
+            }
+        });
+    } else {
+        newEndDate = dateList;
+    }
     return Rx.Observable.from([getEndDateValuePO(newEndDate), getPhotoCountActionPO(), setStartDateValue(action.startDate)]);
 });
 
@@ -692,11 +696,16 @@ export const selectStartDatePOEpic = (action$, store) => action$.ofType(actions.
 export const selectEndDatePOEpic = (action$, store) => action$.ofType(actions.SELECT_END_DATE_VALUE).switchMap((action) => {
     var dateList = getDateList(store.getState());
     var newStartDate = [];
-    dateList.map((item) => {
-        if (item <= action.endDate) {
-            newStartDate.push(item);
-        }
-    });
+    console.log(action);
+    if (action.endDate != 'end') {
+        dateList.map((item) => {
+            if (item <= action.endDate) {
+                newStartDate.push(item);
+            }
+        });
+    } else {
+        newStartDate = dateList;
+    }
     return Rx.Observable.from([getStartDateValuePO(newStartDate), getPhotoCountActionPO(), setEndDateValue(action.endDate)]);
 });
 
@@ -968,6 +977,7 @@ export const initConfigsPOEpic = (action$, store) => action$.ofType(actions.INIT
             response.maxMoAmount = action.configs.maxMoAmount;
             response.downloadInformationMessage = action.configs.downloadInformationMessage;
             response.backendURLAccess = action.configs.backendURLAccess;
+            response.helpLink = action.configs.helpLink;
             return Rx.Observable.from([
                 setPluginConfigsPO(response)
             ]);

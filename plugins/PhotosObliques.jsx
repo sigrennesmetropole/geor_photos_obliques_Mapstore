@@ -31,7 +31,8 @@ import {
     setDownloadingPO,
     saveDownloadFields,
     clearFiltersPO,
-    searchValuesFilteredPO
+    searchValuesFilteredPO,
+    openSearchFiltersPO
 } from "../actions/photosObliques-action";
 import photosObliquesReducer from "../reducers/photosObliques-reducer";
 import * as epics from "../epics/photosObliques-epics";
@@ -65,7 +66,8 @@ import {
     getBasketSize,
     getEndDateValue,
     getStartDateValue,
-    getCounter
+    getCounter,
+    getDisplayFilters
 } from "../selectors/photosObliques-selectors";
 import '../assets/style.css';
 
@@ -100,7 +102,8 @@ export default createPlugin(name, {
         picturesInBasket: getPicturesInBasket(state) || '',
         basketSize: getBasketSize(state) || 0,
         startDateValue: getStartDateValue(state) || '',
-        endDateValue: getEndDateValue(state) || ''
+        endDateValue: getEndDateValue(state) || '',
+        displayFilters: getDisplayFilters(state) || false
     }), {
         toggleControl,
         changeTabPO,
@@ -126,7 +129,8 @@ export default createPlugin(name, {
         setDownloadingPO,
         saveDownloadFields,
         clearFiltersPO,
-        searchValuesFilteredPO
+        searchValuesFilteredPO,
+        openSearchFiltersPO
     })(photosObliques),
     reducers: {
         photosObliques: photosObliquesReducer

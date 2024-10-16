@@ -54,6 +54,10 @@ button.active .PO_iconSize{
     width: 100%;
 }
 
+.PHOTOSOBLIQUES_selectButton .glyphicon {
+  font-size: 25px;
+}
+
 .PHOTOSOBLIQUES_active{
     border-bottom: 0px solid white;
     background-color: white;
@@ -61,10 +65,10 @@ button.active .PO_iconSize{
 }
 
 button.PHOTOSOBLIQUES_active{
-    border-bottom: 1px solid white;
-    border-top: 1px solid #ddd;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
+    border-bottom: 1px solid white!important;
+    border-top: 1px solid #ddd!important;
+    border-left: 1px solid #ddd!important;
+    border-right: 1px solid #ddd!important;
     background-color: white;
     color: black;
 }
@@ -110,29 +114,13 @@ button.PHOTOSOBLIQUES_active{
     color: black;
 }
 
-/* button.PO_active{
-    border-bottom: 1px solid white;
-    border-top: 1px solid #ddd;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-    background-color: white;
-    color: black;
-} */
-
 /* Filtres de recherche */ 
-
 .PO_filterSelectionMainDiv{
-  margin: 5px;
-  margin-left: 10px!important;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 /* Compass */
-
-/* body {
-    font: 17px 'Raleway Light', sans-serif;
-    background: rgba(200,200,200,.3);
-    color: #888;
-  } */
   
   /*boussole*/
 
@@ -247,7 +235,7 @@ button.PHOTOSOBLIQUES_active{
   /*fin boussole*/
   
   /*aiguille à tourner*/
-  .PO_testrotate{
+  .PO_rotate{
     visibility: hidden;
     display: flex;
     justify-content: center;
@@ -267,7 +255,7 @@ button.PHOTOSOBLIQUES_active{
     pointer-events: none;
   }
 
-  .PO_testrotate2{    
+  .PO_rotate2{    
     display: flex;
     justify-content: center;
     align-items: center;
@@ -282,7 +270,7 @@ button.PHOTOSOBLIQUES_active{
     position: absolute;
   }
 
-.PO_testrotate2Hidden{
+.PO_rotate2Hidden{
   visibility: hidden;
 }
 
@@ -313,7 +301,7 @@ button.PHOTOSOBLIQUES_active{
     transform: rotate(-12.25deg);
   }
   
-  li {
+  .PO_masterclass li {
     overflow: hidden;
     position: absolute;
     top: 0;
@@ -334,132 +322,132 @@ button.PHOTOSOBLIQUES_active{
     padding-top: 20px;
   }
   
-  li:first-child {
+  .PO_masterclass li:first-child {
     transform: rotate(0deg) skewY(-60deg);
   }
   
-  li:nth-child(2) {
+  .PO_masterclass li:nth-child(2) {
     transform: rotate(22.5deg) skewY(-60deg);
   }
   
-  li:nth-child(3) {
+  .PO_masterclass li:nth-child(3) {
     transform: rotate(45deg) skewY(-60deg);
   }
   
-  li:nth-child(4) {
+  .PO_masterclass li:nth-child(4) {
     transform: rotate(67.5deg) skewY(-60deg);
   }
   
-  li:nth-child(5) {
+  .PO_masterclass li:nth-child(5) {
     transform: rotate(90deg) skewY(-60deg);
   }
   
-  li:nth-child(6) {
+  .PO_masterclass li:nth-child(6) {
     transform: rotate(112.5deg) skewY(-60deg);
   }
   
-  li:nth-child(7) {
+  .PO_masterclass li:nth-child(7) {
     transform: rotate(135deg) skewY(-60deg);
   }
   
-  li:nth-child(8) {
+  .PO_masterclass li:nth-child(8) {
     transform: rotate(157.5deg) skewY(-60deg);
   }
   
-  li:nth-child(9) {
+  .PO_masterclass li:nth-child(9) {
     transform: rotate(180deg) skewY(-60deg);
   }
   
-  li:nth-child(10) {
+  .PO_masterclass li:nth-child(10) {
     transform: rotate(202.5deg) skewY(-60deg);
   }
   
-  li:nth-child(11) {
+  .PO_masterclass li:nth-child(11) {
     transform: rotate(225deg) skewY(-60deg);
   }
   
-  li:nth-child(12) {
+  .PO_masterclass li:nth-child(12) {
     transform: rotate(247.5deg) skewY(-60deg);
   }
   
-  li:nth-child(13) {
+  .PO_masterclass li:nth-child(13) {
     transform: rotate(270deg) skewY(-60deg);
   }
   
-  li:nth-child(14) {
+  .PO_masterclass li:nth-child(14) {
     transform: rotate(292.5deg) skewY(-60deg);
   }
   
-  li:nth-child(15) {
+  .PO_masterclass li:nth-child(15) {
     transform: rotate(315deg) skewY(-60deg);
   }
   
-  li:nth-child(16) {
+  .PO_masterclass li:nth-child(16) {
     transform: rotate(337.5deg) skewY(-60deg);
   }
   
   /*Animation de l'aiguille*/
-  #PO_part1:hover ~ .PO_testrotate{
+  #PO_part1:hover ~ .PO_rotate{
     visibility: visible;
     transform: rotate(-77.75deg);
   }
-  #PO_part2:hover ~ .PO_testrotate{
+  #PO_part2:hover ~ .PO_rotate{
     visibility: visible;
     transform: rotate(-55.25deg);
   }
-  #PO_part3:hover ~ .PO_testrotate{
+  #PO_part3:hover ~ .PO_rotate{
     visibility: visible;
     transform: rotate(-32.75deg);
   }
-  #PO_part4:hover ~ .PO_testrotate{
+  #PO_part4:hover ~ .PO_rotate{
     visibility: visible;
     transform: rotate(-10.25deg);
   }
-  #PO_part5:hover ~ .PO_testrotate{
+  #PO_part5:hover ~ .PO_rotate{
     visibility: visible;
     transform: rotate(12.25deg);
   }
-  #PO_part6:hover ~ .PO_testrotate{
+  #PO_part6:hover ~ .PO_rotate{
     visibility: visible;
     transform: rotate(34.75deg);
   }
-  #PO_part7:hover ~ .PO_testrotate{
+  #PO_part7:hover ~ .PO_rotate{
     visibility: visible;
     transform: rotate(57.25deg);
   }
-  #PO_part8:hover ~ .PO_testrotate{
+  #PO_part8:hover ~ .PO_rotate{
     visibility: visible;
     transform: rotate(79.75deg);
   }
-  #PO_part9:hover ~ .PO_testrotate{
+  #PO_part9:hover ~ .PO_rotate{
     visibility: visible;
     transform: rotate(102.25deg);
   }
-  #PO_part10:hover ~ .PO_testrotate{
+  #PO_part10:hover ~ .PO_rotate{
     visibility: visible;
     transform: rotate(124.75deg);
   }
-  #PO_part11:hover ~ .PO_testrotate{
+  #PO_part11:hover ~ .PO_rotate{
     visibility: visible;
     transform: rotate(147.25deg);
   }
-  #PO_part12:hover ~ .PO_testrotate{
+  #PO_part12:hover ~ .PO_rotate{
     visibility: visible;
     transform: rotate(169.75deg);
   }
-  #PO_part13:hover ~ .PO_testrotate{
+  #PO_part13:hover ~ .PO_rotate{
     visibility: visible;
     transform: rotate(192.25deg);
   }
-  #PO_part14:hover ~ .PO_testrotate{
+  #PO_part14:hover ~ .PO_rotate{
     visibility: visible;
     transform: rotate(214.75deg);
   }
-  #PO_part15:hover ~ .PO_testrotate{
+  #PO_part15:hover ~ .PO_rotate{
     visibility: visible;
     transform: rotate(237.25deg);
   }
-  #PO_part16:hover ~ .PO_testrotate{
+  #PO_part16:hover ~ .PO_rotate{
     visibility: visible;
     transform: rotate(259.75deg);
   }
@@ -574,10 +562,9 @@ button.PHOTOSOBLIQUES_active{
   /* validateForm */
 
  .PO_validateForm{
-    margin: 10px;
-    position: absolute;
-    left: 25%;
-    width: 97%;
+    padding-right: 15px;
+    padding-left: 15px;
+    text-align: center;
  }
 
  .PO_validateForm > button {
@@ -674,6 +661,9 @@ button.PHOTOSOBLIQUES_active{
   border-radius: 25px;
   margin: 5px;
   color: white;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
  }
 
  .PO_high_high{
@@ -698,29 +688,11 @@ button.PHOTOSOBLIQUES_active{
 	transition: all .5s linear .5s;
 }
 
-.PO_unfolder { display: none; }
-
-/* .toggle-label {
-	display: inline-block;
-	cursor: pointer;
-	font-size: 11px;
-  background-color: black;
-  color: white;
-  margin: 10px;
-  padding: 5px;
-} */
 .PO_unfold-icon, .PO_fold-icon {
   color: #999;
   /* fixed width to stop the icon from wiggling*/
   width: 10px;
   display: inline-block;
-}
-.PO_unfolder ~ .PO_fold {
-  display: none;
-}
-.PO_unfolder:checked ~ .PO_fold {
-  display: block;
-  margin-bottom: 40px;
 }
 
 .PO_bold{
@@ -738,13 +710,18 @@ button.PHOTOSOBLIQUES_active{
   margin-top: 15px;
 }
 
-hr{
+.PO_masterclass hr{
   margin-top: 0px;
   margin-bottom: 0px;
 }
 
+.PO_flexContainer{
+  transform: translateY(40%);
+}
+
 .PO_text-align-left{
   text-align: left;
+  /* margin: auto; */
 }
 
 .PO_basket_buttons_position{
@@ -758,11 +735,10 @@ hr{
 }
 
 .PO_basket_sort_position{
-  margin-left: 15%;
+  margin-left: 21%;
 }
 
 .PO_filterResults{
-  margin: 10px;
   position: absolute;
   /* left: 25%; */
   width: 97%;
@@ -938,13 +914,10 @@ hr{
 .PO_loadingContainer .PO_loading .mapstore-inline-loader {
 	display: block !important;
 	margin: auto;
+  margin-top: 50px;
 	height: 300px;
 	width: 300px;
-	border: 15px solid transparent !important;
-	border-top-color: rgba(7, 138, 163, 0.2) !important;
-	border-right-color: rgba(7, 138, 163, 0.2) !important;
-	border-bottom-color: rgba(7, 138, 163, 0.2) !important;
-	border-left-color: #078aa3 !important;
+	border-width: 15px;
 }
 
 .PO_loadingContainer .PO_loading span {
@@ -968,7 +941,7 @@ hr{
 .PO_glyph-info-sign{
   padding-left: 15px;
   margin: 0;
-  position: absolute;
+  position: absolute!important;
   transform: translateY(100%);
   font-size: 60px;
 }
@@ -976,7 +949,7 @@ hr{
 .PO_filterSelectionMainDiv select {
   width: 100%;
   max-width: 250px;
-  margin: 5px;
+  margin: 5px!important;
 }
 
 .PO_zoomToGlyph{
@@ -988,6 +961,20 @@ hr{
   background-color: lightgrey!important;
 }
 
-button{
+.PO_masterclass button{
   border: none;  
+}
+
+.PO_button_margin_bottom{
+  margin-bottom: 20px;
+}
+
+.PO_addBasketWidth {
+    position: absolute;
+    width: 110px;
+    left: -5px;
+}
+
+.PO_harmonizePrecision{
+  transform: translateY(30%);
 }

@@ -227,3 +227,11 @@ export const getStartDateValue = (state) => get(state, 'photosObliques.startDate
 * @returns - returns the tabs state
 */
 export const getEndDateValue = (state) => get(state, 'photosObliques.endDateValue');
+
+/**
+* getDisplayFilters checks which tab is open
+* @memberof plugin.selectors
+* @param state - application state
+* @returns - returns the tabs state
+*/
+export const getDisplayFilters = (state) => get(state, 'photosObliques.displayFilters');

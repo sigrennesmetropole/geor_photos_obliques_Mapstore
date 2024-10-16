@@ -58,6 +58,7 @@ export class photosObliques extends React.Component {
             maxMoAmount: props.maxMoAmount,
             downloadInformationMessage: props.downloadInformationMessage,
             backendURLAccess: props.backendURLAccess,
+            helpLink: props.helpLink,
             xoffset: 0,
             yoffset: 0
         };
@@ -129,13 +130,12 @@ export class photosObliques extends React.Component {
     filterResults(){
         return (
             <>
-                <input type="checkbox" id="toggle" className="PO_unfolder"/>
-                <button className="btn-primary PO_addBasket" onClick={() => this.props.cancelSearchFiltersPO()}>
+                {!this.props.displayFilters && <button className="btn-primary PO_addBasket" id="PO_toggle_button" onClick={() => this.props.openSearchFiltersPO()}>
                     <Glyphicon glyph="search" /> <Message msgId={'photosObliques.updateSearch'} />
-                </button>
-                <div className="PO_fold">
+                </button>}
+                {this.props.displayFilters && <div>
                     { this.renderFiltersSection() }
-                </div>
+                </div>}
                 <div className="PO_resultOrganizationFilters">
                     <span className="PO_resultAmount">{this.props.searchResult.length} / {this.props.photoCount} <Message msgId={'photosObliques.picturesFound'} /></span>
                     <span>
@@ -174,7 +174,7 @@ export class photosObliques extends React.Component {
                                                 <img  style={{
                                                     position: "fixed",
                                                     right: '560px',
-                                                    top: window.innerHeight /2 > this.state.yoffset ? `${this.state.yoffset -200}px` : `${this.state.yoffset -300}px`,
+                                                    top: window.innerHeight /2 > this.state.yoffset ? `${this.state.yoffset -200}px` : `${this.state.yoffset -350}px`,
                                                 }}
                                                 src={val.urlOverview} />
                                         </div>
@@ -196,7 +196,7 @@ export class photosObliques extends React.Component {
                                             </div>
                                         </div>
                                         <span className={this.props.hoveredPolygonVisibilityState ? "PO_tooltiptext PO_tooltipHidden" : "PO_tooltiptext"}><Message msgId={'photosObliques.zoomTooltip'} /></span>
-                                        <button className="btn-primary PO_addBasket" onClick={() => this.props.addBasketPO(val)}><Message msgId={'photosObliques.addBasket'} /></button>
+                                        <button className="btn-primary PO_addBasket PO_addBasketWidth" onClick={() => this.props.addBasketPO(val)}><Message msgId={'photosObliques.addBasket'} /></button>
                                     </div>
                                 </div>
                             );
@@ -270,7 +270,7 @@ export class photosObliques extends React.Component {
                     }
                 </select>
                 <select id="PO_endDate" className="rw-input" onChange={(e) => this.props.selectEndDateValuePO(e.target.value)} >
-                    <option value="start" key="start">Année de fin</option>
+                    <option value="end" key="end">Année de fin</option>
                     {
                         this.props.endDate.map((val) => {
                             if (val === parseInt(this.props.endDateValue)) {
@@ -378,10 +378,10 @@ export class photosObliques extends React.Component {
                                 <li id="PO_part16" onClick={() => this.props.windRoseClickPO(337.5)}>
                                     <div className="PO_text">16</div>
                                 </li>
-                                <div className={this.props.roseValue != '' ? "PO_testrotate2": "PO_testrotate2 PO_testrotate2Hidden"} style={this.props.roseValue != '' ? {transform: "rotate(" + (this.props.roseValue - 80) + "deg)"} : {display: "none"} }>
+                                <div className={this.props.roseValue != '' ? "PO_rotate2": "PO_rotate2 PO_rotate2Hidden"} style={this.props.roseValue != '' ? {transform: "rotate(" + (this.props.roseValue - 80) + "deg)"} : {display: "none"} }>
                                     <div className={this.props.roseValue != '' ? "PO_losangeSelected" : "PO_hideLosangeSelected"}></div>
                                 </div>
-                                <div className="PO_testrotate">
+                                <div className="PO_rotate">
                                     <div className="PO_losange"></div>
                                 </div>
                             </ul>
@@ -434,7 +434,7 @@ export class photosObliques extends React.Component {
                         {
                             this.props.basket.map((val, key) => {
                                 return (
-                                    <div className={val.selected ? "row mapstore-side-card PO_searchResults PO_selected" : "row mapstore-side-card PO_searchResults"} key={key} onClick={(e) => this.props.clickPicturePO(val.id, e.ctrlKey, e.shiftKey)} onMouseEnter={() => this.props.pictureHoveredPO(val)} onMouseLeave={() => this.props.pictureHoveredPO()}>
+                                    <div className={val.selected ? "row mapstore-side-card PO_searchResults PO_searchResult_center PO_selected" : "row mapstore-side-card PO_searchResults PO_searchResult_center"} key={key} onClick={(e) => this.props.clickPicturePO(val.id, e.ctrlKey, e.shiftKey)} onMouseEnter={() => this.props.pictureHoveredPO(val)} onMouseLeave={() => this.props.pictureHoveredPO()}>
                                         <div className="col-sm-4 PO_static">
                                             <img src={ val.urlOverview } className="PO_searchResultPictures" onMouseEnter={(event) => {
                                                 this.setState({xoffset: event.clientX, yoffset: event.clientY})
@@ -443,25 +443,27 @@ export class photosObliques extends React.Component {
                                                 position: "absolute",
                                                 left: '0px',
                                                 top: '0px',
-                                            }}>
+                                                }}>
                                                 <img  style={{
                                                     position: "fixed",
                                                     right: '560px',
                                                     top: window.innerHeight /2 > this.state.yoffset ? `${this.state.yoffset -200}px` : `${this.state.yoffset -300}px`,
                                                 }}
                                                 src={val.urlOverview} />
+                                            </div>
                                         </div>
-                                        </div>
-                                        <div className="col-sm-5 PO_text-align-left">
-                                            <div><span  className="PO_bold">{ val.date }</span></div>
-                                            <div><i>{ val.owner }, { val.provider }</i></div>
-                                            <hr />
-                                            <div>{val.fileSize && <span  className="PO_bold">{ parseFloat(val.fileSize / 1000000).toFixed(1) + "Mo" }</span> } {val.id && <span> - {val.id}</span> }</div>
-                                        </div>
-                                        <div className="col-sm-3 PO_text-center">
-                                            <div className="row">
-                                                <div className={parseFloat(val.relevance).toFixed(0) >= 50 ? parseFloat(val.relevance).toFixed(0) >= 75 ? "PO_resultPrecision PO_high_high col-sm-6": "PO_resultPrecision PO_high_low col-sm-6" : parseFloat(val.relevance).toFixed(0) >= 25 ? "PO_resultPrecision PO_low_high col-sm-6": "PO_resultPrecision PO_low_low col-sm-6"}>{ parseFloat(val.relevance).toFixed(0) }%</div>
-                                                <div className="col-sm-5 PO_zoomToGlyph" onClick={() => this.props.zoomElementPO(val)}><Glyphicon glyph="zoom-to" /></div>
+                                        <div className="col-sm-8 PO_flexContainer">
+                                            <div className="col-sm-7 PO_text-align-left">
+                                                <div><span  className="PO_bold">{ val.year } | { val.date }</span></div>
+                                                <div><i>{ val.owner }, { val.provider }</i></div>
+                                                <hr />
+                                                <div>{val.fileSize && <span  className="PO_bold">{ parseFloat(val.fileSize / 1000000).toFixed(1) + "Mo" }</span> } {val.id && <span> - {val.id}</span> }</div>
+                                            </div>
+                                            <div className="col-sm-5">
+                                                <div className="row PO_harmonizePrecision">
+                                                    <div className={parseFloat(val.relevance).toFixed(0) >= 50 ? parseFloat(val.relevance).toFixed(0) >= 75 ? "PO_resultPrecision PO_high_high col-sm-6": "PO_resultPrecision PO_high_low col-sm-6" : parseFloat(val.relevance).toFixed(0) >= 25 ? "PO_resultPrecision PO_low_high col-sm-6": "PO_resultPrecision PO_low_low col-sm-6"}>{ parseFloat(val.relevance).toFixed(0) }%</div>
+                                                    <div className="col-sm-5 PO_zoomToGlyph" onClick={() => this.props.zoomElementPO(val)}><Glyphicon glyph="zoom-to" /></div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -542,9 +544,9 @@ export class photosObliques extends React.Component {
                             <div onClick={() => this.props.modalDisplayPO(false, '')} className="PO_close">x</div>
                             <div>
                                 <div className="col-sm-2"></div>
-                                <button onClick={() => this.props.removeSelectedItemsInBasketPO(true)} className="btn-primary col-sm-3 PO_addBasket"><Message msgId={'photosObliques.ok'} /></button>
+                                <button onClick={() => this.props.removeSelectedItemsInBasketPO(true)} className="btn-primary col-sm-3 PO_addBasket PO_button_margin_bottom"><Message msgId={'photosObliques.ok'} /></button>
                                 <div className="col-sm-2"></div>
-                                <button onClick={() => this.props.modalDisplayPO(false, '')} className="col-sm-3 btn-primary PO_addBasket"><Message msgId={'photosObliques.cancel'} /></button>
+                                <button onClick={() => this.props.modalDisplayPO(false, '')} className="col-sm-3 btn-primary PO_addBasket PO_button_margin_bottom"><Message msgId={'photosObliques.cancel'} /></button>
                                 <div className="col-sm-2"></div>
                             </div>
                         </div>
@@ -583,9 +585,9 @@ export class photosObliques extends React.Component {
                             </div>
                             <div className="row">
                                 <div className="col-sm-2"></div>
-                                <button onClick={() => {this.props.modalDisplayPO(true, 'iUnderstand'), this.props.saveDownloadFields(document.getElementById("fname").value,document.getElementById("pname").value)}} className="col-sm-3 btn-primary PO_addBasket"><Message msgId={'photosObliques.ok'}/></button>
+                                <button onClick={() => {this.props.modalDisplayPO(true, 'iUnderstand'), this.props.saveDownloadFields(document.getElementById("fname").value,document.getElementById("pname").value)}} className="col-sm-3 btn-primary PO_addBasket PO_button_margin_bottom"><Message msgId={'photosObliques.ok'}/></button>
                                 <div className="col-sm-2"></div>
-                                <button onClick={() => this.props.modalDisplayPO(false, '')} className="col-sm-3 btn-primary PO_addBasket"><Message msgId={'photosObliques.cancel'}/></button>
+                                <button onClick={() => this.props.modalDisplayPO(false, '')} className="col-sm-3 btn-primary PO_addBasket PO_button_margin_bottom"><Message msgId={'photosObliques.cancel'}/></button>
                                 <div className="col-sm-2"></div>
                             </div>
                         </div>
@@ -609,7 +611,7 @@ export class photosObliques extends React.Component {
                             <div className="row">
                                 <div className="col-sm-4"></div>
                                 <div className="col-sm-4">
-                                    <button onClick={() => {this.props.downloadBasketPO(), this.props.setDownloadingPO(true)}} className="btn-primary PO_addBasket"><Message msgId={'photosObliques.understood'}/></button>
+                                    <button onClick={() => {this.props.downloadBasketPO(), this.props.setDownloadingPO(true)}} className="btn-primary PO_addBasket PO_button_margin_bottom"><Message msgId={'photosObliques.understood'}/></button>
                                 </div>
                                 <div className="col-sm-4"></div>
                             </div>
@@ -643,15 +645,15 @@ export class photosObliques extends React.Component {
      */
         renderTabMenu() {
             return (
-                <div className="row PHOTOSOBLIQUES_rowTabs">
-                    <div className="col-sm-6 PO_text-center">
+                <div className="PO_masterclass row PHOTOSOBLIQUES_rowTabs">
+                    <div className="col-sm-5 PO_text-center">
                         <button className={this.props.activeTab === "PHOTOSOBLIQUES:HOME"
                             ? "PHOTOSOBLIQUES_homeButton PHOTOSOBLIQUES_active"
                             : "PHOTOSOBLIQUES_homeButton"} onClick={() => this.props.changeTabPO(tabTypes.HOME)}>
                             <Message msgId={'photosObliques.welcome'}/>
                         </button>
                     </div>
-                    <div className="col-sm-6 PO_text-center">
+                    <div className="col-sm-5 PO_text-center">
                         {this.props.basket.length != 0 && <button className={this.props.activeTab === "PHOTOSOBLIQUES:SELECT"
                             ? "PHOTOSOBLIQUES_selectButton PHOTOSOBLIQUES_active"
                             : "PHOTOSOBLIQUES_selectButton"} onClick={() => this.props.changeTabPO(tabTypes.SELECT)}>
@@ -662,6 +664,11 @@ export class photosObliques extends React.Component {
                             : "PHOTOSOBLIQUES_selectButton PO_greyed"} disabled onClick={() => this.props.changeTabPO(tabTypes.SELECT)}>
                             <Message msgId={'photosObliques.selection'}/>
                         </button>}
+                    </div>
+                    <div className="col-sm-2 PO_text-center">
+                        <button className="PHOTOSOBLIQUES_selectButton" onClick={() => window.open(this.props.helpLink,'_blank')} >
+                            <Glyphicon glyph="question-sign" />
+                        </button>
                     </div>
                 </div>
             );
@@ -676,10 +683,10 @@ export class photosObliques extends React.Component {
         var content;
         switch (this.props.activeTab) {
         case tabTypes.HOME:
-            content = this.renderHomeTab();
+            content = <div className="PO_masterclass">{this.renderHomeTab()}</div>
             break;
         case tabTypes.SELECT:
-            content = this.renderSelectionTab();
+            content = <div className="PO_masterclass">{this.renderSelectionTab()}</div>
             break;
         default:
             break;
