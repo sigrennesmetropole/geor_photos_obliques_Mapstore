@@ -25,7 +25,7 @@ const initialState = {
  * @returns - returns the current actions to be made from the current action
  */
 export default (state = initialState, action) => {
-    console.log(action.type);
+    // console.log(action.type);
     // console.log(state);
     switch (action.type) {
     case actions.INIT_CONFIGS:

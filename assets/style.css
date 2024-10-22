@@ -54,10 +54,6 @@ button.active .PO_iconSize{
     width: 100%;
 }
 
-.PHOTOSOBLIQUES_selectButton .glyphicon {
-  font-size: 25px;
-}
-
 .PHOTOSOBLIQUES_active{
     border-bottom: 0px solid white;
     background-color: white;
@@ -118,6 +114,16 @@ button.PHOTOSOBLIQUES_active{
 .PO_filterSelectionMainDiv{
     padding-left: 15px;
     padding-right: 15px;
+}
+
+.helpBtnAccess{
+  position:absolute;
+  left:515px;
+  z-index: 10000;
+}
+.helpBtnAccess .glyphicon{
+  cursor: pointer;
+  font-size: 20px;
 }
 
 /* Compass */

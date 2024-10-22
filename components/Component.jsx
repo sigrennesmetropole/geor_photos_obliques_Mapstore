@@ -57,8 +57,8 @@ export class photosObliques extends React.Component {
             pictureAmount: props.pictureAmount,
             maxMoAmount: props.maxMoAmount,
             downloadInformationMessage: props.downloadInformationMessage,
-            backendURLAccess: props.backendURLAccess,
-            helpLink: props.helpLink,
+            poBackendURLAccess: props.poBackendURLAccess,
+            helplink: props.helplink,
             xoffset: 0,
             yoffset: 0
         };
@@ -86,6 +86,9 @@ export class photosObliques extends React.Component {
                 <>
                     {
                         <>
+                            <div className="helpBtnAccess" onClick={() => window.open(this.props.helplink,'_blank')} style={this.props.helplink === '' ? {"display":"none"} : {"display":"block"}} >
+                                <Glyphicon glyph="question-sign" />
+                            </div>
                             <div className="row PO_filterSelectionMainDiv">
                                 <div className="col-sm-6">
                                     { this.searchFilters() }
@@ -646,14 +649,14 @@ export class photosObliques extends React.Component {
         renderTabMenu() {
             return (
                 <div className="PO_masterclass row PHOTOSOBLIQUES_rowTabs">
-                    <div className="col-sm-5 PO_text-center">
+                    <div className="col-sm-6 PO_text-center">
                         <button className={this.props.activeTab === "PHOTOSOBLIQUES:HOME"
                             ? "PHOTOSOBLIQUES_homeButton PHOTOSOBLIQUES_active"
                             : "PHOTOSOBLIQUES_homeButton"} onClick={() => this.props.changeTabPO(tabTypes.HOME)}>
                             <Message msgId={'photosObliques.welcome'}/>
                         </button>
                     </div>
-                    <div className="col-sm-5 PO_text-center">
+                    <div className="col-sm-6 PO_text-center">
                         {this.props.basket.length != 0 && <button className={this.props.activeTab === "PHOTOSOBLIQUES:SELECT"
                             ? "PHOTOSOBLIQUES_selectButton PHOTOSOBLIQUES_active"
                             : "PHOTOSOBLIQUES_selectButton"} onClick={() => this.props.changeTabPO(tabTypes.SELECT)}>
@@ -664,11 +667,6 @@ export class photosObliques extends React.Component {
                             : "PHOTOSOBLIQUES_selectButton PO_greyed"} disabled onClick={() => this.props.changeTabPO(tabTypes.SELECT)}>
                             <Message msgId={'photosObliques.selection'}/>
                         </button>}
-                    </div>
-                    <div className="col-sm-2 PO_text-center">
-                        <button className="PHOTOSOBLIQUES_selectButton" onClick={() => window.open(this.props.helpLink,'_blank')} >
-                            <Glyphicon glyph="question-sign" />
-                        </button>
                     </div>
                 </div>
             );
