@@ -87,7 +87,7 @@ Lors de l'ajout du plugin dans un contexte MapStore pour geOrchestra, celui-ci d
 
 | Nom du paramètre | Valeur par défaut | Description |
 | ---      | ---      | ---      |
-| poBackendURLAccess | "/photosobliques" | Lien d’accès au back utilisé par le plugin.  |
+| pobackendurlaccess | "/photosobliques" | Lien d’accès au back utilisé par le plugin.  |
 | poMaxCartNumberOfPics | 25 | Nombre maximal de photos pouvant être ajoutées au panier |
 | poMaxCartSize | 50 | Poids maximal autorisé pour le panier |
 | poDownloadInfoMessage | "" | Message d'information à afficher lors du téléchargement des photos |

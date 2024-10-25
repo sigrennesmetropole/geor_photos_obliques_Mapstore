@@ -7,6 +7,7 @@ export const actions = {
     CHANGE_TAB: 'PHOTOSOBLIQUES:CHANGE_TAB',
     CLOSE_PHOTOSOBLIQUES: "PHOTOSOBLIQUES:CLOSE_PHOTOSOBLIQUES",
     ROSE_CLICKED: 'PHOTOSOBLIQUES:ROSE_CLICKED',
+    ROSE_CLICKED_SETTER: "PHOTOSOBLIQUES:ROSE_CLICKED_SETTER",
     SEARCH_FILTERS: 'PHOTOSOBLIQUES:SEARCH_FILTERS',
     CANCEL_SEARCH_FILTERS: 'PHOTOSOBLIQUES:CANCEL_SEARCH_FILTERS',
     FILTER_SEARCH_VALUES: "PHOTOSOBLIQUES:FILTER_SEARCH_VALUES",
@@ -27,7 +28,6 @@ export const actions = {
     SELECT_END_DATE_VALUE: 'PHOTOSOBLIQUES:SELECT_END_DATE_VALUE',
     SET_POLYGON: 'PHOTOSOBLIQUES:SET_POLYGON',
     GET_PHOTO_COUNT: 'PHOTOSOBLIQUES:GET_PHOTO_COUNT',
-    SET_PHOTO_COUNT: 'PHOTOSOBLIQUES:SET_PHOTO_COUNT',
     PICTURE_HOVERED: 'PHOTOSOBLIQUES:PICTURE_HOVERED',
     ZOOM_ELEMENT: "PHOTOSOBLIQUES:ZOOM_ELEMENT",
     FILTER_BASKET_VALUES: "PHOTOSOBLIQUES:FILTER_BASKET_VALUES",
@@ -43,7 +43,8 @@ export const actions = {
     SET_PICTURES_IN_BASKET: "PHOTOSOBLIQUES:SET_PICTURES_IN_BASKET",
     SET_ENDDATE_VALUE: 'PHOTOSOBLIQUES:SET_ENDDATE_VALUE',
     SET_STARTDATE_VALUE: 'PHOTOSOBLIQUES:SET_STARTDATE_VALUE',
-    OPEN_SEARCH_FILTERS: 'PHOOSOBLIQUES:OPEN_SEARCH_FILTERS'
+    OPEN_SEARCH_FILTERS: 'PHOOSOBLIQUES:OPEN_SEARCH_FILTERS',
+    SET_PHOTO_COUNT: 'PHOTOSOBLIQUES:SET_PHOTO_COUNT'
 };
 
 export const tabTypes = {
@@ -53,11 +54,11 @@ export const tabTypes = {
 
 
 /**
- * UpdateMapLayoutPO action to update map layout at plugin start
+ * updateMapLayoutPO action to update map layout at plugin start
  * @memberof photosObliques.actions
  * @returns - action starts plugin page with source set
  */
-export function UpdateMapLayoutPO(layout) {
+export function updateMapLayoutPO(layout) {
     return {
         type: UPDATE_MAP_LAYOUT,
         layout,
@@ -111,6 +112,19 @@ export function changeTabPO(tab) {
 export function windRoseClickPO(degree) {
     return {
         type: actions.ROSE_CLICKED,
+        degree
+    };
+}
+
+/**
+ * windRoseClickPO start action to change tab
+ * @memberof plugin.actions
+ * @param section - the selected section
+ * @returns - action change tab
+ */
+export function setWindRoseClickPO(degree) {
+    return {
+        type: actions.ROSE_CLICKED_SETTER,
         degree
     };
 }
@@ -187,10 +201,11 @@ export function addBasketPO(item) {
  * @param itemId - the selected itemId
  * @returns - action change tab
  */
-export function updateItemInBasketPO(basket) {
+export function updateItemInBasketPO(basket, removePopUp) {
     return {
         type: actions.UPDATE_ITEM_IN_BASKET,
-        basket
+        basket,
+        removePopUp
     };
 }
 
@@ -271,7 +286,7 @@ export function getEndDateValuePO(endDate) {
 }
 
 /**
- * setStartDateValue start action to change tab
+ * selectStartDateValuePO start action to change tab
  * @memberof plugin.actions
  * @returns - action change tab
  */
@@ -362,8 +377,6 @@ export function setPhotoCountActionPO(amount) {
     };
 }
 
-
-
 /**
  * pictureHoveredPO start action to change tab
  * @memberof plugin.actions
@@ -412,11 +425,11 @@ export function onScrollPO() {
 }
 
 /**
- * setDateList start action to change tab
+ * setDateListPO start action to change tab
  * @memberof plugin.actions
  * @returns - action change tab
  */
-export function setDateList(dates) {
+export function setDateListPO(dates) {
     return {
         type: actions.SET_DATE_LIST,
         dates
@@ -473,11 +486,11 @@ export function accumulateScrollEventsPO(bool) {
 }
 
 /**
- * saveDownloadFields start action to change tab
+ * saveDownloadFieldsPO start action to change tab
  * @memberof plugin.actions
  * @returns - action change tab
  */
-export function saveDownloadFields(fileName, prefix) {
+export function saveDownloadFieldsPO(fileName, prefix) {
     return {
         type: actions.SAVE_DOWNLOAD_FIELDS,
         fileName,
@@ -510,12 +523,12 @@ export function setPluginConfigsPO(configs) {
 }
 
 /**
- * setPicturesInBasket action triggered to initialize or reinitialize plugin basic configs
+ * setPicturesInBasketPO action triggered to initialize or reinitialize plugin basic configs
  * @memberof photosObliques.actions
  * @param configs - configs object
  * @returns - action init configs with those configs
  */
-export function setPicturesInBasket(amount, basketSize) {
+export function setPicturesInBasketPO(amount, basketSize) {
     return {
         type: actions.SET_PICTURES_IN_BASKET,
         amount,
@@ -524,12 +537,12 @@ export function setPicturesInBasket(amount, basketSize) {
 }
 
 /**
- * setStartDateValue action triggered to initialize or reinitialize plugin basic configs
+ * setStartDateValuePO action triggered to initialize or reinitialize plugin basic configs
  * @memberof photosObliques.actions
  * @param configs - configs object
  * @returns - action init configs with those configs
  */
-export function setStartDateValue(startDateValue) {
+export function setStartDateValuePO(startDateValue) {
     return {
         type: actions.SET_STARTDATE_VALUE,
         startDateValue
@@ -537,12 +550,12 @@ export function setStartDateValue(startDateValue) {
 }
 
 /**
- * setEndDateValue action triggered to initialize or reinitialize plugin basic configs
+ * setEndDateValuePO action triggered to initialize or reinitialize plugin basic configs
  * @memberof photosObliques.actions
  * @param configs - configs object
  * @returns - action init configs with those configs
  */
-export function setEndDateValue(endDateValue) {
+export function setEndDateValuePO(endDateValue) {
     return {
         type: actions.SET_ENDDATE_VALUE,
         endDateValue

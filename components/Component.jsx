@@ -14,8 +14,8 @@ export class photosObliques extends React.Component {
         hoveredPolygonVisibilityState: PropTypes.bool,
         width: PropTypes.number,
         panelClassName: PropTypes.string,
-        photosObliquesHomeText: PropTypes.string,
-        pictureAmount: PropTypes.number,
+        photosobliqueshometext: PropTypes.string,
+        pictureamount: PropTypes.number,
         activeTab: PropTypes.string,
         dockStyle: PropTypes.object,
         searchResult: PropTypes.array,
@@ -53,11 +53,11 @@ export class photosObliques extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            photosObliquesHomeText: props.photosObliquesHomeText,
-            pictureAmount: props.pictureAmount,
-            maxMoAmount: props.maxMoAmount,
-            downloadInformationMessage: props.downloadInformationMessage,
-            poBackendURLAccess: props.poBackendURLAccess,
+            photosobliqueshometext: props.photosobliqueshometext,
+            pictureamount: props.pictureamount,
+            maxmoamount: props.maxmoamount,
+            downloadinformationmessage: props.downloadinformationmessage,
+            pobackendurlaccess: props.pobackendurlaccess,
             helplink: props.helplink,
             xoffset: 0,
             yoffset: 0
@@ -156,7 +156,13 @@ export class photosObliques extends React.Component {
                 { this.props.searchResult.length === 0 && <div>
                     {this.renderSpinner("photosObliques.spinnerResultLoadingMessage")}
                 </div> }
-                {this.props.searchResult.length != 0 && <div className="PHOTOSOBLIQUES_scrollBar" id="PHOTOSOBLIQUES_scrollBar" onScroll={() => this.props.onScrollPO()}>
+                {
+                    this.props.searchResult[0]?.provider === 'none' &&
+                    <div className="PO_bold text-center PO_NoResultFound">
+                        <Message msgId={'photosObliques.noResultsFound'} />
+                    </div>
+                }
+                {this.props.searchResult.length != 0 && this.props.searchResult[0].provider != 'none' && <div className="PHOTOSOBLIQUES_scrollBar" id="PHOTOSOBLIQUES_scrollBar" onScroll={() => this.props.onScrollPO()}>
                     {
                         this.props.searchResult.map((val, key) => {
                             return (
@@ -259,7 +265,7 @@ export class photosObliques extends React.Component {
         return (
             <>
                 <h3 className="PO_filterTitle"><Message msgId={'photosObliques.filterTitle'} /></h3>
-                <p><Message msgId={'photosObliques.filterYears'} /></p>
+                <p className="PO_filterSubTitles"><Message msgId={'photosObliques.filterYears'} /></p>
                 <select id="PO_startDate" className="rw-input" onChange={(e) => this.props.selectStartDateValuePO(e.target.value)} >
                     <option value="start" key="start">Année de début</option>
                     {
@@ -299,25 +305,25 @@ export class photosObliques extends React.Component {
                 {(this.props.roseValue != '' || this.props.startDateValue != 0 || this.props.endDateValue != 0) 
                     && <Glyphicon glyph="clear-filter" className="PO_deletionGlyph" onClick={() => this.props.clearFiltersPO()} />}
                 <div className="PO_compassMainStyle">
-                    <Message msgId={'photosObliques.windRoseLabel'} />
+                    <p className="PO_filterSubTitles"><Message msgId={'photosObliques.windRoseLabel'} /></p>
                     <div className="PO_compass">
                         <div className="PO_compass-main">
-                            <span className="PO_north-label" style={this.props.roseValue === '0' ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>N</span>
-                            <span className="PO_dot PO_part2" style={this.props.roseValue === 22.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                            <span className="PO_dot PO_part3" style={this.props.roseValue === 45 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                            <span className="PO_dot PO_part4" style={this.props.roseValue === 67.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                            <span className="PO_east-label" style={this.props.roseValue === 90 ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>E</span>
-                            <span className="PO_dot PO_part6" style={this.props.roseValue === 112.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                            <span className="PO_dot PO_part7" style={this.props.roseValue === 135 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                            <span className="PO_dot PO_part8" style={this.props.roseValue === 157.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                            <span className="PO_south-label" style={this.props.roseValue === 180 ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>S</span>
-                            <span className="PO_dot PO_part10" style={this.props.roseValue === 202.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                            <span className="PO_dot PO_part11" style={this.props.roseValue === 225 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                            <span className="PO_dot PO_part12" style={this.props.roseValue === 247.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                            <span className="PO_west-label" style={this.props.roseValue === 270 ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>W</span>
-                            <span className="PO_dot PO_part14" style={this.props.roseValue === 292.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                            <span className="PO_dot PO_part15" style={this.props.roseValue === 315 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
-                            <span className="PO_dot PO_part16" style={this.props.roseValue === 337.5 ? {"backgroundColor": "#aaa"} : {"backgroundColor": "#ddd"}}></span>
+                        <span className="PO_north-label" style={this.props.roseValue === '0' ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>N</span>
+                        <span className="PO_dot PO_part2" style={this.props.roseValue === 22.5 ? {"backgroundColor": "#444"} : {"backgroundColor": "#ddd"}}></span>
+                        <span className="PO_dot PO_part3" style={this.props.roseValue === 45 ? {"backgroundColor": "#444"} : {"backgroundColor": "#ddd"}}></span>
+                        <span className="PO_dot PO_part4" style={this.props.roseValue === 67.5 ? {"backgroundColor": "#444"} : {"backgroundColor": "#ddd"}}></span>
+                        <span className="PO_east-label" style={this.props.roseValue === 90 ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>E</span>
+                        <span className="PO_dot PO_part6" style={this.props.roseValue === 112.5 ? {"backgroundColor": "#444"} : {"backgroundColor": "#ddd"}}></span>
+                        <span className="PO_dot PO_part7" style={this.props.roseValue === 135 ? {"backgroundColor": "#444"} : {"backgroundColor": "#ddd"}}></span>
+                        <span className="PO_dot PO_part8" style={this.props.roseValue === 157.5 ? {"backgroundColor": "#444"} : {"backgroundColor": "#ddd"}}></span>
+                        <span className="PO_south-label" style={this.props.roseValue === 180 ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>S</span>
+                        <span className="PO_dot PO_part10" style={this.props.roseValue === 202.5 ? {"backgroundColor": "#444"} : {"backgroundColor": "#ddd"}}></span>
+                        <span className="PO_dot PO_part11" style={this.props.roseValue === 225 ? {"backgroundColor": "#444"} : {"backgroundColor": "#ddd"}}></span>
+                        <span className="PO_dot PO_part12" style={this.props.roseValue === 247.5 ? {"backgroundColor": "#444"} : {"backgroundColor": "#ddd"}}></span>
+                        <span className="PO_west-label" style={this.props.roseValue === 270 ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>W</span>
+                        <span className="PO_dot PO_part14" style={this.props.roseValue === 292.5 ? {"backgroundColor": "#444"} : {"backgroundColor": "#ddd"}}></span>
+                        <span className="PO_dot PO_part15" style={this.props.roseValue === 315 ? {"backgroundColor": "#444"} : {"backgroundColor": "#ddd"}}></span>
+                        <span className="PO_dot PO_part16" style={this.props.roseValue === 337.5 ? {"backgroundColor": "#444"} : {"backgroundColor": "#ddd"}}></span>
                             <div className="PO_compass-rose">
                                 <div className="cardial-points">
                                     <div className="PO_north-pointer PO_pointer"></div>
@@ -405,10 +411,13 @@ export class photosObliques extends React.Component {
             return (
                 <div id="PHOTOSOBLIQUES_EXTENSION PHOTOSOBLIQUES_scrollBar">
                     {!this.props.downloading && <div>
-                        <div className="PO_basket_counter_position">
-                            {this.props.itemCounterInBasket} / {this.props.basket.length} <Message msgId={'photosObliques.pictureSelected'} />
+                        <div className="PO_basket_sort_position">
+                            {this.props.itemCounterInBasket != 0 && <span className="PO_filterBasketValues">
+                                {this.props.itemCounterInBasket} / {this.props.basket.length} <Message msgId={'photosObliques.pictureSelected'} />
+                            </span>}
+                            {this.props.itemCounterInBasket === 0 && <span></span>}
                             <span className="PO_basket_sort_position">
-                                <span className="PO_bold">Trier par: </span>
+                                <span className="PO_bold PO_filterBasketValues">Trier par: </span>
                                 <select id="filterBasketValues" className="PO_startDate" onChange={() => this.props.filterBasketValuesPO(document.getElementById("filterBasketValues").value)}>
                                     <option value="-relevance">Pertinence</option>
                                     <option value="-year">Année</option>
@@ -421,7 +430,7 @@ export class photosObliques extends React.Component {
                         </div>
                         <div>
                             <div className="PO_basket_counter_position">
-                                {this.props.picturesInBasket} / {this.props.configs.pictureAmount} <Message msgId={'photosObliques.pictureAmount'} /> - {parseFloat(this.props.basketSize / 1000000).toFixed(1)} / {this.props.configs.maxMoAmount  + " Mo"} <Message msgId={'photosObliques.maxCartSize'} />
+                                <Message msgId={'photosObliques.maxLimits'} /> {this.props.picturesInBasket} / {this.props.configs.pictureamount} <Message msgId={'photosObliques.pictureAmount'} /> - {parseFloat(this.props.basketSize / 1000000).toFixed(1)} / {this.props.configs.maxmoamount  + " Mo"}
                             </div>
                             <div className="PO_basket_buttons_position">
                                 <div className="PO_tooltipDeletionBasket">
@@ -588,7 +597,7 @@ export class photosObliques extends React.Component {
                             </div>
                             <div className="row">
                                 <div className="col-sm-2"></div>
-                                <button onClick={() => {this.props.modalDisplayPO(true, 'iUnderstand'), this.props.saveDownloadFields(document.getElementById("fname").value,document.getElementById("pname").value)}} className="col-sm-3 btn-primary PO_addBasket PO_button_margin_bottom"><Message msgId={'photosObliques.ok'}/></button>
+                                <button onClick={() => {this.props.modalDisplayPO(true, 'iUnderstand'), this.props.saveDownloadFieldsPO(document.getElementById("fname").value,document.getElementById("pname").value)}} className="col-sm-3 btn-primary PO_addBasket PO_button_margin_bottom"><Message msgId={'photosObliques.ok'}/></button>
                                 <div className="col-sm-2"></div>
                                 <button onClick={() => this.props.modalDisplayPO(false, '')} className="col-sm-3 btn-primary PO_addBasket PO_button_margin_bottom"><Message msgId={'photosObliques.cancel'}/></button>
                                 <div className="col-sm-2"></div>

@@ -19,7 +19,7 @@ import {
     removeSelectedItemsInBasketPO,
     clickPicturePO,
     downloadBasketPO,
-    setDateList,
+    setDateListPO,
     selectStartDateValuePO,
     selectEndDateValuePO,
     pictureHoveredPO,
@@ -29,7 +29,7 @@ import {
     modalDisplayPO,
     updateHoveredPolygonVisibilityStatePO,
     setDownloadingPO,
-    saveDownloadFields,
+    saveDownloadFieldsPO,
     clearFiltersPO,
     searchValuesFilteredPO,
     openSearchFiltersPO
@@ -101,8 +101,8 @@ export default createPlugin(name, {
         configs: getPluginConfig(state) || '',
         picturesInBasket: getPicturesInBasket(state) || '',
         basketSize: getBasketSize(state) || 0,
-        startDateValue: getStartDateValue(state) || '',
-        endDateValue: getEndDateValue(state) || '',
+        startDateValue: getStartDateValue(state) || 0,
+        endDateValue: getEndDateValue(state) || 0,
         displayFilters: getDisplayFilters(state) || false
     }), {
         toggleControl,
@@ -117,7 +117,7 @@ export default createPlugin(name, {
         removeSelectedItemsInBasketPO,
         clickPicturePO,
         downloadBasketPO,
-        setDateList,
+        setDateListPO,
         selectStartDateValuePO,
         selectEndDateValuePO,
         pictureHoveredPO,
@@ -127,7 +127,7 @@ export default createPlugin(name, {
         modalDisplayPO,
         updateHoveredPolygonVisibilityStatePO,
         setDownloadingPO,
-        saveDownloadFields,
+        saveDownloadFieldsPO,
         clearFiltersPO,
         searchValuesFilteredPO,
         openSearchFiltersPO

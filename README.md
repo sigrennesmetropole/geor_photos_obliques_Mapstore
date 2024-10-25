@@ -92,7 +92,7 @@ When the plugin is added to a MapStore context for geOrchestra, it needs to be c
 
 | Parameter Name | Default Value | Description |
 | ---      | ---      | ---      |
-| poBackendURLAccess | "/photosobliques" | Link to the back-end used by the plugin.  |
+| pobackendurlaccess | "/photosobliques" | Link to the back-end used by the plugin.  |
 | poMaxCartNumberOfPics | 25 | Maximum number of photos that can be added to basket. |
 | poMaxCartSize | 50 | Maximum weight allowed for basket. |
 | poDownloadInfoMessage | "" | Information message to display when uploading photos. |

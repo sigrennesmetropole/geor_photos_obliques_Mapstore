@@ -141,15 +141,13 @@ button.PHOTOSOBLIQUES_active{
   }
   
   .PO_compass {
-    width: 130px;
-    height: 130px;
+    width: 110px;
+    height: 110px;
     position: relative;
     margin: auto auto;
     margin-top: 10px;
     border-radius: 50%;
     box-shadow: 0 2px 6px .8px #999;
-    animation: sliding 1.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    -webkit-animation: sliding 1.9s ease-in-out;
   }
   
   .PO_compass-main {
@@ -158,7 +156,6 @@ button.PHOTOSOBLIQUES_active{
     position: absolute;
     top: 50%; left: 50%;
     margin-top: -47%; margin-left: -47%;
-    /* background: radial-gradient(#EEE 50%, #DDD 80%); */
     border-radius: 50%;
   }
   
@@ -174,9 +171,9 @@ button.PHOTOSOBLIQUES_active{
     width: 0;
     height: 0;
     position: absolute;
-    border: 50px solid;
-    border-left: 10px solid;
-    border-right: 10px solid;
+    border: 40px solid;
+    border-left: 8px solid;
+    border-right: 8px solid;
   }
   
   .cardial-points .PO_pointer {
@@ -188,92 +185,78 @@ button.PHOTOSOBLIQUES_active{
   }
   
   .PO_north-pointer {
-      margin-top: -53px;
-      left: 57%;
-      margin-left: -13px;
-      transform: rotate(180deg);
-    }
-    
-    .PO_east-pointer {
-      top: 42%;
-      right: -19px;
-      margin-top: -44px;
-      transform: rotate(-90deg);
-    }
-  
-    .PO_west-pointer {
-      top: 42%;
-      left: -14px;
-      margin-top: -44px;
-      transform: rotate(90deg);
-    }
-  
-    .PO_south-pointer {
-      bottom: 0px;
-      margin-bottom: -55px;
-      left: 57%;
-      margin-left: -13px;
-    }
+    margin-top: -40px;
+    left: 59%;
+    margin-left: -13px;
+    transform: rotate(180deg);
+  }
+  .PO_east-pointer {
+    top: -3px;
+    right: -15px;
+    transform: rotate(-90deg);
+  }
+  .PO_south-pointer {
+    bottom: 0px;
+    margin-bottom: -40px;
+    left: 59%;
+    margin-left: -13px;
+  }
+  .PO_west-pointer {
+    top: -3px;
+    left: -10px;
+    transform: rotate(90deg);
+  }
   
   .PO_north-label {
     position: absolute;
-    top: -3px;
-    left: 59px;
+    top: -5px;
+    left: 46%;
   }
   
-  .PO_east-label {
+  .PO_east-label{
     position: absolute;
-    top: 51px;
+    top: 40%;
     right: -1px;
   }
   
-  .PO_west-label {
+  .PO_west-label{
     position: absolute;
-    top: 51px;
+    top: 40%;
     left: -2px;
   }
   
-  .PO_south-label {
+  .PO_south-label{
     position: absolute;
-    top: 107px;
-    left: 60px;
+    top: 89px;
+    left: 47%;
   }
   /*fin boussole*/
   
   /*aiguille à tourner*/
-  .PO_rotate{
+  .PO_rotate {
     visibility: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 30px;
-    /* En cas de rotation à 90 degrés */
-    /* transform: rotate(90deg); */
-    /* En cas de rotation décaléee pour mieux fit les hitboxes */
+    margin-top: 27px;
     transform: rotate(102.25deg);
     pointer-events: none;
   }
   .PO_losange{
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     background-color: #777;
     transform: rotateX(80deg) rotateZ(45deg);
     pointer-events: none;
   }
 
-  .PO_rotate2{    
+  .PO_rotate2{
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 30px;
-    /* En cas de rotation à 90 degrés */
-    /* transform: rotate(90deg); */
-    /* En cas de rotation décaléee pour mieux fit les hitboxes */
-    transform: rotate(102.25deg);
     pointer-events: none;
-    top: 30px;
-    left: 65px;
-    position: absolute;
+    top: 51px;
+    position: relative;
   }
 
 .PO_rotate2Hidden{
@@ -281,8 +264,8 @@ button.PHOTOSOBLIQUES_active{
 }
 
   .PO_losangeSelected{
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     background-color: #444;
     transform: rotateX(80deg) rotateZ(45deg);
     pointer-events: none;
@@ -298,8 +281,8 @@ button.PHOTOSOBLIQUES_active{
   .PO_circle {
     position: absolute;
     padding: 0;
-    width: 130px;
-    height: 130px;
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
     list-style: none;
     overflow: hidden;
@@ -461,6 +444,11 @@ button.PHOTOSOBLIQUES_active{
   .PO_filterTitle{
     font-weight: bold;
     font-size: medium;
+    margin-bottom: 15px !important;
+  }
+
+  .PO_filterSubTitles{
+      margin-bottom: 15px !important;
   }
 
   .PO_startDate, .PO_endDate{
@@ -506,64 +494,53 @@ button.PHOTOSOBLIQUES_active{
   }
 
   .PO_part2{
-    top: 10px;
-    left: 85px;
-  }
-
-  .PO_part3{
-    top: 22px;
-    left: 102px;
-  }
-
-  .PO_part4{
-    top: 40px;
-    left: 112px;
-  }
-
-  .PO_part6{
-    top: 80px;
-    left: 112px;
-  }
-
-  .PO_part7{
-    top: 97px;
-    left: 102px;
-  }
-
-  .PO_part8{
-    top: 110px;
-    left: 85px;
-  }
-
-  .PO_part10{
-    top: 111px;
-    left: 35px;
-  }
-
-  .PO_part11{
-    top: 97px;
-    left: 18px;
-  }
-
-  .PO_part12{
-    top: 80px;
-    left: 6px;
-  }
-
-  .PO_part14{
-    top: 38px;
-    left: 8px;
-  }
-
-  .PO_part15{
-    top: 20px;
-    left: 20px;
-  }
-
-  .PO_part16{
-    top: 8px;
-    left: 38px;
-  }
+    top: 6px;
+    left: 69px;
+    }
+    .PO_part3{
+    top: 17px;
+    left: 84px;
+    }
+    .PO_part4{
+    top: 32px;
+      left: 94px;
+    }
+    .PO_part6 {
+      top: 67px;
+      left: 94px;
+    }
+    .PO_part7 {
+      top: 83px;
+      left: 84px;
+    }
+    .PO_part8 {
+      top: 93px;
+      left: 69px;
+    }
+    .PO_part10 {
+      top: 93px;
+      left: 32px;
+    }
+    .PO_part11 {
+      top: 83px;
+      left: 16px;
+    }
+    .PO_part12 {
+      top: 67px;
+      left: 6px;
+    }
+    .PO_part14 {
+      top: 32px;
+      left: 6px;
+    }
+    .PO_part15 {
+      top: 17px;
+      left: 16px;
+    }
+    .PO_part16 {
+      top: 6px;
+      left: 32px;
+    }
 
   /* validateForm */
 
@@ -641,7 +618,7 @@ button.PHOTOSOBLIQUES_active{
 
  .PO_selected:hover{
   border-color: lightblue;
-  box-shadow: 0px 14px 28px lightblue;
+  box-shadow: 0px 14px 28px lightblue!important;
  }
 
  .PO_addBasket, .PO_removeBasket, .PO_downloadBasket, .PO_search{
@@ -655,7 +632,7 @@ button.PHOTOSOBLIQUES_active{
  }
 
  .PO_downloadBasket, .PO_removeBasket, .PO_search{
-  margin: 5px;
+  margin: 5px!important;
   width: 35px;
  }
 
@@ -705,6 +682,11 @@ button.PHOTOSOBLIQUES_active{
   font-weight: bold;
 }
 
+.PO_NoResultFound{
+  font-size: 16px;
+  margin-top: 20px;
+}
+
 .PO_resultOrganizationFilters{
   padding-left: 10px;
   padding-right: 10px;
@@ -738,10 +720,17 @@ button.PHOTOSOBLIQUES_active{
 .PO_basket_counter_position{
   text-align: left;
   margin-left: 10px;
+  font-size: 11px;
 }
 
 .PO_basket_sort_position{
-  margin-left: 21%;
+  display: flex;
+  justify-content: space-between;
+  padding-left: 10px;
+}
+
+.PO_filterBasketValues{
+  margin-top: 15px;
 }
 
 .PO_filterResults{
@@ -955,7 +944,8 @@ button.PHOTOSOBLIQUES_active{
 .PO_filterSelectionMainDiv select {
   width: 100%;
   max-width: 250px;
-  margin: 5px!important;
+  margin: 5px !important;
+  margin-top: 10px !important;
 }
 
 .PO_zoomToGlyph{

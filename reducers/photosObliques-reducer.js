@@ -36,6 +36,8 @@ export default (state = initialState, action) => {
         return assign({}, state, { activeTab: action.tab });
     case actions.ROSE_CLICKED:
         return assign({}, state, { roseValue: action.degree });
+    case actions.ROSE_CLICKED_SETTER:
+        return assign({}, state, { roseValue: action.degree });
     case actions.SEARCH_FILTERS:
         return assign({}, state, { filtersTriggered: action.filters });
     case actions.SEARCH_VALUES_FILTERED:
