@@ -362,7 +362,6 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
         response = response[0];
         if (response.status === 200) {
             if (response.data.length != 0) {
-                console.log(getPhotoCountSelector(store.getState()));
                 return Rx.Observable.forkJoin(
                     getPhotoCount(wkt, datas)
                 ).switchMap((responsePhotoCount) => {
@@ -459,7 +458,7 @@ export const addBasketPOEpic = (action$, store) => action$.ofType(actions.ADD_BA
         basketSize += item.fileSize;
     });
     if (!alreadyInBasket) {
-        if (basket.length +1 <= config.pictureamount && parseFloat((basketSize + action.item.fileSize) / 1000000).toFixed(1) || 0 <= config.maxmoamount) {
+        if (basket.length +1 <= config.pomaxcartnumberofpics && parseFloat((basketSize + action.item.fileSize) / 1000000).toFixed(1) || 0 <= config.pomaxcartsize) {
             basket.push(action.item);
             basketSize += action.item.fileSize;
             observable = [
@@ -467,10 +466,10 @@ export const addBasketPOEpic = (action$, store) => action$.ofType(actions.ADD_BA
                 setPicturesInBasketPO(basket.length, basketSize)
             ];
         } else{
-            if (basket.length +1 >= config.pictureamount) {
+            if (basket.length +1 >= config.pomaxcartnumberofpics) {
                 return dropPopUp('basketTooMuchPictures', '', store.getState());
             }
-            if (parseFloat((basketSize + action.item.fileSize) / 1000000).toFixed(1) >= config.maxmoamount) {
+            if (parseFloat((basketSize + action.item.fileSize) / 1000000).toFixed(1) >= config.pomaxcartsize) {
                 return dropPopUp('basketTooHeavy');
             }
         }
@@ -1001,12 +1000,12 @@ export const initConfigsPOEpic = (action$, store) => action$.ofType(actions.INIT
             response = response[0];
             if (response.status === 200) {
                 response = response.data;
-                response.photosobliqueshometext = action.configs.photosobliqueshometext;
-                response.pictureamount = action.configs.pictureamount;
-                response.maxmoamount = action.configs.maxmoamount;
-                response.downloadinformationmessage = action.configs.downloadinformationmessage;
+                response.pohometext = action.configs.pohometext;
+                response.pomaxcartnumberofpics = action.configs.pomaxcartnumberofpics;
+                response.pomaxcartsize = action.configs.pomaxcartsize;
+                response.podownloadinfomessage = action.configs.podownloadinfomessage;
                 response.pobackendurlaccess = action.configs.pobackendurlaccess;
-                response.helplink = action.configs.helplink;
+                response.pohelpurlaccess = action.configs.pohelpurlaccess;
                 return Rx.Observable.from([
                     setPluginConfigsPO(response)
                 ]);

@@ -14,8 +14,8 @@ export class photosObliques extends React.Component {
         hoveredPolygonVisibilityState: PropTypes.bool,
         width: PropTypes.number,
         panelClassName: PropTypes.string,
-        photosobliqueshometext: PropTypes.string,
-        pictureamount: PropTypes.number,
+        pohometext: PropTypes.string,
+        pomaxcartnumberofpics: PropTypes.number,
         activeTab: PropTypes.string,
         dockStyle: PropTypes.object,
         searchResult: PropTypes.array,
@@ -53,12 +53,12 @@ export class photosObliques extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            photosobliqueshometext: props.photosobliqueshometext,
-            pictureamount: props.pictureamount,
-            maxmoamount: props.maxmoamount,
-            downloadinformationmessage: props.downloadinformationmessage,
+            pohometext: props.pohometext,
+            pomaxcartnumberofpics: props.pomaxcartnumberofpics,
+            pomaxcartsize: props.pomaxcartsize,
+            podownloadinfomessage: props.podownloadinfomessage,
             pobackendurlaccess: props.pobackendurlaccess,
-            helplink: props.helplink,
+            pohelpurlaccess: props.pohelpurlaccess,
             xoffset: 0,
             yoffset: 0
         };
@@ -86,7 +86,7 @@ export class photosObliques extends React.Component {
                 <>
                     {
                         <>
-                            <div className="helpBtnAccess" onClick={() => window.open(this.props.helplink,'_blank')} style={this.props.helplink === '' ? {"display":"none"} : {"display":"block"}} >
+                            <div className="helpBtnAccess" onClick={() => window.open(this.props.pohelpurlaccess,'_blank')} style={this.props.pohelpurlaccess === '' ? {"display":"none"} : {"display":"block"}} >
                                 <Glyphicon glyph="question-sign" />
                             </div>
                             <div className="row PO_filterSelectionMainDiv">
@@ -143,7 +143,7 @@ export class photosObliques extends React.Component {
                     <span className="PO_resultAmount">{this.props.searchResult.length} / {this.props.prevPhotoCount} <Message msgId={'photosObliques.picturesFound'} /></span>
                     <span>
                         <span className="PO_bold">Trier par: </span>
-                        <select id="filterSearchedValues" className="PO_startDate" onChange={() => this.props.filterSearchedValuesPO(document.getElementById("filterSearchedValues").value)}>
+                        <select id="filterSearchedValues" className="PO_startDate PO_sortSearchedValues" onChange={() => this.props.filterSearchedValuesPO(document.getElementById("filterSearchedValues").value)}>
                             <option value="-relevance">Pertinence</option>
                             <option value="-year">Année</option>
                             <option value="-date">Date de prise de vue</option>
@@ -222,7 +222,6 @@ export class photosObliques extends React.Component {
      * @returns - dom of the home tab content
      */
     validateSection(){
-        // if (this.props.roseValue != "" && this.props.startDate != "0" && this.props.endDate != "0") {
         if (this.props.startDate != "0" && this.props.endDate != "0") {
             return (
                 <>
@@ -418,7 +417,7 @@ export class photosObliques extends React.Component {
                             {this.props.itemCounterInBasket === 0 && <span></span>}
                             <span className="PO_basket_sort_position">
                                 <span className="PO_bold PO_filterBasketValues">Trier par: </span>
-                                <select id="filterBasketValues" className="PO_startDate" onChange={() => this.props.filterBasketValuesPO(document.getElementById("filterBasketValues").value)}>
+                                <select id="filterBasketValues" className="PO_startDate PO_sortSearchedValues" onChange={() => this.props.filterBasketValuesPO(document.getElementById("filterBasketValues").value)}>
                                     <option value="-relevance">Pertinence</option>
                                     <option value="-year">Année</option>
                                     <option value="-date">Date de prise de vue</option>
@@ -430,7 +429,7 @@ export class photosObliques extends React.Component {
                         </div>
                         <div>
                             <div className="PO_basket_counter_position">
-                                <Message msgId={'photosObliques.maxLimits'} /> {this.props.picturesInBasket} / {this.props.configs.pictureamount} <Message msgId={'photosObliques.pictureAmount'} /> - {parseFloat(this.props.basketSize / 1000000).toFixed(1)} / {this.props.configs.maxmoamount  + " Mo"}
+                                <Message msgId={'photosObliques.maxLimits'} /> {this.props.picturesInBasket} / {this.props.configs.pomaxcartnumberofpics} <Message msgId={'photosObliques.pictureAmount'} /> - {parseFloat(this.props.basketSize / 1000000).toFixed(1)} / {this.props.configs.pomaxcartsize  + " Mo"}
                             </div>
                             <div className="PO_basket_buttons_position">
                                 <div className="PO_tooltipDeletionBasket">

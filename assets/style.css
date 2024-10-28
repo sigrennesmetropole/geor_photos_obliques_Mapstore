@@ -563,10 +563,10 @@ button.PHOTOSOBLIQUES_active{
   padding: 3px;
  }
  .PO_searchResultPictures:hover{
-  cursor: pointer;
+  cursor: pointer!important;
  }
 .mapstore-side-card:hover{
-  cursor: default;
+  cursor: default!important;
 }
 
  .PO_searchResultPictures:hover ~ .PO_searchResultPictures_apercu > img{
@@ -616,12 +616,12 @@ button.PHOTOSOBLIQUES_active{
 
  .PO_selected{
   border-color: lightblue;
-  box-shadow: 3px 3px 3px 3px lightblue!important;
+  box-shadow: 3px 3px 3px 3px lightblue;
  }
 
  .PO_selected:hover{
   border-color: lightblue;
-  box-shadow: 0px 14px 28px lightblue!important;
+  box-shadow: 0px 14px 28px lightblue;
  }
 
  .PO_addBasket, .PO_removeBasket, .PO_downloadBasket, .PO_search{
@@ -969,11 +969,14 @@ button.PHOTOSOBLIQUES_active{
 }
 
 .PO_addBasketWidth {
-    position: absolute;
     width: 110px;
-    left: -5px;
+    margin-left: -10px!important;
 }
 
 .PO_harmonizePrecision{
   transform: translateY(30%);
+}
+
+.PO_sortSearchedValues{
+  cursor: pointer!important;
 }
