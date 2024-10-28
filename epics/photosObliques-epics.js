@@ -29,7 +29,8 @@ import {
     setPicturesInBasketPO,
     setStartDateValuePO,
     setEndDateValuePO,
-    changeTabPO
+    changeTabPO,
+    setPrevPhotoCount
 } from "../actions/photosObliques-action";
 import {
     TOGGLE_CONTROL
@@ -60,7 +61,8 @@ import {
     getFileName,
     getPrefix,
     getPluginConfig,
-    getFiltersTriggered
+    getFiltersTriggered,
+    getPhotoCountSelector
 } from "../selectors/photosObliques-selectors";
 
 import {
@@ -360,12 +362,14 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
         response = response[0];
         if (response.status === 200) {
             if (response.data.length != 0) {
+                console.log(getPhotoCountSelector(store.getState()));
                 return Rx.Observable.forkJoin(
                     getPhotoCount(wkt, datas)
                 ).switchMap((responsePhotoCount) => {
                     responsePhotoCount = responsePhotoCount[0];
                     if (responsePhotoCount.status === 200) {
                         observablesReturned = [
+                            setPrevPhotoCount(getPhotoCountSelector(store.getState())),
                             updateAdditionalLayer(
                                 PO_PERIMETER_LAYER_ID,
                                 "PO",
@@ -398,6 +402,7 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
                 // en cas de 0 résultats retournés
                 response.data = [{provider: 'none'}];
                 observablesReturned = [
+                    setPrevPhotoCount(getPhotoCountSelector(store.getState())),
                     updateAdditionalLayer(
                         PO_PERIMETER_LAYER_ID,
                         "PO",
@@ -454,7 +459,7 @@ export const addBasketPOEpic = (action$, store) => action$.ofType(actions.ADD_BA
         basketSize += item.fileSize;
     });
     if (!alreadyInBasket) {
-        if (basket.length +1 <= config.pictureamount && parseFloat((basketSize + action.item.fileSize) / 1000000).toFixed(1) <= config.maxmoamount) {
+        if (basket.length +1 <= config.pictureamount && parseFloat((basketSize + action.item.fileSize) / 1000000).toFixed(1) || 0 <= config.maxmoamount) {
             basket.push(action.item);
             basketSize += action.item.fileSize;
             observable = [

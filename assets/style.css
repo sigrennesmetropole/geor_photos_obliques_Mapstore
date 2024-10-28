@@ -14,7 +14,6 @@
     overflow-x: hidden;
     max-height: 70vh;
     height: 100%;
-    cursor: pointer;
     width: 100%;
 }
 
@@ -563,6 +562,12 @@ button.PHOTOSOBLIQUES_active{
   width: 140px;
   padding: 3px;
  }
+ .PO_searchResultPictures:hover{
+  cursor: pointer;
+ }
+.mapstore-side-card:hover{
+  cursor: default;
+}
 
  .PO_searchResultPictures:hover ~ .PO_searchResultPictures_apercu > img{
   display: block;
@@ -597,9 +602,7 @@ button.PHOTOSOBLIQUES_active{
   margin: 10px;
   padding: 5px 5px;
   border-radius: 5px;
-  /* border: 1px black solid; */
   box-shadow: 3px 3px 3px 3px lightgray;
-  /* height: 150px; */
   height: 100%;
   display: block!important;
   width: 95%!important;
@@ -613,7 +616,7 @@ button.PHOTOSOBLIQUES_active{
 
  .PO_selected{
   border-color: lightblue;
-  box-shadow: 3px 3px 3px 3px lightblue;
+  box-shadow: 3px 3px 3px 3px lightblue!important;
  }
 
  .PO_selected:hover{
@@ -628,7 +631,7 @@ button.PHOTOSOBLIQUES_active{
  }
 
  .PO_addBasket{
-  margin-top: 5px;
+  margin-top: 5px!important;
  }
 
  .PO_downloadBasket, .PO_removeBasket, .PO_search{

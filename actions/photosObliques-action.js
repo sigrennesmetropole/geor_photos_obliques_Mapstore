@@ -44,7 +44,8 @@ export const actions = {
     SET_ENDDATE_VALUE: 'PHOTOSOBLIQUES:SET_ENDDATE_VALUE',
     SET_STARTDATE_VALUE: 'PHOTOSOBLIQUES:SET_STARTDATE_VALUE',
     OPEN_SEARCH_FILTERS: 'PHOOSOBLIQUES:OPEN_SEARCH_FILTERS',
-    SET_PHOTO_COUNT: 'PHOTOSOBLIQUES:SET_PHOTO_COUNT'
+    SET_PHOTO_COUNT: 'PHOTOSOBLIQUES:SET_PHOTO_COUNT',
+    SET_PREV_PHOTO_COUNT: 'PHOTOSOBLIQUES:SET_PREV_PHOTO_COUNT'
 };
 
 export const tabTypes = {
@@ -571,5 +572,18 @@ export function setEndDateValuePO(endDateValue) {
 export function openSearchFiltersPO() {
     return {
         type: actions.OPEN_SEARCH_FILTERS
+    };
+}
+
+/**
+ * setPrevPhotoCount action triggered to initialize or reinitialize plugin basic configs
+ * @memberof photosObliques.actions
+ * @param configs - configs object
+ * @returns - action init configs with those configs
+ */
+export function setPrevPhotoCount(prevPhotoCount) {
+    return {
+        type: actions.SET_PREV_PHOTO_COUNT,
+        prevPhotoCount
     };
 }

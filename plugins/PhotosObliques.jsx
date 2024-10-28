@@ -67,7 +67,8 @@ import {
     getEndDateValue,
     getStartDateValue,
     getCounter,
-    getDisplayFilters
+    getDisplayFilters,
+    getPrevPhotoCount
 } from "../selectors/photosObliques-selectors";
 import '../assets/style.css';
 
@@ -103,7 +104,8 @@ export default createPlugin(name, {
         basketSize: getBasketSize(state) || 0,
         startDateValue: getStartDateValue(state) || 0,
         endDateValue: getEndDateValue(state) || 0,
-        displayFilters: getDisplayFilters(state) || false
+        displayFilters: getDisplayFilters(state) || false,
+        prevPhotoCount: getPrevPhotoCount(state)
     }), {
         toggleControl,
         changeTabPO,

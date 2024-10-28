@@ -80,6 +80,8 @@ export default (state = initialState, action) => {
         return assign({}, state , { displayFilters: false });
     case actions.OPEN_SEARCH_FILTERS:
         return assign({}, state , { displayFilters: true });
+    case actions.SET_PREV_PHOTO_COUNT:
+        return assign({}, state , { prevPhotoCount: action.prevPhotoCount });
     default:
         return state;
     }

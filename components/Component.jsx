@@ -140,7 +140,7 @@ export class photosObliques extends React.Component {
                     { this.renderFiltersSection() }
                 </div>}
                 <div className="PO_resultOrganizationFilters">
-                    <span className="PO_resultAmount">{this.props.searchResult.length} / {this.props.photoCount} <Message msgId={'photosObliques.picturesFound'} /></span>
+                    <span className="PO_resultAmount">{this.props.searchResult.length} / {this.props.prevPhotoCount} <Message msgId={'photosObliques.picturesFound'} /></span>
                     <span>
                         <span className="PO_bold">Trier par: </span>
                         <select id="filterSearchedValues" className="PO_startDate" onChange={() => this.props.filterSearchedValuesPO(document.getElementById("filterSearchedValues").value)}>
