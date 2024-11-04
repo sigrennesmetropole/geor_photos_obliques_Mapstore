@@ -547,12 +547,13 @@ button.PHOTOSOBLIQUES_active{
     padding-right: 15px;
     padding-left: 15px;
     text-align: center;
+    margin-bottom: 15px!important;
  }
 
  .PO_validateForm > button {
      margin: auto;
-     margin-top: 15px;
-     margin-right: 5px;
+     margin-top: 20px !important;
+     margin-right: 5px !important;
  }
 
  /* searchResults */
@@ -561,21 +562,17 @@ button.PHOTOSOBLIQUES_active{
   height: 100px;
   width: 140px;
   padding: 3px;
+  object-fit: cover;
  }
  .PO_searchResultPictures:hover{
-  cursor: pointer!important;
+  cursor: pointer !important;
  }
 .mapstore-side-card:hover{
-  cursor: default!important;
+  cursor: default !important;
 }
 
  .PO_searchResultPictures:hover ~ .PO_searchResultPictures_apercu > img{
   display: block;
- }
-
- .PO_searchResultPictures_apercu{
-    position: absolute;
-    top: 50%;
  }
 
  .PO_static {
@@ -583,15 +580,11 @@ button.PHOTOSOBLIQUES_active{
  }
 
  .PO_searchResultPictures_apercu > img{
-  position: absolute;
-  width: 40em;
-  height: 40em;
-  top: -500px;
-  /* left: -575px; */
-  right: 0;
-  bottom: 0;
+  max-height: 70vh;
+  max-width: 40vw;
   display: none;
   object-fit: contain;
+  border: 3px solid #FFFFFF;
 }
 
 .PO_searchResultPicturesBasket_apercu > img {
@@ -615,13 +608,13 @@ button.PHOTOSOBLIQUES_active{
  }
 
  .PO_selected{
-  border-color: lightblue;
-  box-shadow: 3px 3px 3px 3px lightblue;
+  border-color: var(--ms-success,#7da09d) !important;
+  box-shadow: 3px 3px 3px 3px var(--ms-success,#7da09d) !important;
  }
 
  .PO_selected:hover{
-  border-color: lightblue;
-  box-shadow: 0px 14px 28px lightblue;
+  border-color: var(--ms-success,#7da09d) !important;
+  box-shadow: 0px 14px 28px var(--ms-success,#7da09d) !important;
  }
 
  .PO_addBasket, .PO_removeBasket, .PO_downloadBasket, .PO_search{
@@ -645,11 +638,13 @@ button.PHOTOSOBLIQUES_active{
 
  .PO_resultPrecision{
   border-radius: 25px;
-  margin: 5px;
+  margin: 3px;
   color: white;
   font-size: 15px;
   font-weight: bold;
   text-align: center;
+  line-height: 20px;
+  padding-bottom: 2px;
  }
 
  .PO_high_high{
@@ -707,12 +702,12 @@ button.PHOTOSOBLIQUES_active{
 }
 
 .PO_flexContainer{
-  transform: translateY(40%);
+  top: 17px;
+  left: -20px;
 }
 
 .PO_text-align-left{
   text-align: left;
-  /* margin: auto; */
 }
 
 .PO_basket_buttons_position{
@@ -734,11 +729,11 @@ button.PHOTOSOBLIQUES_active{
 
 .PO_filterBasketValues{
   margin-top: 15px;
+  border: none!important;
 }
 
 .PO_filterResults{
   position: absolute;
-  /* left: 25%; */
   width: 97%;
   margin-left: 10px!important;
 }
@@ -750,8 +745,6 @@ button.PHOTOSOBLIQUES_active{
 	right: 0;
 	bottom: 0;
 	left: 0;
-
-	/* display: none; */
 }
 
 #PO_modal .PO_mask{
@@ -800,16 +793,16 @@ button.PHOTOSOBLIQUES_active{
 /* Tooltip text */
 .PO_tooltipZoom .PO_tooltiptext {
   visibility: hidden;
-  background-color: black;
+  background-color: var(--ms-success,#7da09d);
   color: #fff;
   text-align: center;
   padding: 5px;
   border-radius: 6px;
   top: 3px;
   position: relative;
-  width: 225px;
+  width: 180px;
   display: inline-block;
-  right: 137%;
+  right: 85px;
 }
 
 .PO_bigTooltipDownload{
@@ -824,7 +817,7 @@ button.PHOTOSOBLIQUES_active{
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
-  border-color: transparent transparent black transparent;
+  border-color: transparent transparent var(--ms-success,#7da09d) transparent;
 }
 
 .PO_tooltipDeletionBasket {
@@ -834,7 +827,7 @@ button.PHOTOSOBLIQUES_active{
 
 .PO_tooltipDeletionBasket .PO_tooltiptext {
   visibility: hidden;
-  width: 110px;
+  width: 150px;
   background-color: black;
   color: #fff;
   text-align: center;
@@ -844,7 +837,7 @@ button.PHOTOSOBLIQUES_active{
   /* Position the tooltip */
   position: absolute;
   z-index: 1;
-  top: -5px;
+  top: 0px!important;
   right: 105%;
 }
 
@@ -954,6 +947,7 @@ button.PHOTOSOBLIQUES_active{
 .PO_zoomToGlyph{
   font-size: 20px;
   color: black;
+  cursor: pointer !important;
 }
 
 .PO_greyed{
@@ -971,12 +965,17 @@ button.PHOTOSOBLIQUES_active{
 .PO_addBasketWidth {
     width: 110px;
     margin-left: -10px!important;
+    margin-top: 10px!important;
 }
 
 .PO_harmonizePrecision{
-  transform: translateY(30%);
+  margin-top: 17px;
 }
 
 .PO_sortSearchedValues{
   cursor: pointer!important;
+}
+
+#filterSearchedValues{
+  border: none!important;
 }

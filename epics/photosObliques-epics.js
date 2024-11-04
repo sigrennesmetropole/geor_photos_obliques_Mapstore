@@ -958,6 +958,7 @@ export const filterBasketValuesPOEpic = (action$, store) => action$.ofType(actio
 export const onScrollPOEpic = (action$, store) => action$.ofType(actions.ONSCROLL).switchMap((action) => {
     if (!getScrollIndicator(store.getState())) {
         if (document.getElementById('PHOTOSOBLIQUES_scrollBar').scrollTop >= (document.getElementById('PHOTOSOBLIQUES_scrollBar').clientHeight * (-0.8))) {
+            /*CORRIGER BUG de chargement de liste*/
            return Rx.Observable.from([validateSearchFiltersPO(true,true), accumulateScrollEventsPO(true)]);
         }
     } else{

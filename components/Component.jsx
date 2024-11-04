@@ -172,18 +172,15 @@ export class photosObliques extends React.Component {
                                             this.setState({xoffset: event.clientX, yoffset: event.clientY})
                                         }}/>
                                         {/* Nous avons mis en place un calcul qui permet de placer l'image a proximité de la div sorvolée
-                                        * ce calcul est relatif à la position de la souris et la position de la div parente
-                                        * dans les calculs, 40em correspond à la taille (théorique) de l'image et le -5em correspond à un décalage pour éviter de mettre la souris trop souvent dessus.
+                                        * ce calcul est relatif à la position de la souris et la position de la div parente.
+                                        * selon la position de la souris sur la fenêtre (window.innerheight) le décalage sera modifié pour ne pas couper l'image avec le haut ou le bas de l'écran.
+                                        * un décalage à droite est défini pour ne pas survoler à nouveau la feêtre et redéclaencher la focntion de manière intempestive.
                                         */}
-                                        <div className="PO_searchResultPictures_apercu" style={{
-                                                position: "absolute",
-                                                left: '0px',
-                                                top: '0px',
-                                            }}>
+                                        <div className="PO_searchResultPictures_apercu">
                                                 <img  style={{
                                                     position: "fixed",
                                                     right: '560px',
-                                                    top: window.innerHeight /2 > this.state.yoffset ? `${this.state.yoffset -200}px` : `${this.state.yoffset -350}px`,
+                                                    top: window.innerHeight /2 < this.state.yoffset ? `${this.state.yoffset -400}px` : `${this.state.yoffset -200}px`
                                                 }}
                                                 src={val.urlOverview} />
                                         </div>
@@ -450,15 +447,11 @@ export class photosObliques extends React.Component {
                                             <img src={ val.urlOverview } className="PO_searchResultPictures" onMouseEnter={(event) => {
                                                 this.setState({xoffset: event.clientX, yoffset: event.clientY})
                                             }}/>
-                                            <div className="PO_searchResultPictures_apercu PO_searchResultPicturesBasket_apercu" style={{
-                                                position: "absolute",
-                                                left: '0px',
-                                                top: '0px',
-                                                }}>
+                                            <div className="PO_searchResultPictures_apercu PO_searchResultPicturesBasket_apercu">
                                                 <img  style={{
                                                     position: "fixed",
                                                     right: '560px',
-                                                    top: window.innerHeight /2 > this.state.yoffset ? `${this.state.yoffset -200}px` : `${this.state.yoffset -300}px`,
+                                                    top: window.innerHeight /2 < this.state.yoffset ? `${this.state.yoffset -450}px` : `${this.state.yoffset -200}px`
                                                 }}
                                                 src={val.urlOverview} />
                                             </div>
