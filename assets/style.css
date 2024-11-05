@@ -959,7 +959,8 @@ button.PHOTOSOBLIQUES_active{
 }
 
 .PO_button_margin_bottom{
-  margin-bottom: 20px;
+  margin-bottom: 30px !important;
+  margin-top: 15px !important;
 }
 
 .PO_addBasketWidth {
