@@ -68,7 +68,7 @@ export const getBasket = (state) => get(state, 'photosObliques.basket');
 * @param state - application state
 * @returns - returns the tabs state
 */
-export const getItemToRemove = (state) => get(state, 'photosObliques.itemToRemove');
+//export const getItemToRemove = (state) => get(state, 'photosObliques.itemToRemove');
 
 /**
 * getItemCounterInBasket checks which tab is open
@@ -243,3 +243,11 @@ export const getDisplayFilters = (state) => get(state, 'photosObliques.displayFi
 * @returns - returns the tabs state
 */
 export const getPrevPhotoCount = (state) => get(state, 'photosObliques.prevPhotoCount');
+
+/**
+* getPrevSearchFilterValues checks which tab is open
+* @memberof plugin.selectors
+* @param state - application state
+* @returns - returns the tabs state
+*/
+export const getPrevSearchFiltersValues = (state) => get(state, 'photosObliques.prevSearchFiltersValues');

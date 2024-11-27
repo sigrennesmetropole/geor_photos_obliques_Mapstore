@@ -45,7 +45,7 @@ import {
     getSearchResult,
     getItemId,
     getBasket,
-    getItemToRemove,
+    // getItemToRemove,
     getItemCounterInBasket,
     getDateList,
     getStartDate,
@@ -68,7 +68,8 @@ import {
     getStartDateValue,
     getCounter,
     getDisplayFilters,
-    getPrevPhotoCount
+    getPrevPhotoCount,
+    getPrevSearchFiltersValues
 } from "../selectors/photosObliques-selectors";
 import '../assets/style.css';
 
@@ -84,7 +85,7 @@ export default createPlugin(name, {
         searchResult: getSearchResult(state),
         itemId: getItemId(state),
         basket: getBasket(state) || [],
-        itemToRemove: getItemToRemove(state),
+        // itemToRemove: getItemToRemove(state),
         itemCounterInBasket: getItemCounterInBasket(state) || 0,
         dateList: getDateList(state) || [],
         startDate: getStartDate(state) || [],
@@ -105,7 +106,8 @@ export default createPlugin(name, {
         startDateValue: getStartDateValue(state) || 0,
         endDateValue: getEndDateValue(state) || 0,
         displayFilters: getDisplayFilters(state) || false,
-        prevPhotoCount: getPrevPhotoCount(state)
+        prevPhotoCount: getPrevPhotoCount(state),
+        prevSearchFiltersValues: getPrevSearchFiltersValues(state)
     }), {
         toggleControl,
         changeTabPO,

@@ -45,7 +45,8 @@ export const actions = {
     SET_STARTDATE_VALUE: 'PHOTOSOBLIQUES:SET_STARTDATE_VALUE',
     OPEN_SEARCH_FILTERS: 'PHOOSOBLIQUES:OPEN_SEARCH_FILTERS',
     SET_PHOTO_COUNT: 'PHOTOSOBLIQUES:SET_PHOTO_COUNT',
-    SET_PREV_PHOTO_COUNT: 'PHOTOSOBLIQUES:SET_PREV_PHOTO_COUNT'
+    SET_PREV_PHOTO_COUNT: 'PHOTOSOBLIQUES:SET_PREV_PHOTO_COUNT',
+    SET_PREV_SEARCH_FILTERS_VALUES: 'PHOTOSOBLIQUES:SET_PREV_SEARCH_FILTERS_VALUES'
 };
 
 export const tabTypes = {
@@ -134,7 +135,7 @@ export function setWindRoseClickPO(degree) {
  * validateSearchFiltersPO start action to change tab
  * @memberof plugin.actions
  * @param section - the selected section
- * @returns - action change tab
+ * @returns - action search filters
  */
 export function validateSearchFiltersPO(filters, loadMore, newSearch) {
     return {
@@ -149,7 +150,7 @@ export function validateSearchFiltersPO(filters, loadMore, newSearch) {
  * cancelSearchFiltersPO start action to change tab
  * @memberof plugin.actions
  * @param section - the selected section
- * @returns - action change tab
+ * @returns - action cancel search filters
  */
 export function cancelSearchFiltersPO() {
     return {
@@ -585,5 +586,18 @@ export function setPrevPhotoCount(prevPhotoCount) {
     return {
         type: actions.SET_PREV_PHOTO_COUNT,
         prevPhotoCount
+    };
+}
+
+/**
+ * setPrevFiltersValues action triggered to initialize or reinitialize plugin basic configs
+ * @memberof photosObliques.actions
+ * @param configs - configs object
+ * @returns - action init configs with those configs
+ */
+export function setPrevSearchFiltersValues(prevSearchFiltersValues) {
+    return {
+        type: actions.SET_PREV_SEARCH_FILTERS_VALUES,
+        prevSearchFiltersValues
     };
 }

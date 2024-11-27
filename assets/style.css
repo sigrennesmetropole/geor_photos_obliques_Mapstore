@@ -9,11 +9,17 @@
     z-index: 1000;
 }
 
+/*@property --h_raw {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 100vh;
+}*/
 .PHOTOSOBLIQUES_scrollBar{
     overflow-y: scroll;
     overflow-x: hidden;
-    max-height: 70vh;
-    height: 100%;
+    /*max-height: 200px;*/
+    /*max-height:tan(atan2(var(--h_raw), 500px));*/
+    height: calc(100% - 135px);
     width: 100%;
 }
 
@@ -70,6 +76,12 @@ button.PHOTOSOBLIQUES_active{
 
 .PHOTOSOBLIQUES_selectorButton.PHOTOSOBLIQUES_active {
     border: none;
+}
+
+.nbPictInBasket {
+  font-size: 12px !important;
+  vertical-align: text-bottom;
+  color: var(--ms-success,#7da09d);
 }
 
 /* Fin section renderTabManu() */
@@ -596,7 +608,7 @@ button.PHOTOSOBLIQUES_active{
   padding: 5px 5px;
   border-radius: 5px;
   box-shadow: 3px 3px 3px 3px lightgray;
-  height: 100%;
+  /*height: 100%;*/
   display: block!important;
   width: 95%!important;
   font-size: 11px;
@@ -610,11 +622,13 @@ button.PHOTOSOBLIQUES_active{
  .PO_selected{
   border-color: var(--ms-success,#7da09d) !important;
   box-shadow: 3px 3px 3px 3px var(--ms-success,#7da09d) !important;
+  background-color : rgba(125, 160, 157, 0.2) !important;
  }
 
  .PO_selected:hover{
   border-color: var(--ms-success,#7da09d) !important;
   box-shadow: 0px 14px 28px var(--ms-success,#7da09d) !important;
+  background-color : rgba(125, 160, 157, 0.6) !important;
  }
 
  .PO_addBasket, .PO_removeBasket, .PO_downloadBasket, .PO_search{
@@ -625,6 +639,10 @@ button.PHOTOSOBLIQUES_active{
 
  .PO_addBasket{
   margin-top: 5px!important;
+ }
+
+ .PO_addedInBasket{
+  background-color: var(--ms-success,#7da09d) !important;
  }
 
  .PO_downloadBasket, .PO_removeBasket, .PO_search{
@@ -696,6 +714,12 @@ button.PHOTOSOBLIQUES_active{
   margin-top: 15px;
 }
 
+.PO_resultLoaded{
+  position: absolute;
+  right:0;
+  margin-top: 15px;
+}
+
 .PO_masterclass hr{
   margin-top: 0px;
   margin-bottom: 0px;
@@ -734,6 +758,7 @@ button.PHOTOSOBLIQUES_active{
 
 .PO_filterResults{
   position: absolute;
+  height:calc(100% - 110px);
   width: 97%;
   margin-left: 10px!important;
 }
@@ -773,15 +798,27 @@ button.PHOTOSOBLIQUES_active{
 	padding: 10% 5% 5% 5%;
 }
 
+.PO_numberPicsToDwnld{
+  margin-left: 20px !important;
+  margin-bottom: 15px !important;
+  font-size:11px !important;
+  font-style: italic !important;
+}
+
+.fileNameChoice {
+  Margin-bottom:20px !important;
+}
+
 #PO_modal .container div.PO_close{
 	position: absolute;
 	right: 3%;
 	top:0%;
 	color: #444;
 	font-size: 30px;
+  cursor:  pointer !important;
 }
 #PO_modal .container div.PO_close:hover{		
-	color: red;
+	color: var(--ms-success,#7da09d);
 }
 
 /* Tooltip container */

@@ -140,9 +140,9 @@ export class photosObliques extends React.Component {
                     { this.renderFiltersSection() }
                 </div>}
                 <div className="PO_resultOrganizationFilters">
-                    <span className="PO_resultAmount">{this.props.searchResult.length} / {this.props.prevPhotoCount} <Message msgId={'photosObliques.picturesFound'} /></span>
+                    <span className="PO_resultAmount">{this.props.prevPhotoCount} <Message msgId={'photosObliques.picturesFound'} /></span>
                     <span>
-                        <span className="PO_bold">Trier par: </span>
+                        <span className="PO_bold"><Message msgId={'photosObliques.orderBy'}/>: </span>
                         <select id="filterSearchedValues" className="PO_startDate PO_sortSearchedValues" onChange={() => this.props.filterSearchedValuesPO(document.getElementById("filterSearchedValues").value)}>
                             <option value="-relevance">Pertinence</option>
                             <option value="-year">Année</option>
@@ -162,11 +162,12 @@ export class photosObliques extends React.Component {
                         <Message msgId={'photosObliques.noResultsFound'} />
                     </div>
                 }
-                {this.props.searchResult.length != 0 && this.props.searchResult[0].provider != 'none' && <div className="PHOTOSOBLIQUES_scrollBar" id="PHOTOSOBLIQUES_scrollBar" onScroll={() => this.props.onScrollPO()}>
+                {this.props.searchResult.length != 0 && this.props.searchResult[0].provider != 'none' && 
+                <div className="PHOTOSOBLIQUES_scrollBar" id="PHOTOSOBLIQUES_scrollBar" onScroll={() => this.props.onScrollPO()} style={this.props.displayFilters ? {"pointer-events": "none", "opacity": "0.3"} : {"pointer-events": "auto", "opacity" : "1"}}>
                     {
                         this.props.searchResult.map((val, key) => {
                             return (
-                                <div className="row mapstore-side-card PO_searchResults" key={key} onMouseEnter={() => this.props.pictureHoveredPO(val)} onMouseLeave={() => this.props.pictureHoveredPO()}>
+                                <div id={val.id} className="row mapstore-side-card PO_searchResults" key={key} onMouseEnter={() => this.props.pictureHoveredPO(val)} onMouseLeave={() => this.props.pictureHoveredPO()}>
                                     <div className="col-sm-4 PO_static">
                                         <img src={ val.urlOverview } className="PO_searchResultPictures" onMouseEnter={(event) => {
                                             this.setState({xoffset: event.clientX, yoffset: event.clientY})
@@ -202,13 +203,14 @@ export class photosObliques extends React.Component {
                                             </div>
                                         </div>
                                         <span className={this.props.hoveredPolygonVisibilityState ? "PO_tooltiptext PO_tooltipHidden" : "PO_tooltiptext"}><Message msgId={'photosObliques.zoomTooltip'} /></span>
-                                        <button className="btn-primary PO_addBasket PO_addBasketWidth" onClick={() => this.props.addBasketPO(val)}><Message msgId={'photosObliques.addBasket'} /></button>
+                                        <button id={"btn_"+val.id} className="btn-primary PO_addBasket PO_addBasketWidth" onClick={() => this.props.addBasketPO(val)}><Message msgId={'photosObliques.addBasket'} /></button>
                                     </div>
                                 </div>
                             );
                         })
                     }
                 </div>}
+                {this.props.searchResult.length != 0 && this.props.searchResult[0].provider != 'none' && <span className="PO_resultLoaded"> <Message msgId={'photosObliques.picturesLoaded'}/> : {this.props.searchResult.length} / {this.props.prevPhotoCount}</span>}
             </>
         )
     }
@@ -219,6 +221,7 @@ export class photosObliques extends React.Component {
      * @returns - dom of the home tab content
      */
     validateSection(){
+        //TODO voir utilité de ce doublon !!
         if (this.props.startDate != "0" && this.props.endDate != "0") {
             return (
                 <>
@@ -413,7 +416,7 @@ export class photosObliques extends React.Component {
                             </span>}
                             {this.props.itemCounterInBasket === 0 && <span></span>}
                             <span className="PO_basket_sort_position">
-                                <span className="PO_bold PO_filterBasketValues">Trier par: </span>
+                                <span className="PO_bold PO_filterBasketValues"><Message msgId={'photosObliques.orderBy'} />: </span>
                                 <select id="filterBasketValues" className="PO_startDate PO_sortSearchedValues" onChange={() => this.props.filterBasketValuesPO(document.getElementById("filterBasketValues").value)}>
                                     <option value="-relevance">Pertinence</option>
                                     <option value="-year">Année</option>
@@ -565,7 +568,8 @@ export class photosObliques extends React.Component {
                         <div className="container auto">
                             <div className="message"><Message msgId={'photosObliques.downloadModal'}/></div>
                             <div onClick={() => this.props.modalDisplayPO(false, '')} className="PO_close">x</div>
-                            <div className="row">
+                            <div className="PO_numberPicsToDwnld">{this.props.itemCounterInBasket != 0 ? this.props.itemCounterInBasket : this.props.picturesInBasket} <Message msgId={'photosObliques.numberOfFilesDownloaded'}/></div>
+                            <div className="row fileNameChoice">
                                 <div className="col-sm-1"></div>
                                 <div className="col-sm-10">
                                     <div className="row">
@@ -661,11 +665,11 @@ export class photosObliques extends React.Component {
                         {this.props.basket.length != 0 && <button className={this.props.activeTab === "PHOTOSOBLIQUES:SELECT"
                             ? "PHOTOSOBLIQUES_selectButton PHOTOSOBLIQUES_active"
                             : "PHOTOSOBLIQUES_selectButton"} onClick={() => this.props.changeTabPO(tabTypes.SELECT)}>
-                            <Message msgId={'photosObliques.selection'}/>
+                            <Message msgId={'photosObliques.selection'}/><span className="nbPictInBasket"> ({this.props.basket.length}) </span>
                         </button>}
                         {this.props.basket.length === 0 && <button className={this.props.activeTab === "PHOTOSOBLIQUES:SELECT"
                             ? "PHOTOSOBLIQUES_selectButton PHOTOSOBLIQUES_active PO_greyed "
-                            : "PHOTOSOBLIQUES_selectButton PO_greyed"} disabled onClick={() => this.props.changeTabPO(tabTypes.SELECT)}>
+                            : "PHOTOSOBLIQUES_selectButton PO_greyed"} disabled>
                             <Message msgId={'photosObliques.selection'}/>
                         </button>}
                     </div>

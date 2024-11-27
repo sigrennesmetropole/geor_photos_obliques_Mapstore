@@ -30,7 +30,8 @@ import {
     setStartDateValuePO,
     setEndDateValuePO,
     changeTabPO,
-    setPrevPhotoCount
+    setPrevPhotoCount,
+    setPrevSearchFiltersValues
 } from "../actions/photosObliques-action";
 import {
     TOGGLE_CONTROL
@@ -56,13 +57,15 @@ import {
     getPolygon,
     getSelectedRoseValue,
     getFilterSearchValues,
+    getDisplayFilters,
     getDateList,
     getScrollIndicator,
     getFileName,
     getPrefix,
     getPluginConfig,
     getFiltersTriggered,
-    getPhotoCountSelector
+    getPhotoCountSelector,
+    getPrevSearchFiltersValues
 } from "../selectors/photosObliques-selectors";
 
 import {
@@ -287,7 +290,12 @@ export const windRoseClickedPOEpic = (action$, store) => action$.ofType(actions.
  * @returns - empty observable
  */
 export const updateSearchResultsOnMapMovePOEpic = (action$, store) => action$.ofType(CHANGE_MAP_VIEW).switchMap(() => {
-    return Rx.Observable.from([getPhotoCountActionPO()]);
+    if(!getDisplayFilters(store.getState()) && getSearchResult(store.getState()).length > 0){
+        return Rx.Observable.empty();
+    }
+    else{
+        return Rx.Observable.from([getPhotoCountActionPO()]);
+    }
 })
 
 /**
@@ -317,32 +325,43 @@ export const initProjectionsPOEpic = (action$) => action$.ofType(actions.INIT_PR
  * filtersTriggeredPOEpic 
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
+ * @param store - list the content of variables inputted with the actions
  * @returns - empty observable
  */
 export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions.SEARCH_FILTERS).switchMap((action) => {
+
     /* eslint-disable */
-    //valeur rose des vents
-    var roseValue = getSelectedRoseValue(store.getState());
-    //valeur année de début
-    var startDate = getStartDate(store.getState());
-    //valeur année de fin
-    var endDate = getEndDate(store.getState());
     //valeur d'ordre de tri
-    var relevance = getFilterSearchValues(store.getState());
-    if (!relevance) {
+    var sortValue = getFilterSearchValues(store.getState());
+    if (!sortValue) {
         // et le -relevance pour avoir en ordre décroissant
-        relevance = '-relevance';
+        sortValue = '-relevance';
     }
-    //mise en place des datas
-    var datas = [endDate[0], startDate[startDate.length-1], roseValue, '', '', 0, 10, relevance];
-    //emprise de la carte
-    var wkt = getPerimeterPolygon(store);
-    if (getPolygon(store.getState()) != undefined && !action.newSearch) {
-        wkt = getPolygon(store.getState());
+
+    if(action.newSearch) {
+        //valeur rose des vents
+        var roseValue = getSelectedRoseValue(store.getState());
+        //valeur année de début
+        var startDate = getStartDate(store.getState());
+        //valeur année de fin
+        var endDate = getEndDate(store.getState());
+        //mise en place des datas
+        var datas = [endDate[0], startDate[startDate.length-1], roseValue, '', '', 0, 10, sortValue];
+        //emprise de la carte
+        var wkt = getPerimeterPolygon(store);
+        //sauvegarde des paramètres de recherche
+        var searchFiltersValues = {
+            prevStartDate: endDate[0],
+            prevEndDate: startDate[startDate.length-1],
+            prevRoseValue: roseValue
+        };
     }
-    
-    if (action.loadMore) {
-        datas = [endDate[0], startDate[startDate.length-1], roseValue, '', '', getSearchResult(store.getState()).length, 10, relevance];
+    else {//cas du loadMore ou du changement de l'ordre de tri (!newSearch et !loadMore)
+        //mise en place des datas
+        var searchFiltersValues = getPrevSearchFiltersValues(store.getState());
+        datas = [searchFiltersValues.prevStartDate, searchFiltersValues.prevEndDate, searchFiltersValues.prevRoseValue, '', '', getSearchResult(store.getState()).length, 10, sortValue];
+        //emprise de la carte
+        var wkt = getPolygon(store.getState());
     }
         
     //on récupère les layers
@@ -367,26 +386,28 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
                 ).switchMap((responsePhotoCount) => {
                     responsePhotoCount = responsePhotoCount[0];
                     if (responsePhotoCount.status === 200) {
-                        observablesReturned = [
-                            setPrevPhotoCount(getPhotoCountSelector(store.getState())),
-                            updateAdditionalLayer(
-                                PO_PERIMETER_LAYER_ID,
-                                "PO",
-                                "overlay",
-                                {...vectorLayer.options, features}
-                            ),
-                            setPolygonPO(wkt),
-                            setPhotoCountActionPO(responsePhotoCount.data.numberOfResult)
-                        ];
-                    
-                        if (action.loadMore && getSearchResult(store.getState()).concat(response.data).length <= responsePhotoCount.data.numberOfResult) {
+                        if (action.newSearch){
+                            observablesReturned = [
+                                setPrevSearchFiltersValues(searchFiltersValues),
+                                setPrevPhotoCount(getPhotoCountSelector(store.getState())),
+                                updateAdditionalLayer(
+                                    PO_PERIMETER_LAYER_ID,
+                                    "PO",
+                                    "overlay",
+                                    {...vectorLayer.options, features}
+                                ),
+                                setPolygonPO(wkt),
+                                setPhotoCountActionPO(responsePhotoCount.data.numberOfResult)
+                            ];
+                        } 
+                        if (action.loadMore /*&& getSearchResult(store.getState()).concat(response.data).length <= responsePhotoCount.data.numberOfResult*/) {
                             observablesReturned.push(searchValuesFilteredPO(getSearchResult(store.getState()).concat(response.data)))
                         }else{
                             observablesReturned.push(searchValuesFilteredPO(response.data))
                         }
                         observablesReturned.push(
                             accumulateScrollEventsPO(false),
-                            cancelSearchFiltersPO()
+                            //cancelSearchFiltersPO()
                         )
                     } else {
                         if (isOpen(store.getState())) {
@@ -401,6 +422,7 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
                 // en cas de 0 résultats retournés
                 response.data = [{provider: 'none'}];
                 observablesReturned = [
+                    setPrevSearchFiltersValues(searchFiltersValues),
                     setPrevPhotoCount(getPhotoCountSelector(store.getState())),
                     updateAdditionalLayer(
                         PO_PERIMETER_LAYER_ID,
@@ -412,7 +434,7 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
                     searchValuesFilteredPO(response.data),
                     setPhotoCountActionPO(0),
                     accumulateScrollEventsPO(false),
-                    cancelSearchFiltersPO()
+                    //cancelSearchFiltersPO()
                 ]
                 return Rx.Observable.from(observablesReturned);
             }
@@ -434,14 +456,41 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
  * @param action$ - list of actions triggered in mapstore context
  * @returns - empty observable
  */
-export const filterSearchedValuesPOEpic = (action$) => action$.ofType(actions.FILTER_SEARCH_VALUES).switchMap((action) => {
+export const filterSearchedValuesPOEpic = (action$) => action$.ofType(actions.FILTER_SEARCH_VALUES).switchMap(() => {
     return Rx.Observable.from([validateSearchFiltersPO(true, false)]);
 })
+
+/**
+ * closeSearchPanelPOEpic 
+ * @memberof photosObliques.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @param store - list the content of variables inputted with the actions
+ * @returns - empty observable
+ */
+export const closeSearchPanelPOEpic = (action$, store) => action$.ofType(actions.CANCEL_SEARCH_FILTERS).switchMap(() => {
+
+    //TODO rétablir les paramètres de recherche sur les inputs
+    //console.log(getPrevSearchFiltersValues(store.getState()));
+
+    return Rx.Observable.empty();
+})
+
+/**
+ * openSearchPanelPOEpic 
+ * @memberof photosObliques.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @returns - empty observable
+ */
+export const openSearchPanelPOEpic = (action$) => action$.ofType(actions.OPEN_SEARCH_FILTERS).switchMap(() => {
+    return Rx.Observable.from([getPhotoCountActionPO()]);
+})
+
 
 /**
  * addBasketPOEpic 
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
+ * @param store - list the content of variables inputted with the actions
  * @returns - empty observable
  */
 export const addBasketPOEpic = (action$, store) => action$.ofType(actions.ADD_BASKET).switchMap((action) => {
@@ -451,6 +500,11 @@ export const addBasketPOEpic = (action$, store) => action$.ofType(actions.ADD_BA
     var basketSize = 0;
     var alreadyInBasket = false;
     var observable = [];
+
+    //TODO
+    // On change la couleur du bouton de la photo
+    //var btn = document.getElementById('btn_'+action.item.id);
+    
     if (basket.length >= 1) {
         alreadyInBasket = !!basket.find(item => item.id === action.item.id)
     }
@@ -458,21 +512,29 @@ export const addBasketPOEpic = (action$, store) => action$.ofType(actions.ADD_BA
         basketSize += item.fileSize;
     });
     if (!alreadyInBasket) {
-        if (basket.length +1 <= config.pomaxcartnumberofpics && parseFloat((basketSize + action.item.fileSize) / 1000000).toFixed(1) || 0 <= config.pomaxcartsize) {
+        if (basket.length +1 > config.pomaxcartnumberofpics) {
+            return dropPopUp('basketTooMuchPictures', '', store.getState());
+        }
+        if (parseFloat((basketSize + action.item.fileSize) / 1000000).toFixed(1) >= config.pomaxcartsize) {
+            return dropPopUp('basketTooHeavy');
+        }
+        else{
             basket.push(action.item);
             basketSize += action.item.fileSize;
             observable = [
                 updateItemInBasketPO(basket),
                 setPicturesInBasketPO(basket.length, basketSize)
             ];
-        } else{
-            if (basket.length +1 >= config.pomaxcartnumberofpics) {
-                return dropPopUp('basketTooMuchPictures', '', store.getState());
-            }
-            if (parseFloat((basketSize + action.item.fileSize) / 1000000).toFixed(1) >= config.pomaxcartsize) {
-                return dropPopUp('basketTooHeavy');
-            }
         }
+        //on change la couleur du bouton
+        //btn.classList.add("PO_addedInBasket");
+    }
+    else{
+        //on change la couleur du bouton si ce n'était pas déjà fait
+        //if(!btn.classList.contains("PO_addedInBasket")){
+        //    btn.classList.add("PO_addedInBasket");
+        //}
+        return dropPopUp('alreadyInBasket');
     }
 
     /* eslint-enable */
@@ -485,6 +547,11 @@ export const addBasketPOEpic = (action$, store) => action$.ofType(actions.ADD_BA
  * @returns - empty observable
  */
 export const throwAddInBasketPopUp = (action$) => action$.ofType(actions.UPDATE_ITEM_IN_BASKET).switchMap((action) => {
+        //TODO modifier couleur des boutons
+        //var btn = document.getElementById('btn_'+action.item.id);
+        //if(btn && btn.classList.contains("PO_addedInBasket")){
+        //    btn.classList.remove("PO_addedInBasket");
+        //}
     if (action.removePopUp === true) {
         return Rx.Observable.empty();
     } else {
@@ -495,6 +562,7 @@ export const throwAddInBasketPopUp = (action$) => action$.ofType(actions.UPDATE_
 /**
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
+ * @param store - list the content of variables inputted with the actions
  * @returns - empty observable
  */
 export const removeItemsFromBasketPOEpic = (action$, store) => action$.ofType(actions.REMOVE_SELECTED_ITEMS_IN_BASKET).switchMap((action) => {
@@ -512,8 +580,8 @@ export const removeItemsFromBasketPOEpic = (action$, store) => action$.ofType(ac
         //si on supprime tout, result = []
         result = item.length === result.length && action.forceDeletionOnEmptySelection ? [] : result;
         observables = [updateItemInBasketPO(result), countItemsSelectedInBasketPO(0), modalDisplayPO(false, '')];
+        //console.log(result);
     }
-
     if (result.length === 0) {
         observables.push(changeTabPO("PHOTOSOBLIQUES:HOME"));
     }
@@ -753,14 +821,13 @@ export const getPhotoCountPOEpic = (action$, store) => action$.ofType(actions.GE
             if (response.status === 200) {
                 return Rx.Observable.from([setPhotoCountActionPO(response.data.numberOfResult)]);
             } else {
-                if (isOpen(store.getState())) {
+                /*if (isOpen(store.getState())) {*/
                     return dropPopUp(response.status, response.statusText);
-                } else {
+                /*} else {
                     return Rx.Observable.empty();
-                }
+                }*/
             }
         });
-        return Rx.Observable.from([]);
     } else{
         return Rx.Observable.empty();
     }
@@ -943,9 +1010,8 @@ export const filterBasketValuesPOEpic = (action$, store) => action$.ofType(actio
             break;
         default:
             return dropPopUp('errorFilters');
-            break;
     }
-    return Rx.Observable.from([updateItemInBasketPO(filterValue.slice())]);
+    return Rx.Observable.from([updateItemInBasketPO(filterValue.slice(),true)]);
     /* eslint-enable */
 })
 
@@ -953,13 +1019,20 @@ export const filterBasketValuesPOEpic = (action$, store) => action$.ofType(actio
  * onScrollPOEpic 
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
+ * @param store - list the content of variables inputted with the actions
  * @returns - empty observable
  */
-export const onScrollPOEpic = (action$, store) => action$.ofType(actions.ONSCROLL).switchMap((action) => {
+export const onScrollPOEpic = (action$, store) => action$.ofType(actions.ONSCROLL).switchMap(() => {    
     if (!getScrollIndicator(store.getState())) {
-        if (document.getElementById('PHOTOSOBLIQUES_scrollBar').scrollTop >= (document.getElementById('PHOTOSOBLIQUES_scrollBar').clientHeight * (-0.8))) {
-            /*CORRIGER BUG de chargement de liste*/
-           return Rx.Observable.from([validateSearchFiltersPO(true,true), accumulateScrollEventsPO(true)]);
+        /* Lors du scroll on vérifie la valeur en pixel de la position du la scrollbar atteinte par l'utilisateur (scrollTop + clientHeight). 
+        Si on approche de la fin de la scrollbar (si la valeur de la position est supérieure ou égale à la hauteur totale de la scrollbar moins 110px, on charge la suite des résultats*/
+        if ( (document.getElementById('PHOTOSOBLIQUES_scrollBar').scrollTop + document.getElementById('PHOTOSOBLIQUES_scrollBar').clientHeight) >= (document.getElementById('PHOTOSOBLIQUES_scrollBar').scrollHeight-110) ) {
+            /* chargement des résultats seulement si le maximum n'a pas été chargé */
+            if (getSearchResult(store.getState()).length < getPhotoCountSelector(store.getState())){
+                return Rx.Observable.from([validateSearchFiltersPO(true,true), accumulateScrollEventsPO(true)]);
+            } else{
+                return Rx.Observable.empty();
+            }
         }
     } else{
         return Rx.Observable.empty();
@@ -1052,6 +1125,10 @@ const dropPopUp = (code, message, state) => {
         return Rx.Observable.from([
             modalDisplayPO(false, ''),
             show({ title: "photosObliques.dropPopUpAddBasket.title", message: "photosObliques.dropPopUpAddBasket.message" }, "success")]);
+    case 'alreadyInBasket':
+        return Rx.Observable.from([
+            modalDisplayPO(false, ''),
+            show({ title: "photosObliques.alreadyInBasket.title", message: "photosObliques.alreadyInBasket.message" }, "warning")]);
     case 'Erreur Filtres':
         return Rx.Observable.from([show({ title: code, message: message }, "error")]);
     default:

@@ -10,8 +10,9 @@ const initialState = {
     searchResult: [],
     itemId: "",
     basket: [],
-    itemToRemove: "",
+    // itemToRemove: "",
     itemCounterInBasket: 0,
+    dateList: [],
     startDate: [],
     endDate: [],
     modalDisplay: false,
@@ -25,8 +26,8 @@ const initialState = {
  * @returns - returns the current actions to be made from the current action
  */
 export default (state = initialState, action) => {
-    // console.log(action.type);
-    // console.log(state);
+    //console.log("action.type : ",action.type);
+    //console.log(state);
     switch (action.type) {
     case actions.INIT_CONFIGS:
         return assign({}, state, { configs: action.configs });
@@ -82,6 +83,8 @@ export default (state = initialState, action) => {
         return assign({}, state , { displayFilters: true });
     case actions.SET_PREV_PHOTO_COUNT:
         return assign({}, state , { prevPhotoCount: action.prevPhotoCount });
+    case actions.SET_PREV_SEARCH_FILTERS_VALUES:
+        return assign({}, state , { prevSearchFiltersValues: action.prevSearchFiltersValues});
     default:
         return state;
     }
