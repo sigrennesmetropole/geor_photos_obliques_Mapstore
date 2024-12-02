@@ -19,7 +19,6 @@ import {
     validateSearchFiltersPO,
     setDateListPO,
     modalDisplayPO,
-    cancelSearchFiltersPO,
     updateHoveredPolygonVisibilityStatePO,
     setDownloadingPO,
     accumulateScrollEventsPO,
@@ -31,9 +30,11 @@ import {
     setEndDateValuePO,
     changeTabPO,
     setPrevPhotoCount,
-    setPrevSearchFiltersValues
+    setPrevSearchFiltersValues,
+    setLoadingPO
 } from "../actions/photosObliques-action";
 import {
+    toggleControl,
     TOGGLE_CONTROL
 } from "@mapstore/actions/controls";
 import {
@@ -44,9 +45,13 @@ import {
 } from "../constants/photosObliques-constants";
 import {
     updateDockPanelsList,
-    UPDATE_MAP_LAYOUT
+    UPDATE_MAP_LAYOUT,
+    FORCE_UPDATE_MAP_LAYOUT
 } from "@mapstore/actions/maplayout";
-
+import {
+    OPEN_FEATURE_GRID
+} from "@mapstore/actions/featuregrid";
+import { changeMapInfoState } from "@mapstore/actions/mapInfo";
 import {
     isOpen,
     getSearchResult,
@@ -63,7 +68,6 @@ import {
     getFileName,
     getPrefix,
     getPluginConfig,
-    getFiltersTriggered,
     getPhotoCountSelector,
     getPrevSearchFiltersValues
 } from "../selectors/photosObliques-selectors";
@@ -146,11 +150,11 @@ var hoveredItemPerimeter = {};
 var prevWindRoseValue;
 
 /**
- * openPanelPOEpic opens the panel of this sampleExtension plugin
+ * openPanelPOEpic opens the panel of this plugin
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
- * @returns - observable with the list of actions to do after completing the function (trigger the projection, the dock panel, the grid, the drawing tools and the map layout update actions)
+ * @returns - observable with the list of actions to do after completing the function (trigger the projection, the dock panel, the filter values, and the map layout update actions)
  */
 export const openPanelPOEpic = (action$, store) => action$.ofType(TOGGLE_CONTROL)
     .filter(action => action.control === PHOTOSOBLIQUES_PLUGIN_NAME
@@ -179,6 +183,7 @@ export const openPanelPOEpic = (action$, store) => action$.ofType(TOGGLE_CONTROL
             updateDockPanelsList(PHOTOSOBLIQUES_PLUGIN_NAME, 'add', 'right'),
             updateMapLayoutPO(layout),
             initProjectionsPO(),
+            initDateSelectPO(),
             initOverlayLayerPO(),
             getPhotoCountActionPO()
         ];
@@ -190,50 +195,53 @@ export const openPanelPOEpic = (action$, store) => action$.ofType(TOGGLE_CONTROL
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
- * @returns - observable with the list of actions to do after completing the function (the dock panel and the map layout update actions)
+ * @returns - observable with the list of actions to do after completing the function (the dock panel, layers visibility and the map layout update actions)
  */
-export const closePanelPOEpic = (action$, store) => action$.ofType(TOGGLE_CONTROL, actions.CLOSE_PHOTOSOBLIQUES)
-    .filter(action => action.control === PHOTOSOBLIQUES_PLUGIN_NAME
-    && !!store.getState()
+export const closePanelPOEpic = (action$, store) => action$.ofType(TOGGLE_CONTROL, OPEN_FEATURE_GRID, actions.CLOSE_PHOTOSOBLIQUES)
+    .filter( 
+    action => !!store.getState()
     && !isOpen(store.getState()) || action.type === actions.CLOSE_PHOTOSOBLIQUES )
-    .switchMap(() => {
-        let layout = store.getState().maplayout;
-        layout = {
-            transform: layout.layout.transform,
-            height: layout.layout.height,
-            rightPanel: true,
-            leftPanel: false,
-            ...layout.boundingMapRect,
-            right: layout.boundingSidebarRect.right,
-            boundingMapRect: {
-                ...layout.boundingMapRect,
-                right: layout.boundingSidebarRect.right
-            },
-            boundingSidebarRect: layout.boundingSidebarRect
-        };
-        var vectorLayerToHide = getSelectedTilesLayer(store.getState());
-        vectorLayerToHide.visibility = false;
-        currentLayout = layout;
-        return Rx.Observable.from([
+    .switchMap((action) => {
+        let observableAction = [
             updateDockPanelsList(PHOTOSOBLIQUES_PLUGIN_NAME, 'remove', 'right'),
-            updateMapLayoutPO(currentLayout),
-            updateAdditionalLayer(
-                PO_PERIMETER_LAYER_ID,
-                "PO",
-                "overlay",
-                vectorLayerToHide
-            )
-        ]);
+            changeMapInfoState(true)        
+        ];
+        if (action.control === PHOTOSOBLIQUES_PLUGIN_NAME) {
+            let layout = store.getState().maplayout;
+            layout = {
+                transform: layout.layout.transform,
+                height: layout.layout.height,
+                rightPanel: true,
+                leftPanel: false,
+                ...layout.boundingMapRect,
+                right: layout.boundingSidebarRect.right,
+                boundingMapRect: {
+                    ...layout.boundingMapRect,
+                    right: layout.boundingSidebarRect.right
+                },
+                boundingSidebarRect: layout.boundingSidebarRect
+            };
+            currentLayout = layout;
+            observableAction.push(updateMapLayoutPO(currentLayout));
+        }        
+        let vectorLayerToHide = getSelectedTilesLayer(store.getState());
+        vectorLayerToHide.visibility = styles.hidden;
+        observableAction.push(updateAdditionalLayer(PO_PERIMETER_LAYER_ID, "PO", "overlay", vectorLayerToHide));
+        if (action.type === actions.CLOSE_PHOTOSOBLIQUES) {
+            observableAction = [toggleControl(PHOTOSOBLIQUES_PLUGIN_NAME, 'enabled')].concat(observableAction);
+        }
+        return Rx.Observable.from(observableAction);
     });
 
 /**
  * onUpdatingLayoutWhenPanelOpenedPOEpic fix mapstore search bar issue on photosObliques panel opening
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
+ * @param store - list the content of variables inputted with the actions
  * @returns - observable which update map layout
  */
 export function onUpdatingLayoutWhenPanelOpenedPOEpic(action$, store) {
-    return action$.ofType(UPDATE_MAP_LAYOUT)
+    return action$.ofType(UPDATE_MAP_LAYOUT, FORCE_UPDATE_MAP_LAYOUT)
         .filter((action) => (action.source === PHOTOSOBLIQUES_PLUGIN_NAME || action.source === undefined)
         && store
         && store.getState()
@@ -255,23 +263,17 @@ export function onUpdatingLayoutWhenPanelOpenedPOEpic(action$, store) {
                 boundingSidebarRect: layout.boundingSidebarRect
             };
             currentLayout = layout;
-            if (getFiltersTriggered(store.getState()) === true) {
-                return Rx.Observable.from([
-                    updateMapLayoutPO(layout)
-                ]);
-            } else {
-                return Rx.Observable.empty();
-            }
+            return Rx.Observable.of(updateMapLayoutPO(layout));
         });
-    }
+}
 
 /**
- * windRoseClickedPOEpic 
+ * windRoseClickedPOEpic used to update compass value
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
- * @returns - empty observable
+ * @returns - observable which updates photoCount and Compass Position
  */
-export const windRoseClickedPOEpic = (action$, store) => action$.ofType(actions.ROSE_CLICKED).switchMap((action) => {
+export const windRoseClickedPOEpic = (action$) => action$.ofType(actions.ROSE_CLICKED).switchMap((action) => {
         var observableReturned = [getPhotoCountActionPO()];
         if (prevWindRoseValue === action.degree) {
             observableReturned.push(setWindRoseClickPO(''));
@@ -280,14 +282,15 @@ export const windRoseClickedPOEpic = (action$, store) => action$.ofType(actions.
             observableReturned.push(setWindRoseClickPO(action.degree));
         }
         return Rx.Observable.from(observableReturned);
-    })
+})
 
     
 /**
- * updateSearchResultsOnMapMoovePOEpic 
+ * updateSearchResultsOnMapMoovePOEpic updates photoCount when map extent is changed
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
- * @returns - empty observable
+ * @param store - list the content of variables inputted with the actions
+ * @returns - observable which updates photoCount
  */
 export const updateSearchResultsOnMapMovePOEpic = (action$, store) => action$.ofType(CHANGE_MAP_VIEW).switchMap(() => {
     if(!getDisplayFilters(store.getState()) && getSearchResult(store.getState()).length > 0){
@@ -299,7 +302,7 @@ export const updateSearchResultsOnMapMovePOEpic = (action$, store) => action$.of
 })
 
 /**
- * initProjectionsPOEpic 
+ * initProjectionsPOEpic inits projections used for layers
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
  * @returns - empty observable
@@ -318,15 +321,15 @@ export const initProjectionsPOEpic = (action$) => action$.ofType(actions.INIT_PR
     proj3857 = new Projection({code: 'EPSG:3857'});
     proj3948 = new Projection({code: 'EPSG:3948'});
     proj4326 = new Projection({code: 'EPSG:4326'});
-    return Rx.Observable.from([initDateSelectPO()]);
+    return Rx.Observable.empty();
 });    
 
 /**
- * filtersTriggeredPOEpic 
+ * filtersTriggeredPOEpic execute search and shoxs results
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
- * @returns - empty observable
+ * @returns - observable to show search's results or empty observable if error raised by the plugin's BE
  */
 export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions.SEARCH_FILTERS).switchMap((action) => {
 
@@ -357,9 +360,13 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
         };
     }
     else {//cas du loadMore ou du changement de l'ordre de tri (!newSearch et !loadMore)
+        var offsetValue = 0;
+        if(action.loadMore){//charger plus de résultats : on récupère le nombre de résultats déjà chargés
+            offsetValue = getSearchResult(store.getState()).length;
+        }
         //mise en place des datas
         var searchFiltersValues = getPrevSearchFiltersValues(store.getState());
-        datas = [searchFiltersValues.prevStartDate, searchFiltersValues.prevEndDate, searchFiltersValues.prevRoseValue, '', '', getSearchResult(store.getState()).length, 10, sortValue];
+        datas = [searchFiltersValues.prevStartDate, searchFiltersValues.prevEndDate, searchFiltersValues.prevRoseValue, '', '', offsetValue, 10, sortValue];
         //emprise de la carte
         var wkt = getPolygon(store.getState());
     }
@@ -400,18 +407,18 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
                                 setPhotoCountActionPO(responsePhotoCount.data.numberOfResult)
                             ];
                         } 
-                        if (action.loadMore /*&& getSearchResult(store.getState()).concat(response.data).length <= responsePhotoCount.data.numberOfResult*/) {
+                        if (action.loadMore) {
                             observablesReturned.push(searchValuesFilteredPO(getSearchResult(store.getState()).concat(response.data)))
                         }else{
                             observablesReturned.push(searchValuesFilteredPO(response.data))
                         }
                         observablesReturned.push(
                             accumulateScrollEventsPO(false),
-                            //cancelSearchFiltersPO()
+                            setLoadingPO(false)
                         )
                     } else {
                         if (isOpen(store.getState())) {
-                            return dropPopUp(response.status, response.statusText);
+                            return dropPopUpPOEpic(response.status, response.statusText);
                         } else {
                             return Rx.Observable.empty();
                         }
@@ -434,52 +441,60 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
                     searchValuesFilteredPO(response.data),
                     setPhotoCountActionPO(0),
                     accumulateScrollEventsPO(false),
-                    //cancelSearchFiltersPO()
+                    setLoadingPO(false)
                 ]
                 return Rx.Observable.from(observablesReturned);
             }
         } else {
             if (isOpen(store.getState())) {
-                return dropPopUp(response.status, response.statusText);
+                return dropPopUpPOEpic(response.status, response.statusText);
             } else {
                 return Rx.Observable.empty();
             }
         }
-        // return Rx.Observable.from(observablesReturned);
-
     });
 })
 
 /**
- * filterSearchedValuesPOEpic 
+ * filterSearchedValuesPOEpic validates values selected
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
- * @returns - empty observable
+ * @returns - observable to validates Search's Filters
  */
 export const filterSearchedValuesPOEpic = (action$) => action$.ofType(actions.FILTER_SEARCH_VALUES).switchMap(() => {
     return Rx.Observable.from([validateSearchFiltersPO(true, false)]);
 })
 
 /**
- * closeSearchPanelPOEpic 
+ * closeSearchPanelPOEpic hide search panel and updates modified search values with previous search parameters
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
- * @returns - empty observable
+ * @returns - observable which changes search filters values
  */
 export const closeSearchPanelPOEpic = (action$, store) => action$.ofType(actions.CANCEL_SEARCH_FILTERS).switchMap(() => {
 
-    //TODO rétablir les paramètres de recherche sur les inputs
-    //console.log(getPrevSearchFiltersValues(store.getState()));
-
-    return Rx.Observable.empty();
+    //rétablir les paramètres de recherche sur les inputs
+    var prevSearchFilters = getPrevSearchFiltersValues(store.getState());
+    if (prevSearchFilters){
+        return Rx.Observable.from(
+            [
+                windRoseClickPO(prevSearchFilters.prevRoseValue),
+                setStartDateValuePO(prevSearchFilters.prevStartDate),
+                setEndDateValuePO(prevSearchFilters.prevEndDate)
+            ]
+        );
+    }
+    else{
+        return Rx.Observable.empty();  
+    }
 })
 
 /**
- * openSearchPanelPOEpic 
+ * openSearchPanelPOEpic reopen search panel
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
- * @returns - empty observable
+ * @returns - observable which updates photo Count
  */
 export const openSearchPanelPOEpic = (action$) => action$.ofType(actions.OPEN_SEARCH_FILTERS).switchMap(() => {
     return Rx.Observable.from([getPhotoCountActionPO()]);
@@ -487,11 +502,11 @@ export const openSearchPanelPOEpic = (action$) => action$.ofType(actions.OPEN_SE
 
 
 /**
- * addBasketPOEpic 
+ * addBasketPOEpic adds picture to basket
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
- * @returns - empty observable
+ * @returns - observable which updates list of items in Basket
  */
 export const addBasketPOEpic = (action$, store) => action$.ofType(actions.ADD_BASKET).switchMap((action) => {
     /* eslint-disable */
@@ -500,10 +515,6 @@ export const addBasketPOEpic = (action$, store) => action$.ofType(actions.ADD_BA
     var basketSize = 0;
     var alreadyInBasket = false;
     var observable = [];
-
-    //TODO
-    // On change la couleur du bouton de la photo
-    //var btn = document.getElementById('btn_'+action.item.id);
     
     if (basket.length >= 1) {
         alreadyInBasket = !!basket.find(item => item.id === action.item.id)
@@ -513,10 +524,10 @@ export const addBasketPOEpic = (action$, store) => action$.ofType(actions.ADD_BA
     });
     if (!alreadyInBasket) {
         if (basket.length +1 > config.pomaxcartnumberofpics) {
-            return dropPopUp('basketTooMuchPictures', '', store.getState());
+            return dropPopUpPOEpic('basketTooMuchPictures', '', store.getState());
         }
         if (parseFloat((basketSize + action.item.fileSize) / 1000000).toFixed(1) >= config.pomaxcartsize) {
-            return dropPopUp('basketTooHeavy');
+            return dropPopUpPOEpic('basketTooHeavy');
         }
         else{
             basket.push(action.item);
@@ -526,25 +537,19 @@ export const addBasketPOEpic = (action$, store) => action$.ofType(actions.ADD_BA
                 setPicturesInBasketPO(basket.length, basketSize)
             ];
         }
-        //on change la couleur du bouton
-        //btn.classList.add("PO_addedInBasket");
     }
     else{
-        //on change la couleur du bouton si ce n'était pas déjà fait
-        //if(!btn.classList.contains("PO_addedInBasket")){
-        //    btn.classList.add("PO_addedInBasket");
-        //}
-        return dropPopUp('alreadyInBasket');
+        return dropPopUpPOEpic('alreadyInBasket');
     }
 
     /* eslint-enable */
     return Rx.Observable.from(observable);
 })
 
-/**
+/** throwAddInBasketPopUp shows popup while adding pictures in basket
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
- * @returns - empty observable
+ * @returns - empty observable or PopUp indicates items had been added to basket
  */
 export const throwAddInBasketPopUp = (action$) => action$.ofType(actions.UPDATE_ITEM_IN_BASKET).switchMap((action) => {
         //TODO modifier couleur des boutons
@@ -555,15 +560,15 @@ export const throwAddInBasketPopUp = (action$) => action$.ofType(actions.UPDATE_
     if (action.removePopUp === true) {
         return Rx.Observable.empty();
     } else {
-        return dropPopUp('addBasket');
+        return dropPopUpPOEpic('addBasket');
     }
 });
 
-/**
+/** removeItemsFromBasketPOEpic removes items from basket
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
- * @returns - empty observable
+ * @returns - observable which updates list of items in basket
  */
 export const removeItemsFromBasketPOEpic = (action$, store) => action$.ofType(actions.REMOVE_SELECTED_ITEMS_IN_BASKET).switchMap((action) => {
     /* eslint-disable */
@@ -580,21 +585,20 @@ export const removeItemsFromBasketPOEpic = (action$, store) => action$.ofType(ac
         //si on supprime tout, result = []
         result = item.length === result.length && action.forceDeletionOnEmptySelection ? [] : result;
         observables = [updateItemInBasketPO(result), countItemsSelectedInBasketPO(0), modalDisplayPO(false, '')];
-        //console.log(result);
     }
     if (result.length === 0) {
-        observables.push(changeTabPO("PHOTOSOBLIQUES:HOME"));
+        observables.push(changeTabPO("PHOTOSOBLIQUES:SEARCH"));
     }
     /* eslint-enable */
     return Rx.Observable.from(observables);
 })
 
 /**
- * clickPicturePOEpic on table click, selects the row selected and highlight it on the map
+ * clickPicturePOEpic handle items selection in basket
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
- * @returns - observable which update the layer
+ * @returns - observable which update selected items on Basket
  */
 export const clickPicturePOEpic = (action$, store) => action$.ofType(actions.CLICK_PICTURE).switchMap((action) => {
     const currentItems = getBasket(store.getState());
@@ -610,12 +614,13 @@ export const clickPicturePOEpic = (action$, store) => action$.ofType(actions.CLI
 
 
 /**
- * pictureSelectionPO tells us if the selected feature is already selected and gives styles according this state
+ * pictureSelectionPO handle list of selected items in basket
  * @memberof photosObliques.epics
  * @param currentItems - current features
  * @param control - is the user pressing control key
+ * @param control - is the user pressing shift key 
  * @param intersectedItems - all features clicked
- * @returns - return one or more feature with their style updated... or not
+ * @returns - return pictures selected
  */
 function pictureSelectionPO(currentItems, control, shift, intersectedItems) {
     var currentSelectedTile = 0;
@@ -658,11 +663,11 @@ function pictureSelectionPO(currentItems, control, shift, intersectedItems) {
 }
 
 /**
- * downloadBasketPOEpic on table click, selects the row selected and highlight it on the map
+ * downloadBasketPOEpic send download order to BE
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
- * @returns - observable which update the layer
+ * @returns - observable which throw download action to BE
  */
 export const downloadBasketPOEpic = (action$, store) => action$.ofType(actions.DOWNLOAD_BASKET).switchMap((action) => {
     var basket = getBasket(store.getState());
@@ -698,7 +703,7 @@ export const downloadBasketPOEpic = (action$, store) => action$.ofType(actions.D
             return Rx.Observable.from([modalDisplayPO(false, ''), setDownloadingPO(false)]);
         } else {
             if (isOpen(store.getState())) {
-                return dropPopUp(response.status, response.statusText);
+                return dropPopUpPOEpic(response.status, response.statusText);
             } else {
                 return Rx.Observable.empty();
             }
@@ -707,26 +712,25 @@ export const downloadBasketPOEpic = (action$, store) => action$.ofType(actions.D
 });
 
 /**
- * initDateSelectsPOEpic on table click, selects the row selected and highlight it on the map
+ * dropPopUpOnDownloadSuccessPOEpic shows popup when doanwloading results
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
- * @param store - list the content of variables inputted with the actions
- * @returns - observable which update the layer
+ * @returns - popup which indicates download status or empty observable
  */
-export const dropPopUpOnDownloadSuccessPOEpic = (action$, store) => action$.ofType(actions.SET_DOWNLOADING).switchMap((action) => {
+export const dropPopUpOnDownloadSuccessPOEpic = (action$) => action$.ofType(actions.SET_DOWNLOADING).switchMap((action) => {
     if (action.bool === false) {
-        return dropPopUp(200);
+        return dropPopUpPOEpic(200);
     }else {
         return Rx.Observable.empty();
     }
 });
 
 /**
- * initDateSelectsPOEpic on table click, selects the row selected and highlight it on the map
+ * initDateSelectsPOEpic intializes list of avalaible dates
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
- * @returns - observable which update the layer
+ * @returns - observable which updates date list after date selection
  */
 export const initDateSelectsPOEpic = (action$, store) => action$.ofType(actions.INIT_DATE_SELECT).switchMap((action) => {
     return Rx.Observable.forkJoin(
@@ -737,7 +741,7 @@ export const initDateSelectsPOEpic = (action$, store) => action$.ofType(actions.
             return Rx.Observable.from([setDateListPO(response.data)]);
         } else {
             if (isOpen(store.getState())) {
-                return dropPopUp(response.status, response.statusText);
+                return dropPopUpPOEpic(response.status, response.statusText);
             } else {
                 return Rx.Observable.empty();
             }
@@ -746,22 +750,21 @@ export const initDateSelectsPOEpic = (action$, store) => action$.ofType(actions.
 });
 
 /**
- * initDateSelectsPOEpic on table click, selects the row selected and highlight it on the map
+ * initDateSelectsPOEpic initializes lists of dates
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
- * @param store - list the content of variables inputted with the actions
- * @returns - observable which update the layer
+ * @returns - observable which updates date list
  */
-export const initDateListPOEpic = (action$, store) => action$.ofType(actions.SET_DATE_LIST).switchMap((action) => {
+export const initDateListPOEpic = (action$) => action$.ofType(actions.SET_DATE_LIST).switchMap((action) => {
     return Rx.Observable.from([getStartDateValuePO(action.dates), getEndDateValuePO(action.dates)]);
 });
 
 /**
- * selectStartDatePOEpic on table click, selects the row selected and highlight it on the map
+ * selectStartDatePOEpic handle list of date ofter selection of value
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
- * @returns - observable which update the layer
+ * @returns - which updates end dates list after a start date selection
  */
 export const selectStartDatePOEpic = (action$, store) => action$.ofType(actions.SELECT_START_DATE_VALUE).switchMap((action) => {
     var dateList = getDateList(store.getState());
@@ -779,11 +782,11 @@ export const selectStartDatePOEpic = (action$, store) => action$.ofType(actions.
 });
 
 /**
- * selectEndDatePOEpic on table click, selects the row selected and highlight it on the map
+ * selectEndDatePOEpic handle list of date ofter selection of value
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
- * @returns - observable which update the layer
+ * @returns - which updates start dates list after a end date selection
  */
 export const selectEndDatePOEpic = (action$, store) => action$.ofType(actions.SELECT_END_DATE_VALUE).switchMap((action) => {
     var dateList = getDateList(store.getState());
@@ -801,11 +804,11 @@ export const selectEndDatePOEpic = (action$, store) => action$.ofType(actions.SE
 });
 
 /**
- * getPhotoCountPOEpic on table click, selects the row selected and highlight it on the map
+ * getPhotoCountPOEpic updates number of estimated results
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
- * @returns - observable which update the layer
+ * @returns - observable which update photo count
  */
 export const getPhotoCountPOEpic = (action$, store) => action$.ofType(actions.GET_PHOTO_COUNT).switchMap((action) => {
     if (isOpen(store.getState())) {
@@ -821,11 +824,7 @@ export const getPhotoCountPOEpic = (action$, store) => action$.ofType(actions.GE
             if (response.status === 200) {
                 return Rx.Observable.from([setPhotoCountActionPO(response.data.numberOfResult)]);
             } else {
-                /*if (isOpen(store.getState())) {*/
-                    return dropPopUp(response.status, response.statusText);
-                /*} else {
-                    return Rx.Observable.empty();
-                }*/
+                return dropPopUpPOEpic(response.status, response.statusText);
             }
         });
     } else{
@@ -834,13 +833,12 @@ export const getPhotoCountPOEpic = (action$, store) => action$.ofType(actions.GE
 });
 
 /**
- * addOverlayLayerPOEpic on table click, selects the row selected and highlight it on the map
+ * addOverlayLayerPOEpic - add layer to map
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
- * @param store - list the content of variables inputted with the actions
- * @returns - observable which update the layer
+ * @returns - observable which update layers
  */
-export const addOverlayLayerPOEpic = (action$, store) =>
+export const addOverlayLayerPOEpic = (action$) =>
     action$.ofType(actions.INIT_OVERLAY_LAYER)
         .switchMap(() => {
             if (!searchPerimeter.id) {
@@ -882,15 +880,6 @@ export const addOverlayLayerPOEpic = (action$, store) =>
             ]);
         })
 
-function getGeoJsonFeature(feature, style) {
-    var writer = new GeoJSON();
-    var geoJsonFeature = writer.writeFeatureObject(feature);
-    // var geoJsonFeature = JSON.parse(geojsonStr);
-    geoJsonFeature.style = style;
-    geoJsonFeature.id = "toto" + Math.random();
-    return geoJsonFeature;
-}
-
 function getPerimeterPolygonGeom(store){
     //emprise de la carte
     var empriseRecherche = mapBboxSelector(store.getState());
@@ -931,7 +920,7 @@ function getPerimeterPolygon(store){
 }
 
 /**
- * pictureHoveredPOEpic on table click, selects the row selected and highlight it on the map
+ * pictureHoveredPOEpic update layer if picture hovered
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
@@ -964,17 +953,16 @@ export const pictureHoveredPOEpic = (action$, store) => action$.ofType(actions.P
 });
 
 /**
- * zoomElementPOEpic 
+ * zoomElementPOEpic zoom to picture extent
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
- * @returns - empty observable
+ * @returns - observable to zoom on picture Extent
  */
-export const zoomElementPOEpic = (action$, store) => action$.ofType(actions.ZOOM_ELEMENT).switchMap((action) => {
+export const zoomElementPOEpic = (action$) => action$.ofType(actions.ZOOM_ELEMENT).switchMap(() => {
     /* eslint-disable */
     const format = new GeoJSON();
     const feature = format.readFeature(hoveredItemPerimeter);
     const polygon = feature.getGeometry();
-    // polygon.transform(proj4326, proj3857);
 
     return Rx.Observable.from([zoomToExtent(polygon.getExtent(), "EPSG:4326", 20, {nearest: true})]);
     /* eslint-enable */
@@ -984,7 +972,8 @@ export const zoomElementPOEpic = (action$, store) => action$.ofType(actions.ZOOM
  * filterBasketValuesPOEpic 
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
- * @returns - empty observable
+ * @param store - list the content of variables inputted with the actions
+ * @returns - observable which updates list of items in basket
  */
 export const filterBasketValuesPOEpic = (action$, store) => action$.ofType(actions.FILTER_BASKET_VALUES).switchMap((action) => {
     /* eslint-disable */
@@ -1009,18 +998,18 @@ export const filterBasketValuesPOEpic = (action$, store) => action$.ofType(actio
             filterValue = filterValue.sort((a,b) => (a.fileSize < b.fileSize) ? 1 : ((b.fileSize < a.fileSize) ? -1 : 0))
             break;
         default:
-            return dropPopUp('errorFilters');
+            return dropPopUpPOEpic('errorFilters');
     }
     return Rx.Observable.from([updateItemInBasketPO(filterValue.slice(),true)]);
     /* eslint-enable */
 })
 
 /**
- * onScrollPOEpic 
+ * onScrollPOEpic loads more results while scrolling on list results
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
- * @returns - empty observable
+ * @returns - observable which loads more results if scroll position near bottom or empty observable
  */
 export const onScrollPOEpic = (action$, store) => action$.ofType(actions.ONSCROLL).switchMap(() => {    
     if (!getScrollIndicator(store.getState())) {
@@ -1029,7 +1018,7 @@ export const onScrollPOEpic = (action$, store) => action$.ofType(actions.ONSCROL
         if ( (document.getElementById('PHOTOSOBLIQUES_scrollBar').scrollTop + document.getElementById('PHOTOSOBLIQUES_scrollBar').clientHeight) >= (document.getElementById('PHOTOSOBLIQUES_scrollBar').scrollHeight-110) ) {
             /* chargement des résultats seulement si le maximum n'a pas été chargé */
             if (getSearchResult(store.getState()).length < getPhotoCountSelector(store.getState())){
-                return Rx.Observable.from([validateSearchFiltersPO(true,true), accumulateScrollEventsPO(true)]);
+                return Rx.Observable.from([validateSearchFiltersPO(true,true), accumulateScrollEventsPO(true), setLoadingPO(true)]);
             } else{
                 return Rx.Observable.empty();
             }
@@ -1041,17 +1030,18 @@ export const onScrollPOEpic = (action$, store) => action$.ofType(actions.ONSCROL
 })
 
 /**
- * clearFiltersEpic 
+ * clearFiltersEpic - used to unselect filter values
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
- * @returns - empty observable
+ * @param store - list the content of variables inputted with the actions
+ * @returns - observable which updates filters values
  */
-export const clearFiltersEpic = (action$, store) => action$.ofType(actions.CLEAR_FILTERS).switchMap((action) => {
+export const clearFiltersEpic = (action$, store) => action$.ofType(actions.CLEAR_FILTERS).switchMap(() => {
     var dateList = getDateList(store.getState());
     return Rx.Observable.from(
         [
-            getStartDateValuePO(getDateList(store.getState())),
-            getEndDateValuePO(getDateList(store.getState())),
+            getStartDateValuePO(dateList),
+            getEndDateValuePO(dateList),
             windRoseClickPO(''),
             setStartDateValuePO(),
             setEndDateValuePO()
@@ -1063,7 +1053,8 @@ export const clearFiltersEpic = (action$, store) => action$.ofType(actions.CLEAR
  * initConfigsPOEpic 
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
- * @returns - empty observable
+ * @param store - list the content of variables inputted with the actions
+ * @returns - observable which applies plugin's config parameters
  */
 export const initConfigsPOEpic = (action$, store) => action$.ofType(actions.INIT_CONFIGS).switchMap((action) => {
     if (isOpen(store.getState())) {
@@ -1085,7 +1076,7 @@ export const initConfigsPOEpic = (action$, store) => action$.ofType(actions.INIT
                 ]);
             } else {
                 if (isOpen(store.getState())) {
-                    return dropPopUp(response.status, response.statusText);
+                    return dropPopUpPOEpic(response.status, response.statusText);
                 } else {
                     return Rx.Observable.empty();
                 }
@@ -1097,12 +1088,13 @@ export const initConfigsPOEpic = (action$, store) => action$.ofType(actions.INIT
 })
 
 /**
- * dropPopUp drop popup according to level
+ * dropPopUpPOEpic drop popup according to Backend's response
  * @memberof photosObliques.epics
- * @param level - popup level e.g: success | error
+ * @param code - code raise by plugin's BE
+ * @param message - message sent by plugin's BE
  * @returns - observable containing popup or empty observable
  */
-const dropPopUp = (code, message, state) => {
+const dropPopUpPOEpic = (code, message) => {
     switch (code) {
     case 200:
         return Rx.Observable.from([
@@ -1134,7 +1126,5 @@ const dropPopUp = (code, message, state) => {
     default:
         return Rx.Observable.from([
             show({ title: "photosObliques.dropPopUpCustom.title", message: "photosObliques.dropPopUpCustom.message" }, "error")]);
-        break;
     }
-    return Rx.Observable.empty();
 };

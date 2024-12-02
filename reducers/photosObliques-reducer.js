@@ -3,14 +3,12 @@ import { actions, tabTypes } from "../actions/photosObliques-action";
 import assign from 'object-assign';
 
 const initialState = {
-    // value: 1,
-    activeTab: tabTypes.HOME,
+    activeTab: tabTypes.SEARCH,
     roseValue: "",
     filtersTriggered: "",
     searchResult: [],
     itemId: "",
     basket: [],
-    // itemToRemove: "",
     itemCounterInBasket: 0,
     dateList: [],
     startDate: [],
@@ -19,14 +17,15 @@ const initialState = {
 };
 
 /**
- * sampleExtension reducer
- * @memberof sampleExtension.reducer
+ * photosObliques reducer
+ * @memberof photosObliques.reducer
  * @param state - the plugins state
  * @param action - the current action triggered
  * @returns - returns the current actions to be made from the current action
  */
 export default (state = initialState, action) => {
     //console.log("action.type : ",action.type);
+    //console.log("action.source : ",action.source);
     //console.log(state);
     switch (action.type) {
     case actions.INIT_CONFIGS:
@@ -67,6 +66,8 @@ export default (state = initialState, action) => {
         return assign({}, state , { hoveredPolygonVisibilityState: action.visible });
     case actions.SET_DOWNLOADING:
         return assign({}, state , { downloading: action.bool });
+    case actions.SET_LOADING:
+        return assign({}, state , { loading: action.bool });
     case actions.ACCUMULATE_SCROLL_EVENTS:
         return assign({}, state , { scrollIndicator: action.bool });
     case actions.SAVE_DOWNLOAD_FIELDS:

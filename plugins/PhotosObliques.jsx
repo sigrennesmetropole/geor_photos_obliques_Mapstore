@@ -45,7 +45,6 @@ import {
     getSearchResult,
     getItemId,
     getBasket,
-    // getItemToRemove,
     getItemCounterInBasket,
     getDateList,
     getStartDate,
@@ -57,7 +56,7 @@ import {
     getModalType,
     getHoveredPolygonVisibilityState,
     getDownloading,
-    getPhotoCount,
+    getLoading,
     getScrollIndicator,
     getPrefix,
     getFileName,
@@ -66,7 +65,6 @@ import {
     getBasketSize,
     getEndDateValue,
     getStartDateValue,
-    getCounter,
     getDisplayFilters,
     getPrevPhotoCount,
     getPrevSearchFiltersValues
@@ -76,7 +74,6 @@ import '../assets/style.css';
 export default createPlugin(name, {
     component: connect(state => ({
         active: !!isOpen(state),
-        // value: state.photosObliques && state.photosObliques.value,
         activeTab: getActiveTab(state),
         dockStyle: mapLayoutValuesSelector(state, {right: true, height: true}, true),
         pluginIcon,
@@ -85,7 +82,6 @@ export default createPlugin(name, {
         searchResult: getSearchResult(state),
         itemId: getItemId(state),
         basket: getBasket(state) || [],
-        // itemToRemove: getItemToRemove(state),
         itemCounterInBasket: getItemCounterInBasket(state) || 0,
         dateList: getDateList(state) || [],
         startDate: getStartDate(state) || [],
@@ -97,6 +93,7 @@ export default createPlugin(name, {
         modalType: getModalType(state) || '',
         hoveredPolygonVisibilityState: getHoveredPolygonVisibilityState(state) || false,
         downloading: getDownloading(state) || false,
+        loading: getLoading(state) || false,
         scrollIndicator: getScrollIndicator(state) || false,
         fileName: getFileName(state) || '',
         prefix: getPrefix(state) || '',

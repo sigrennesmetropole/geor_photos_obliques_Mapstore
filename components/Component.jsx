@@ -7,6 +7,7 @@ import { tabTypes } from "../actions/photosObliques-action.js";
 import ResponsivePanel from "@mapstore/components/misc/panels/ResponsivePanel";
 import { Glyphicon } from 'react-bootstrap';
 import LoadingSpinner from '@mapstore/components/misc/LoadingSpinner';
+import {getMessageById} from '@mapstore/utils/LocaleUtils';
 export class photosObliques extends React.Component {
 
     static propTypes= {
@@ -29,6 +30,10 @@ export class photosObliques extends React.Component {
         changeTabPO: PropTypes.func,
         pictureHoveredPO: PropTypes.func
     }
+    
+    static contextTypes = {
+        messages: PropTypes.object
+    };
 
     static defaultProps= {
         active: false,
@@ -36,7 +41,7 @@ export class photosObliques extends React.Component {
         dockStyle: {zIndex: 100},
         panelClassName: 'photosObliques-panel',
         width: PHOTOSOBLIQUES_PANEL_WIDTH,
-        activeTab: tabTypes.HOME,
+        activeTab: tabTypes.SEARCH,
         searchResult: [],
         itemCounterInBasket: 0,
         itemId: "",
@@ -81,37 +86,37 @@ export class photosObliques extends React.Component {
      * @memberof photosObliques.component
      * @returns - dom of the home tab content
      */
-        renderFiltersSection() {
-            return (
-                <>
-                    {
-                        <>
-                            <div className="helpBtnAccess" onClick={() => window.open(this.props.pohelpurlaccess,'_blank')} style={this.props.pohelpurlaccess === '' ? {"display":"none"} : {"display":"block"}} >
-                                <Glyphicon glyph="question-sign" />
+    renderFiltersSection() {
+        return (
+            <>
+                {
+                    <>
+                        <div className="helpBtnAccess" onClick={() => window.open(this.props.pohelpurlaccess,'_blank')} style={this.props.pohelpurlaccess === '' ? {"display":"none"} : {"display":"block"}} >
+                            <Glyphicon glyph="question-sign" />
+                        </div>
+                        <div className="row PO_filterSelectionMainDiv">
+                            <div className="col-sm-6">
+                                { this.searchFilters() }
                             </div>
-                            <div className="row PO_filterSelectionMainDiv">
-                                <div className="col-sm-6">
-                                    { this.searchFilters() }
-                                </div>
-                                <div className="col-sm-6">
-                                    { this.renderCompass() }
-                                </div>
+                            <div className="col-sm-6">
+                                { this.renderCompass() }
                             </div>
-                            <div className="row PO_validateForm">
-                                { this.validateSection() }
-                            </div>
-                        </>
-                    }
-                </>
-            );
-        }
+                        </div>
+                        <div className="row PO_validateSearch">
+                            { this.validateSection() }
+                        </div>
+                    </>
+                }
+            </>
+        );
+    }
 
     /**
      * renderHomeTab home tab content
      * @memberof photosObliques.component
      * @returns - dom of the home tab content
      */
-    renderHomeTab() {
+    renderSearchTab() {
         return (
             <>
                 { this.props.filtersTriggered === false ? this.renderFiltersSection() : '' }
@@ -133,7 +138,7 @@ export class photosObliques extends React.Component {
     filterResults(){
         return (
             <>
-                {!this.props.displayFilters && <button className="btn-primary PO_addBasket" id="PO_toggle_button" onClick={() => this.props.openSearchFiltersPO()}>
+                {!this.props.displayFilters && <button className="btn-primary PO_customBtn" id="PO_toggle_button" onClick={() => this.props.openSearchFiltersPO()}>
                     <Glyphicon glyph="search" /> <Message msgId={'photosObliques.updateSearch'} />
                 </button>}
                 {this.props.displayFilters && <div>
@@ -143,13 +148,13 @@ export class photosObliques extends React.Component {
                     <span className="PO_resultAmount">{this.props.prevPhotoCount} <Message msgId={'photosObliques.picturesFound'} /></span>
                     <span>
                         <span className="PO_bold"><Message msgId={'photosObliques.orderBy'}/>: </span>
-                        <select id="filterSearchedValues" className="PO_startDate PO_sortSearchedValues" onChange={() => this.props.filterSearchedValuesPO(document.getElementById("filterSearchedValues").value)}>
-                            <option value="-relevance">Pertinence</option>
-                            <option value="-year">Année</option>
-                            <option value="-date">Date de prise de vue</option>
-                            <option value="-owner">Propriétaire</option>
-                            <option value="-provider">Prestataire</option>
-                            <option value="-fileSize">Taille</option>
+                        <select id="filterSearchedValues" className="PO_filterSearchedVal PO_sortSearchedValues" onChange={() => this.props.filterSearchedValuesPO(document.getElementById("filterSearchedValues").value)}>
+                            <option className="PO_dropdownMenu" value="-relevance">{getMessageById(this.context.messages, 'photosObliques.relevance')}</option>
+                            <option className="PO_dropdownMenu" value="-year">{getMessageById(this.context.messages, 'photosObliques.yearTaken')}</option>
+                            <option className="PO_dropdownMenu" value="-date">{getMessageById(this.context.messages, 'photosObliques.date')}</option>
+                            <option className="PO_dropdownMenu" value="-owner">{getMessageById(this.context.messages, 'photosObliques.owner')}</option>
+                            <option className="PO_dropdownMenu" value="-provider">{getMessageById(this.context.messages, 'photosObliques.provider')}</option>
+                            <option className="PO_dropdownMenu" value="-fileSize">{getMessageById(this.context.messages, 'photosObliques.weight')}</option>
                         </select>
                     </span>
                 </div>
@@ -203,16 +208,34 @@ export class photosObliques extends React.Component {
                                             </div>
                                         </div>
                                         <span className={this.props.hoveredPolygonVisibilityState ? "PO_tooltiptext PO_tooltipHidden" : "PO_tooltiptext"}><Message msgId={'photosObliques.zoomTooltip'} /></span>
-                                        <button id={"btn_"+val.id} className="btn-primary PO_addBasket PO_addBasketWidth" onClick={() => this.props.addBasketPO(val)}><Message msgId={'photosObliques.addBasket'} /></button>
+                                        <button className={this.addBasketButtonClassNames(val.id)} onClick={() => this.props.addBasketPO(val)}><Message msgId={'photosObliques.addBasket'} /></button>
                                     </div>
                                 </div>
                             );
                         })
                     }
                 </div>}
-                {this.props.searchResult.length != 0 && this.props.searchResult[0].provider != 'none' && <span className="PO_resultLoaded"> <Message msgId={'photosObliques.picturesLoaded'}/> : {this.props.searchResult.length} / {this.props.prevPhotoCount}</span>}
+                {this.props.searchResult.length != 0 && this.props.searchResult[0].provider != 'none' && 
+                <div className="PO_resultLoaded"> {this.props.loading && <span className="PO_loadingMore"> <LoadingSpinner/></span>}
+                    <span className="PO_numResultsLoaded"><Message msgId={'photosObliques.picturesLoaded'}/> : {this.props.searchResult.length} / {this.props.prevPhotoCount} </span>
+                </div>}
             </>
         )
+    }
+
+    /**
+     * addBasketButtonClassNames update css classes of addBasketButton for buttons already in basket
+     * @memberof photosObliques.component
+     * @returns - list of css classes
+     */
+    addBasketButtonClassNames(pictureId){
+        let addBasketBtnClassNames = "btn-primary PO_customBtn PO_addBasketWidth";
+        this.props.basket.map((item) => {
+            if(item.id === pictureId){
+                addBasketBtnClassNames += " PO_addedInBasket";
+            }
+        })
+        return addBasketBtnClassNames;
     }
 
     /**
@@ -221,38 +244,20 @@ export class photosObliques extends React.Component {
      * @returns - dom of the home tab content
      */
     validateSection(){
-        //TODO voir utilité de ce doublon !!
-        if (this.props.startDate != "0" && this.props.endDate != "0") {
-            return (
-                <>
-                    {
-                        this.props.filtersTriggered === true &&
-                        <button className="btn-primary PO_addBasket" onClick={() => this.props.cancelSearchFiltersPO()}>
-                            <Message msgId={'photosObliques.cancelSearch'}/>
-                        </button>
-                    }
-                    <button className="btn-primary PO_addBasket" onClick={() => {this.props.validateSearchFiltersPO(true, false, true), this.props.searchValuesFilteredPO(""), this.props.cancelSearchFiltersPO()}}>
-                        <Message msgId={'photosObliques.ValidateSearch'}/>
+        return (
+            <>
+                {
+                    this.props.filtersTriggered === true &&
+                    <button className="btn-primary PO_customBtn" onClick={() => this.props.cancelSearchFiltersPO()}>
+                        <Message msgId={'photosObliques.cancelSearch'}/>
                     </button>
-                    <span>{ this.props.photoCount } <Message msgId={'photosObliques.picturesAvailable'}/></span>
-                </>
-            )
-        }else{
-            return (
-                <>
-                    {
-                        this.props.filtersTriggered === true &&
-                        <button className="btn-primary PO_addBasket" onClick={() => this.props.cancelSearchFiltersPO()}>
-                            <Message msgId={'photosObliques.cancelSearch'}/>
-                        </button>
-                    }
-                    <button className="btn-primary PO_addBasket" disabled>
-                        <Message msgId={'photosObliques.ValidateSearch'}/>
-                    </button>
-                    <span>{ this.props.photoCount } <Message msgId={'photosObliques.picturesAvailable'}/></span>
-                </>
-            )
-        }
+                }
+                <button className="btn-primary PO_customBtn" onClick={() => {this.props.validateSearchFiltersPO(true, false, true), this.props.searchValuesFilteredPO(""), this.props.cancelSearchFiltersPO()}}>
+                    <Message msgId={'photosObliques.ValidateSearch'}/>
+                </button>
+                <span>{ this.props.photoCount } <Message msgId={'photosObliques.picturesAvailable'}/></span>
+            </>
+        )
     }
 
     /**
@@ -266,25 +271,25 @@ export class photosObliques extends React.Component {
                 <h3 className="PO_filterTitle"><Message msgId={'photosObliques.filterTitle'} /></h3>
                 <p className="PO_filterSubTitles"><Message msgId={'photosObliques.filterYears'} /></p>
                 <select id="PO_startDate" className="rw-input" onChange={(e) => this.props.selectStartDateValuePO(e.target.value)} >
-                    <option value="start" key="start">Année de début</option>
+                    <option className="PO_dropdownMenu" value="start" key="start">{getMessageById(this.context.messages, 'photosObliques.defaultStartDateOption')}</option>
                     {
                         this.props.startDate.map((val) => {
                             if (val === parseInt(this.props.startDateValue)) {
-                                return (<option value={ val } selected key={ val }>{ val }</option>);
+                                return (<option className="PO_dropdownMenu" value={ val } selected key={ val }>{ val }</option>);
                             } else{
-                                return (<option value={ val } key={ val }>{ val }</option>);
+                                return (<option className="PO_dropdownMenu" value={ val } key={ val }>{ val }</option>);
                             }
                         })
                     }
                 </select>
                 <select id="PO_endDate" className="rw-input" onChange={(e) => this.props.selectEndDateValuePO(e.target.value)} >
-                    <option value="end" key="end">Année de fin</option>
+                    <option className="PO_dropdownMenu" value="end" key="end">{getMessageById(this.context.messages, 'photosObliques.defaultEndDateOption')}</option>
                     {
                         this.props.endDate.map((val) => {
                             if (val === parseInt(this.props.endDateValue)) {
-                                return (<option value={ val } selected key={ val }>{ val }</option>);
+                                return (<option className="PO_dropdownMenu" value={ val } selected key={ val }>{ val }</option>);
                             } else{
-                                return (<option value={ val } key={ val }>{ val }</option>);
+                                return (<option className="PO_dropdownMenu" value={ val } key={ val }>{ val }</option>);
                             }
                         })
                     }
@@ -401,97 +406,96 @@ export class photosObliques extends React.Component {
     }
 
     /**
-     * TODO: changer les classes PO_addbasket
      * renderSelectionTab home tab content
      * @memberof photosObliques.component
      * @returns - dom of the home tab content
      */
-        renderSelectionTab() {
-            return (
-                <div id="PHOTOSOBLIQUES_EXTENSION PHOTOSOBLIQUES_scrollBar">
-                    {!this.props.downloading && <div>
-                        <div className="PO_basket_sort_position">
-                            {this.props.itemCounterInBasket != 0 && <span className="PO_filterBasketValues">
-                                {this.props.itemCounterInBasket} / {this.props.basket.length} <Message msgId={'photosObliques.pictureSelected'} />
-                            </span>}
-                            {this.props.itemCounterInBasket === 0 && <span></span>}
-                            <span className="PO_basket_sort_position">
-                                <span className="PO_bold PO_filterBasketValues"><Message msgId={'photosObliques.orderBy'} />: </span>
-                                <select id="filterBasketValues" className="PO_startDate PO_sortSearchedValues" onChange={() => this.props.filterBasketValuesPO(document.getElementById("filterBasketValues").value)}>
-                                    <option value="-relevance">Pertinence</option>
-                                    <option value="-year">Année</option>
-                                    <option value="-date">Date de prise de vue</option>
-                                    <option value="-owner">Propriétaire</option>
-                                    <option value="-provider">Prestataire</option>
-                                    <option value="-fileSize">Taille</option>
-                                </select>
-                            </span>
+    renderCartTab() {
+        return (
+            <div id="PHOTOSOBLIQUES_EXTENSION PHOTOSOBLIQUES_scrollBar">
+                {!this.props.downloading && <div>
+                    <div className="PO_basket_sort_position">
+                        {this.props.itemCounterInBasket != 0 && <span className="PO_filterBasketValues">
+                            {this.props.itemCounterInBasket} / {this.props.basket.length} <Message msgId={'photosObliques.pictureSelected'} />
+                        </span>}
+                        {this.props.itemCounterInBasket === 0 && <span></span>}
+                        <span className="PO_basket_sort_position">
+                            <span className="PO_bold PO_filterBasketValues"><Message msgId={'photosObliques.orderBy'} />: </span>
+                            <select id="filterBasketValues" className="PO_filterValues PO_sortSearchedValues" onChange={() => this.props.filterBasketValuesPO(document.getElementById("filterBasketValues").value)}>
+                                <option className="PO_dropdownMenu" value="-relevance">{getMessageById(this.context.messages, 'photosObliques.relevance')}</option>
+                                <option className="PO_dropdownMenu" value="-year">{getMessageById(this.context.messages, 'photosObliques.yearTaken')}</option>
+                                <option className="PO_dropdownMenu" value="-date">{getMessageById(this.context.messages, 'photosObliques.date')}</option>
+                                <option className="PO_dropdownMenu" value="-owner">{getMessageById(this.context.messages, 'photosObliques.owner')}</option>
+                                <option className="PO_dropdownMenu" value="-provider">{getMessageById(this.context.messages, 'photosObliques.provider')}</option>
+                                <option className="PO_dropdownMenu" value="-fileSize">{getMessageById(this.context.messages, 'photosObliques.weight')}</option>
+                            </select>
+                        </span>
+                    </div>
+                    <div>
+                        <div className="PO_basket_counter_position">
+                            <Message msgId={'photosObliques.maxLimits'} /> {this.props.picturesInBasket} / {this.props.configs.pomaxcartnumberofpics} <Message msgId={'photosObliques.pictureAmount'} /> - {parseFloat(this.props.basketSize / 1000000).toFixed(1)} / {this.props.configs.pomaxcartsize  + " Mo"}
                         </div>
-                        <div>
-                            <div className="PO_basket_counter_position">
-                                <Message msgId={'photosObliques.maxLimits'} /> {this.props.picturesInBasket} / {this.props.configs.pomaxcartnumberofpics} <Message msgId={'photosObliques.pictureAmount'} /> - {parseFloat(this.props.basketSize / 1000000).toFixed(1)} / {this.props.configs.pomaxcartsize  + " Mo"}
+                        <div className="PO_basket_buttons_position">
+                            <div className="PO_tooltipDeletionBasket">
+                                <button className="btn-primary PO_removeBasket" onClick={() => this.props.removeSelectedItemsInBasketPO(false)}><Glyphicon glyph="trash"/></button>
+                                { this.selectTooltipForDeletion() }
                             </div>
-                            <div className="PO_basket_buttons_position">
-                                <div className="PO_tooltipDeletionBasket">
-                                    <button className="btn-primary PO_removeBasket" onClick={() => this.props.removeSelectedItemsInBasketPO(false)}><Glyphicon glyph="trash"/></button>
-                                    { this.selectTooltipForDeletion() }
-                                </div>
-                                <div className="PO_tooltipDownloadBasket">
-                                    <button className="btn-primary PO_downloadBasket" onClick={() => this.props.modalDisplayPO(true, 'downloadModal')}><Glyphicon glyph="download"/></button>
-                                    { this.selectTooltipForDownload() }
-                                </div>
+                            <div className="PO_tooltipDownloadBasket">
+                                <button className="btn-primary PO_downloadBasket" onClick={() => this.props.modalDisplayPO(true, 'downloadModal')}><Glyphicon glyph="download"/></button>
+                                { this.selectTooltipForDownload() }
                             </div>
                         </div>
-                        {
-                            this.props.basket.map((val, key) => {
-                                return (
-                                    <div className={val.selected ? "row mapstore-side-card PO_searchResults PO_searchResult_center PO_selected" : "row mapstore-side-card PO_searchResults PO_searchResult_center"} key={key} onClick={(e) => this.props.clickPicturePO(val.id, e.ctrlKey, e.shiftKey)} onMouseEnter={() => this.props.pictureHoveredPO(val)} onMouseLeave={() => this.props.pictureHoveredPO()}>
-                                        <div className="col-sm-4 PO_static">
-                                            <img src={ val.urlOverview } className="PO_searchResultPictures" onMouseEnter={(event) => {
-                                                this.setState({xoffset: event.clientX, yoffset: event.clientY})
-                                            }}/>
-                                            <div className="PO_searchResultPictures_apercu PO_searchResultPicturesBasket_apercu">
-                                                <img  style={{
-                                                    position: "fixed",
-                                                    right: '560px',
-                                                    top: window.innerHeight /2 < this.state.yoffset ? `${this.state.yoffset -450}px` : `${this.state.yoffset -200}px`
-                                                }}
-                                                src={val.urlOverview} />
-                                            </div>
+                    </div>
+                    {
+                        this.props.basket.map((val, key) => {
+                            return (
+                                <div className={val.selected ? "row mapstore-side-card PO_searchResults PO_searchResult_center PO_selected" : "row mapstore-side-card PO_searchResults PO_searchResult_center"} key={key} onClick={(e) => this.props.clickPicturePO(val.id, e.ctrlKey, e.shiftKey)} onMouseEnter={() => this.props.pictureHoveredPO(val)} onMouseLeave={() => this.props.pictureHoveredPO()}>
+                                    <div className="col-sm-4 PO_static">
+                                        <img src={ val.urlOverview } className="PO_searchResultPictures" onMouseEnter={(event) => {
+                                            this.setState({xoffset: event.clientX, yoffset: event.clientY})
+                                        }}/>
+                                        <div className="PO_searchResultPictures_apercu PO_searchResultPicturesBasket_apercu">
+                                            <img  style={{
+                                                position: "fixed",
+                                                right: '560px',
+                                                top: window.innerHeight /2 < this.state.yoffset ? `${this.state.yoffset -450}px` : `${this.state.yoffset -200}px`
+                                            }}
+                                            src={val.urlOverview} />
                                         </div>
-                                        <div className="col-sm-8 PO_flexContainer">
-                                            <div className="col-sm-7 PO_text-align-left">
-                                                <div><span  className="PO_bold">{ val.year } | { val.date }</span></div>
-                                                <div><i>{ val.owner }, { val.provider }</i></div>
-                                                <hr />
-                                                <div>{val.fileSize && <span  className="PO_bold">{ parseFloat(val.fileSize / 1000000).toFixed(1) + "Mo" }</span> } {val.id && <span> - {val.id}</span> }</div>
-                                            </div>
-                                            <div className="col-sm-5">
-                                                <div className="row PO_harmonizePrecision">
-                                                    <div className={parseFloat(val.relevance).toFixed(0) >= 50 ? parseFloat(val.relevance).toFixed(0) >= 75 ? "PO_resultPrecision PO_high_high col-sm-6": "PO_resultPrecision PO_high_low col-sm-6" : parseFloat(val.relevance).toFixed(0) >= 25 ? "PO_resultPrecision PO_low_high col-sm-6": "PO_resultPrecision PO_low_low col-sm-6"}>{ parseFloat(val.relevance).toFixed(0) }%</div>
-                                                    <div className="col-sm-5 PO_zoomToGlyph" onClick={() => this.props.zoomElementPO(val)}><Glyphicon glyph="zoom-to" /></div>
-                                                </div>
+                                    </div>
+                                    <div className="col-sm-8 PO_flexContainer">
+                                        <div className="col-sm-7 PO_text-align-left">
+                                            <div><span  className="PO_bold">{ val.year } | { val.date }</span></div>
+                                            <div><i>{ val.owner }, { val.provider }</i></div>
+                                            <hr />
+                                            <div>{val.fileSize && <span  className="PO_bold">{ parseFloat(val.fileSize / 1000000).toFixed(1) + "Mo" }</span> } {val.id && <span> - {val.id}</span> }</div>
+                                        </div>
+                                        <div className="col-sm-5">
+                                            <div className="row PO_harmonizePrecision">
+                                                <div className={parseFloat(val.relevance).toFixed(0) >= 50 ? parseFloat(val.relevance).toFixed(0) >= 75 ? "PO_resultPrecision PO_high_high col-sm-6": "PO_resultPrecision PO_high_low col-sm-6" : parseFloat(val.relevance).toFixed(0) >= 25 ? "PO_resultPrecision PO_low_high col-sm-6": "PO_resultPrecision PO_low_low col-sm-6"}>{ parseFloat(val.relevance).toFixed(0) }%</div>
+                                                <div className="col-sm-5 PO_zoomToGlyph" onClick={() => this.props.zoomElementPO(val)}><Glyphicon glyph="zoom-to" /></div>
                                             </div>
                                         </div>
                                     </div>
-                                );
-                            })
-                        }
-                        {this.renderPopUp()}
-                    </div>}
-                    {this.props.downloading && this.renderSpinner("photosObliques.spinnerDownloadMsg")}
-                </div>
-            );
-        }
+                                </div>
+                            );
+                        })
+                    }
+                    {this.renderPopUp()}
+                </div>}
+                {this.props.downloading && this.renderSpinner("photosObliques.spinnerDownloadMsg")}
+            </div>
+        );
+    }
 
     /**
-     * countBasketSelectedElements renders the selection tabs to get all plkugins sub parts
+     * countBasketSelectedElements renders the selection tabs to get all plugins sub parts
      * @memberof photosObliques.component
      * @returns - navbar like for the plugin
      */
     countBasketSelectedElements(){
         var counter = 0;
-        this.props.basket.map((val, key) => {
+        this.props.basket.map((val) => {
             if (val.selected === true) {
                 counter = counter +1;
             }
@@ -551,9 +555,9 @@ export class photosObliques extends React.Component {
                             <div onClick={() => this.props.modalDisplayPO(false, '')} className="PO_close">x</div>
                             <div>
                                 <div className="col-sm-2"></div>
-                                <button onClick={() => this.props.removeSelectedItemsInBasketPO(true)} className="btn-primary col-sm-3 PO_addBasket PO_button_margin_bottom"><Message msgId={'photosObliques.ok'} /></button>
+                                <button onClick={() => this.props.removeSelectedItemsInBasketPO(true)} className="btn-primary col-sm-3 PO_customBtn PO_button_margin_bottom"><Message msgId={'photosObliques.ok'} /></button>
                                 <div className="col-sm-2"></div>
-                                <button onClick={() => this.props.modalDisplayPO(false, '')} className="col-sm-3 btn-primary PO_addBasket PO_button_margin_bottom"><Message msgId={'photosObliques.cancel'} /></button>
+                                <button onClick={() => this.props.modalDisplayPO(false, '')} className="col-sm-3 btn-primary PO_customBtn PO_button_margin_bottom"><Message msgId={'photosObliques.cancel'} /></button>
                                 <div className="col-sm-2"></div>
                             </div>
                         </div>
@@ -593,9 +597,9 @@ export class photosObliques extends React.Component {
                             </div>
                             <div className="row">
                                 <div className="col-sm-2"></div>
-                                <button onClick={() => {this.props.modalDisplayPO(true, 'iUnderstand'), this.props.saveDownloadFieldsPO(document.getElementById("fname").value,document.getElementById("pname").value)}} className="col-sm-3 btn-primary PO_addBasket PO_button_margin_bottom"><Message msgId={'photosObliques.ok'}/></button>
+                                <button onClick={() => {this.props.modalDisplayPO(true, 'iUnderstand'), this.props.saveDownloadFieldsPO(document.getElementById("fname").value,document.getElementById("pname").value)}} className="col-sm-3 btn-primary PO_customBtn PO_button_margin_bottom"><Message msgId={'photosObliques.ok'}/></button>
                                 <div className="col-sm-2"></div>
-                                <button onClick={() => this.props.modalDisplayPO(false, '')} className="col-sm-3 btn-primary PO_addBasket PO_button_margin_bottom"><Message msgId={'photosObliques.cancel'}/></button>
+                                <button onClick={() => this.props.modalDisplayPO(false, '')} className="col-sm-3 btn-primary PO_customBtn PO_button_margin_bottom"><Message msgId={'photosObliques.cancel'}/></button>
                                 <div className="col-sm-2"></div>
                             </div>
                         </div>
@@ -619,7 +623,7 @@ export class photosObliques extends React.Component {
                             <div className="row">
                                 <div className="col-sm-4"></div>
                                 <div className="col-sm-4">
-                                    <button onClick={() => {this.props.downloadBasketPO(), this.props.setDownloadingPO(true)}} className="btn-primary PO_addBasket PO_button_margin_bottom"><Message msgId={'photosObliques.understood'}/></button>
+                                    <button onClick={() => {this.props.downloadBasketPO(), this.props.setDownloadingPO(true)}} className="btn-primary PO_customBtn PO_button_margin_bottom"><Message msgId={'photosObliques.understood'}/></button>
                                 </div>
                                 <div className="col-sm-4"></div>
                             </div>
@@ -651,31 +655,31 @@ export class photosObliques extends React.Component {
      * @memberof photosObliques.component
      * @returns - navbar like for the plugin
      */
-        renderTabMenu() {
-            return (
-                <div className="PO_masterclass row PHOTOSOBLIQUES_rowTabs">
-                    <div className="col-sm-6 PO_text-center">
-                        <button className={this.props.activeTab === "PHOTOSOBLIQUES:HOME"
-                            ? "PHOTOSOBLIQUES_homeButton PHOTOSOBLIQUES_active"
-                            : "PHOTOSOBLIQUES_homeButton"} onClick={() => this.props.changeTabPO(tabTypes.HOME)}>
-                            <Message msgId={'photosObliques.welcome'}/>
-                        </button>
-                    </div>
-                    <div className="col-sm-6 PO_text-center">
-                        {this.props.basket.length != 0 && <button className={this.props.activeTab === "PHOTOSOBLIQUES:SELECT"
-                            ? "PHOTOSOBLIQUES_selectButton PHOTOSOBLIQUES_active"
-                            : "PHOTOSOBLIQUES_selectButton"} onClick={() => this.props.changeTabPO(tabTypes.SELECT)}>
-                            <Message msgId={'photosObliques.selection'}/><span className="nbPictInBasket"> ({this.props.basket.length}) </span>
-                        </button>}
-                        {this.props.basket.length === 0 && <button className={this.props.activeTab === "PHOTOSOBLIQUES:SELECT"
-                            ? "PHOTOSOBLIQUES_selectButton PHOTOSOBLIQUES_active PO_greyed "
-                            : "PHOTOSOBLIQUES_selectButton PO_greyed"} disabled>
-                            <Message msgId={'photosObliques.selection'}/>
-                        </button>}
-                    </div>
+    renderTabMenu() {
+        return (
+            <div className="PO_masterclass row PHOTOSOBLIQUES_rowTabs">
+                <div className="col-sm-6 PO_text-center">
+                    <button className={this.props.activeTab === "PHOTOSOBLIQUES:SEARCH"
+                        ? "PHOTOSOBLIQUES_SearchTabButton PHOTOSOBLIQUES_active"
+                        : "PHOTOSOBLIQUES_SearchTabButton"} onClick={() => this.props.changeTabPO(tabTypes.SEARCH)}>
+                        <Message msgId={'photosObliques.search'}/>
+                    </button>
                 </div>
-            );
-        }
+                <div className="col-sm-6 PO_text-center">
+                    {this.props.basket.length != 0 && <button className={this.props.activeTab === "PHOTOSOBLIQUES:CART"
+                        ? "PHOTOSOBLIQUES_CartTabButton PHOTOSOBLIQUES_active"
+                        : "PHOTOSOBLIQUES_CartTabButton"} onClick={() => this.props.changeTabPO(tabTypes.CART)}>
+                        <Message msgId={'photosObliques.cart'}/><span className="nbPictInBasket"> ({this.props.basket.length}) </span>
+                    </button>}
+                    {this.props.basket.length === 0 && <button className={this.props.activeTab === "PHOTOSOBLIQUES:CART"
+                        ? "PHOTOSOBLIQUES_CartTabButton PHOTOSOBLIQUES_active PO_greyed "
+                        : "PHOTOSOBLIQUES_CartTabButton PO_greyed"} disabled>
+                        <Message msgId={'photosObliques.cart'}/>
+                    </button>}
+                </div>
+            </div>
+        );
+    }
 
         /**
      * renderContent organise which tab is active
@@ -685,11 +689,11 @@ export class photosObliques extends React.Component {
     renderContent = () => {
         var content;
         switch (this.props.activeTab) {
-        case tabTypes.HOME:
-            content = <div className="PO_masterclass">{this.renderHomeTab()}</div>
+        case tabTypes.SEARCH:
+            content = <div className="PO_masterclass">{this.renderSearchTab()}</div>
             break;
-        case tabTypes.SELECT:
-            content = <div className="PO_masterclass">{this.renderSelectionTab()}</div>
+        case tabTypes.CART:
+            content = <div className="PO_masterclass">{this.renderCartTab()}</div>
             break;
         default:
             break;

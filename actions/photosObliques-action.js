@@ -36,6 +36,7 @@ export const actions = {
     MODAL_DISPLAY: "PHOTOSOBLIQUES:MODAL_DISPLAY",
     UPDATE_HOVERED_POLYGON_VISIBILITY_STATE: "PHOTOSOBLIQUES:UPDATE_HOVERED_POLYGON_VISIBILITY_STATE",
     SET_DOWNLOADING: "PHOTOSOBLIQUES:SET_DOWNLOADING",
+    SET_LOADING: "PHOTOSOBLIQUES:SET_LOADING",
     ACCUMULATE_SCROLL_EVENTS: "PHOTOSOBLIQUES:ACCUMULATE_SCROLL_EVENTS",
     SAVE_DOWNLOAD_FIELDS: "PHOTOSOBLIQUES:SAVE_DOWNLOAD_FIELDS",
     CLEAR_FILTERS: "PHOTOSOBLIQUES:CLEAR_FILTERS",
@@ -50,8 +51,8 @@ export const actions = {
 };
 
 export const tabTypes = {
-    HOME: 'PHOTOSOBLIQUES:HOME',
-    SELECT: 'PHOTOSOBLIQUES:SELECT'
+    SEARCH: 'PHOTOSOBLIQUES:SEARCH',
+    CART: 'PHOTOSOBLIQUES:CART'
 };
 
 
@@ -106,10 +107,10 @@ export function changeTabPO(tab) {
 }
 
 /**
- * windRoseClickPO start action to change tab
+ * windRoseClickPO start action for degree value change on compass
  * @memberof plugin.actions
- * @param section - the selected section
- * @returns - action change tab
+ * @param degree - the selected degree value on compass
+ * @returns - action rose clicked
  */
 export function windRoseClickPO(degree) {
     return {
@@ -119,10 +120,10 @@ export function windRoseClickPO(degree) {
 }
 
 /**
- * windRoseClickPO start action to change tab
+ * windRoseClickPO start action to change degree value on compass
  * @memberof plugin.actions
- * @param section - the selected section
- * @returns - action change tab
+ * @param degree - the degree value to apply on compass
+ * @returns - action rose clicked setter
  */
 export function setWindRoseClickPO(degree) {
     return {
@@ -132,9 +133,11 @@ export function setWindRoseClickPO(degree) {
 }
 
 /**
- * validateSearchFiltersPO start action to change tab
+ * validateSearchFiltersPO start action to validate selected search filters and send it to BE
  * @memberof plugin.actions
- * @param section - the selected section
+ * @param filters - the selected filters values
+ * @param loadMore - if filters are triggered to load more results
+ * @param newSearch - if filters are triggered for a new search
  * @returns - action search filters
  */
 export function validateSearchFiltersPO(filters, loadMore, newSearch) {
@@ -147,9 +150,8 @@ export function validateSearchFiltersPO(filters, loadMore, newSearch) {
 }
 
 /**
- * cancelSearchFiltersPO start action to change tab
+ * cancelSearchFiltersPO start action to cancel search panel
  * @memberof plugin.actions
- * @param section - the selected section
  * @returns - action cancel search filters
  */
 export function cancelSearchFiltersPO() {
@@ -159,10 +161,10 @@ export function cancelSearchFiltersPO() {
 }
 
 /**
- * filterSearchedValuesPO start action to change tab
+ * filterSearchedValuesPO start action to filter searched values
  * @memberof plugin.actions
- * @param section - the selected section
- * @returns - action change tab
+ * @param value - the selected value
+ * @returns - action filter search values
  */
 export function filterSearchedValuesPO(value) {
     return {
@@ -172,10 +174,10 @@ export function filterSearchedValuesPO(value) {
 }
 
 /**
- * searchValuesFilteredPO start action to change tab
+ * searchValuesFilteredPO start action to change search values filtered
  * @memberof plugin.actions
  * @param searchResult - the selected searchResult
- * @returns - action change tab
+ * @returns - action search values filtered
  */
 export function searchValuesFilteredPO(searchResult) {
     return {
@@ -185,10 +187,10 @@ export function searchValuesFilteredPO(searchResult) {
 }
 
 /**
- * addBasketPO start action to change tab
+ * addBasketPO start action to add item on basket
  * @memberof plugin.actions
- * @param itemId - the selected itemId
- * @returns - action change tab
+ * @param item - the selected item
+ * @returns - action add basket
  */
 export function addBasketPO(item) {
     return {
@@ -198,10 +200,11 @@ export function addBasketPO(item) {
 }
 
 /**
- * updateItemInBasketPO start action to change tab
+ * updateItemInBasketPO start action to update list of items in basket
  * @memberof plugin.actions
- * @param itemId - the selected itemId
- * @returns - action change tab
+ * @param basket - the basket
+ * @param removePopUp - the popup to display
+ * @returns - action update item in basket
  */
 export function updateItemInBasketPO(basket, removePopUp) {
     return {
@@ -212,10 +215,10 @@ export function updateItemInBasketPO(basket, removePopUp) {
 }
 
 /**
- * removeSelectedItemsInBasketPO start action to change tab
+ * removeSelectedItemsInBasketPO start action to remove selected item(s) of basket
  * @memberof plugin.actions
- * @param itemId - the selected itemId
- * @returns - action change tab
+ * @param forceDeletionOnEmptySelection - the items to remove
+ * @returns - action remove selected items in basket
  */
 export function removeSelectedItemsInBasketPO(forceDeletionOnEmptySelection) {
     return {
@@ -225,10 +228,12 @@ export function removeSelectedItemsInBasketPO(forceDeletionOnEmptySelection) {
 }
 
 /**
- * clickPicturePO start action to change tab
+ * clickPicturePO start action to select picture in basket
  * @memberof plugin.actions
  * @param itemId - the selected itemId
- * @returns - action change tab
+ * @param ctrlKey - the ctrl Key status
+ * @param shiftKey - the shift key status
+ * @returns - action click picture
  */
 export function clickPicturePO(itemId, ctrlKey, shiftKey) {
     return {
@@ -240,10 +245,9 @@ export function clickPicturePO(itemId, ctrlKey, shiftKey) {
 }
 
 /**
- * downloadBasketPO start action to change tab
+ * downloadBasketPO start action to download
  * @memberof plugin.actions
- * @param itemId - the selected itemId
- * @returns - action change tab
+ * @returns - action download basket
  */
 export function downloadBasketPO() {
     return {
@@ -252,9 +256,10 @@ export function downloadBasketPO() {
 }
 
 /**
- * countItemsSelectedInBasketPO start action to change tab
+ * countItemsSelectedInBasketPO start action to count selected items in basket
  * @memberof plugin.actions
- * @returns - action change tab
+ * @param count - number of items
+ * @returns - action count items selected in basket
  */
 export function countItemsSelectedInBasketPO(count) {
     return {
@@ -264,9 +269,10 @@ export function countItemsSelectedInBasketPO(count) {
 }
 
 /**
- * getStartDateValuePO start action to change tab
+ * getStartDateValuePO start action to change start date value
  * @memberof plugin.actions
- * @returns - action change tab
+ * @param startDate - selected start date
+ * @returns - action start date value
  */
 export function getStartDateValuePO(startDate) {
     return {
@@ -276,9 +282,10 @@ export function getStartDateValuePO(startDate) {
 }
 
 /**
- * getEndDateValuePO start action to change tab
+ * getEndDateValuePO start action to change end date value
  * @memberof plugin.actions
- * @returns - action change tab
+ * @param endDate - selected end date
+ * @returns - action end date value
  */
 export function getEndDateValuePO(endDate) {
     return {
@@ -288,9 +295,10 @@ export function getEndDateValuePO(endDate) {
 }
 
 /**
- * selectStartDateValuePO start action to change tab
+ * selectStartDateValuePO start action to select start date value
  * @memberof plugin.actions
- * @returns - action change tab
+ * @param startDate - selected start date
+ * @returns - action select start date value
  */
 export function selectStartDateValuePO(startDate) {
     return {
@@ -300,9 +308,10 @@ export function selectStartDateValuePO(startDate) {
 }
 
 /**
- * selectEndDateValuePO start action to change tab
+ * selectEndDateValuePO start action to select end date value
  * @memberof plugin.actions
- * @returns - action change tab
+ * @param endDate - selected end date
+ * @returns - action select end date value
  */
 export function selectEndDateValuePO(endDate) {
     return {
@@ -312,9 +321,9 @@ export function selectEndDateValuePO(endDate) {
 }
 
 /**
- * initProjectionsPO start action to change tab
+ * initProjectionsPO start action to initialize available projections
  * @memberof plugin.actions
- * @returns - action change tab
+ * @returns - action init projections
  */
 export function initProjectionsPO() {
     return {
@@ -323,9 +332,9 @@ export function initProjectionsPO() {
 }
 
 /**
- * initDateSelectPO start action to change tab
+ * initDateSelectPO start action to initialize date selection
  * @memberof plugin.actions
- * @returns -
+ * @returns - action init date select
  */
 export function initDateSelectPO() {
     return {
@@ -334,9 +343,9 @@ export function initDateSelectPO() {
 }
 
 /**
- * initOverlayLayerPO start action to change tab
+ * initOverlayLayerPO start action to initialize overlay layer
  * @memberof plugin.actions
- * @returns -
+ * @returns - action init overlay layer
  */
 export function initOverlayLayerPO() {
     return {
@@ -345,9 +354,10 @@ export function initOverlayLayerPO() {
 }
 
 /**
- * setPolygonPO start action to change tab
+ * setPolygonPO start action to set polygon on layer
  * @memberof plugin.actions
- * @returns - action change tab
+ * @param polygon - polygon to set
+ * @returns - action set polygon
  */
 export function setPolygonPO(polygon) {
     return {
@@ -357,9 +367,9 @@ export function setPolygonPO(polygon) {
 }
 
 /**
- * getPhotoCountActionPO start action to change tab
+ * getPhotoCountActionPO start action to change number of estimated results
  * @memberof plugin.actions
- * @returns - action change tab
+ * @returns - action get photo count
  */
 export function getPhotoCountActionPO() {
     return {
@@ -368,9 +378,10 @@ export function getPhotoCountActionPO() {
 }
 
 /**
- * setPhotoCountActionPO start action to change tab
+ * setPhotoCountActionPO start action to change value of diplayed number of results
  * @memberof plugin.actions
- * @returns - action change tab
+ * @param amount - number to display
+ * @returns - action set photo count
  */
 export function setPhotoCountActionPO(amount) {
     return {
@@ -380,9 +391,10 @@ export function setPhotoCountActionPO(amount) {
 }
 
 /**
- * pictureHoveredPO start action to change tab
+ * pictureHoveredPO start action to change hovered picture
  * @memberof plugin.actions
- * @returns - action change tab
+ * @param item - selected picture
+ * @returns - action picture hovered
  */
 export function pictureHoveredPO(item) {
     return {
@@ -392,9 +404,10 @@ export function pictureHoveredPO(item) {
 }
 
 /**
- * zoomElementPO start action to change tab
+ * zoomElementPO start action to change map extent to match picture's extent
  * @memberof plugin.actions
- * @returns - action change tab
+ * @param item - selected pictures
+ * @returns - action zoom element
  */
 export function zoomElementPO(item) {
     return {
@@ -404,9 +417,10 @@ export function zoomElementPO(item) {
 }
 
 /**
- * filterBasketValuesPO start action to change tab
+ * filterBasketValuesPO start action to change basket sorting value
  * @memberof plugin.actions
- * @returns - action change tab
+ * @param filterValue - selected filter value
+ * @returns - action filter basket values
  */
 export function filterBasketValuesPO(filterValue) {
     return {
@@ -416,9 +430,9 @@ export function filterBasketValuesPO(filterValue) {
 }
 
 /**
- * onScrollPO start action to change tab
+ * onScrollPO start action when user is scrolling
  * @memberof plugin.actions
- * @returns - action change tab
+ * @returns - action onscroll
  */
 export function onScrollPO() {
     return {
@@ -427,9 +441,10 @@ export function onScrollPO() {
 }
 
 /**
- * setDateListPO start action to change tab
+ * setDateListPO start action to change list of avalaible dates
  * @memberof plugin.actions
- * @returns - action change tab
+ * @param dates - list of available dates
+ * @returns - action set date list
  */
 export function setDateListPO(dates) {
     return {
@@ -439,9 +454,11 @@ export function setDateListPO(dates) {
 }
 
 /**
- * modalDisplayPO start action to change tab
+ * modalDisplayPO start action to change modal to display
  * @memberof plugin.actions
- * @returns - action change tab
+ * @param bool - modal bool
+ * @param modalType - modal type
+ * @returns - action modal display
  */
 export function modalDisplayPO(bool, modalType) {
     return {
@@ -452,9 +469,10 @@ export function modalDisplayPO(bool, modalType) {
 }
 
 /**
- * updateHoveredPolygonVisibilityStatePO start action to change tab
+ * updateHoveredPolygonVisibilityStatePO start action to change hovered polygon visibility
  * @memberof plugin.actions
- * @returns - action change tab
+ * @param visible - visibility value of hovered polygon
+ * @returns - action update hovered polygon visibility state
  */
 export function updateHoveredPolygonVisibilityStatePO(visible) {
     return {
@@ -464,9 +482,10 @@ export function updateHoveredPolygonVisibilityStatePO(visible) {
 }
 
 /**
- * setDownloading start action to change tab
+ * setDownloading start action to change downloading status
  * @memberof plugin.actions
- * @returns - action change tab
+ * @param bool - bool of downloading status
+ * @returns - action set downloading
  */
 export function setDownloadingPO(bool) {
     return {
@@ -476,9 +495,23 @@ export function setDownloadingPO(bool) {
 }
 
 /**
- * accumulateScrollEventsPO start action to change tab
+ * setLoading start action to change Loading results status
  * @memberof plugin.actions
- * @returns - action change tab
+ * @param bool - bool of loading results status
+ * @returns - action set loading
+ */
+export function setLoadingPO(bool) {
+    return {
+        type: actions.SET_LOADING,
+        bool
+    };
+}
+
+/**
+ * accumulateScrollEventsPO start action to accumulate search results when user is scrolling
+ * @memberof plugin.actions
+ * @param bool - bool
+ * @returns - action accumulate scroll events
  */
 export function accumulateScrollEventsPO(bool) {
     return {
@@ -488,9 +521,11 @@ export function accumulateScrollEventsPO(bool) {
 }
 
 /**
- * saveDownloadFieldsPO start action to change tab
+ * saveDownloadFieldsPO start action to change fileName and prefix of files to download
  * @memberof plugin.actions
- * @returns - action change tab
+ * @param fileName - selected end date
+ * @param prefix - selected end date
+ * @returns - action save download fields
  */
 export function saveDownloadFieldsPO(fileName, prefix) {
     return {
@@ -501,9 +536,9 @@ export function saveDownloadFieldsPO(fileName, prefix) {
 }
 
 /**
- * clearFiltersPO start action to change tab
+ * clearFiltersPO start action to clear search filters values
  * @memberof plugin.actions
- * @returns - action change tab
+ * @returns - action clear filters
  */
 export function clearFiltersPO() {
     return {
@@ -512,10 +547,10 @@ export function clearFiltersPO() {
 }
 
 /**
- * setPluginConfigsPO action triggered to initialize or reinitialize plugin basic configs
+ * setPluginConfigsPO action triggered to change plugin basic configs
  * @memberof photosObliques.actions
  * @param configs - configs object
- * @returns - action init configs with those configs
+ * @returns - action set plugin configs
  */
 export function setPluginConfigsPO(configs) {
     return {
@@ -525,10 +560,11 @@ export function setPluginConfigsPO(configs) {
 }
 
 /**
- * setPicturesInBasketPO action triggered to initialize or reinitialize plugin basic configs
+ * setPicturesInBasketPO action to set pictures in basket and checks limitations
  * @memberof photosObliques.actions
- * @param configs - configs object
- * @returns - action init configs with those configs
+ * @param amount - number of pictures in basket
+ * @param basketSize - size of basket
+ * @returns - action set pictures in basket
  */
 export function setPicturesInBasketPO(amount, basketSize) {
     return {
@@ -539,10 +575,10 @@ export function setPicturesInBasketPO(amount, basketSize) {
 }
 
 /**
- * setStartDateValuePO action triggered to initialize or reinitialize plugin basic configs
+ * setStartDateValuePO action to change start date value
  * @memberof photosObliques.actions
- * @param configs - configs object
- * @returns - action init configs with those configs
+ * @param startDateValue - start date value to apply
+ * @returns - action set startdate value
  */
 export function setStartDateValuePO(startDateValue) {
     return {
@@ -552,10 +588,10 @@ export function setStartDateValuePO(startDateValue) {
 }
 
 /**
- * setEndDateValuePO action triggered to initialize or reinitialize plugin basic configs
+ * setEndDateValuePO action to change end date value
  * @memberof photosObliques.actions
- * @param configs - configs object
- * @returns - action init configs with those configs
+ * @param enDateValue - end date value to apply
+ * @returns - action set enddate value
  */
 export function setEndDateValuePO(endDateValue) {
     return {
@@ -565,10 +601,9 @@ export function setEndDateValuePO(endDateValue) {
 }
 
 /**
- * openSearchFiltersPO action triggered to initialize or reinitialize plugin basic configs
+ * openSearchFiltersPO action triggered to open search panel
  * @memberof photosObliques.actions
- * @param configs - configs object
- * @returns - action init configs with those configs
+ * @returns - action open search filters
  */
 export function openSearchFiltersPO() {
     return {
@@ -577,10 +612,10 @@ export function openSearchFiltersPO() {
 }
 
 /**
- * setPrevPhotoCount action triggered to initialize or reinitialize plugin basic configs
+ * setPrevPhotoCount action to change the number of current results
  * @memberof photosObliques.actions
- * @param configs - configs object
- * @returns - action init configs with those configs
+ * @param prevPhotoCount - number of pictures for the current results
+ * @returns - action set prev photo count
  */
 export function setPrevPhotoCount(prevPhotoCount) {
     return {
@@ -590,10 +625,10 @@ export function setPrevPhotoCount(prevPhotoCount) {
 }
 
 /**
- * setPrevFiltersValues action triggered to initialize or reinitialize plugin basic configs
+ * setPrevFiltersValues action to change the search filters of current results
  * @memberof photosObliques.actions
- * @param configs - configs object
- * @returns - action init configs with those configs
+ * @param prevSearchFiltersValues - selected search filters for the current results
+ * @returns - action set prev search filters values
  */
 export function setPrevSearchFiltersValues(prevSearchFiltersValues) {
     return {

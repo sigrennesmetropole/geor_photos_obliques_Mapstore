@@ -49,7 +49,7 @@ button.active .PO_iconSize{
     padding: 10px;
 }
 
-.PHOTOSOBLIQUES_homeButton, .PHOTOSOBLIQUES_selectButton, .PHOTOSOBLIQUES_sendButton {
+.PHOTOSOBLIQUES_SearchTabButton, .PHOTOSOBLIQUES_CartTabButton, .PHOTOSOBLIQUES_sendButton {
     /* margin: 20px; */
     width: 100px;
     background-color: inherit;
@@ -86,17 +86,6 @@ button.PHOTOSOBLIQUES_active{
 
 /* Fin section renderTabManu() */
 
-#SAMPLE_EXTENSION {
-    background-color: rgba(255,255,255,.9);
-    border-radius: 10px;
-    max-width: 550px;
-    padding: 10px;
-    margin: 10px;
-    position: absolute;
-    top: 50px;
-    z-index: 1000;
-}
-
 /* Tabs */
 
 .PO_rowTabs{
@@ -105,7 +94,7 @@ button.PHOTOSOBLIQUES_active{
     margin-bottom: 20px;
 }
 
-.PO_homeButton, .PO_selectButton {
+.PO_SearchTabButton, .PO_CartTabButton {
     /* margin: 20px; */
     width: 100px;
     background-color: inherit;
@@ -270,9 +259,9 @@ button.PHOTOSOBLIQUES_active{
     position: relative;
   }
 
-.PO_rotate2Hidden{
-  visibility: hidden;
-}
+  .PO_rotate2Hidden{
+    visibility: hidden;
+  }
 
   .PO_losangeSelected{
     width: 50px;
@@ -451,50 +440,7 @@ button.PHOTOSOBLIQUES_active{
     visibility: visible;
     transform: rotate(259.75deg);
   }
-
-  .PO_filterTitle{
-    font-weight: bold;
-    font-size: medium;
-    margin-bottom: 15px !important;
-  }
-
-  .PO_filterSubTitles{
-      margin-bottom: 15px !important;
-  }
-
-  .PO_startDate, .PO_endDate{
-    margin: 5px;
-    width: 175px;
-    /* styling */
-    background-color: white;
-    border: thin solid white;
-    border-radius: 4px;
-    display: inline-block;
-    font: inherit;
-    line-height: 1.5em;
-    padding: 0.5em 3.5em 0.5em 1em;
-    /* reset */  
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    /* arrow */
-    background-image:
-        linear-gradient(45deg, transparent 50%, grey 50%),
-        linear-gradient(135deg, grey 50%, transparent 50%),
-        linear-gradient(to right, white, white);
-    background-position:
-        calc(100% - 20px) calc(1em + 2px),
-        calc(100% - 15px) calc(1em + 2px),
-        100% 0;
-    background-size:
-        5px 5px,
-        5px 5px,
-        2.5em 2.5em;
-    background-repeat: no-repeat;
-  }
-
+  
   .PO_dot {
     height: 5px;
     width: 5px;
@@ -553,16 +499,67 @@ button.PHOTOSOBLIQUES_active{
       left: 32px;
     }
 
+ /*fin compass*/ 
+
+  .PO_filterTitle{
+    font-weight: bold;
+    font-size: medium;
+    margin-bottom: 15px !important;
+  }
+
+  .PO_filterSubTitles{
+      margin-bottom: 15px !important;
+  }
+
+  .PO_startDate, .PO_endDate, .PO_filterValues{
+    margin: 5px !important;
+    width: 175px;
+    /* styling */
+    background-color: white;
+    border: thin solid white;
+    border-radius: 0;
+    display: inline-block;
+    font: inherit;
+    line-height: 1.5em !important;
+    padding: 0.5em 3.5em 0.5em 1em;
+    /* reset */  
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    /* arrow */
+    background-image:
+        linear-gradient(45deg, transparent 50%, grey 50%),
+        linear-gradient(135deg, grey 50%, transparent 50%),
+        linear-gradient(to right, white, white);
+    background-position:
+        calc(100% - 20px) calc(1em + 2px),
+        calc(100% - 15px) calc(1em + 2px),
+        100% 0;
+    background-size:
+        5px 5px,
+        5px 5px,
+        2.5em 2.5em;
+    background-repeat: no-repeat;
+  }
+
+  .PO_dropdownMenu{
+    background-color: var(--ms-main-bg, #ffffff) !important;
+    border-radius: 0px !important;
+  }
+
+
   /* validateForm */
 
- .PO_validateForm{
+ .PO_validateSearch{
     padding-right: 15px;
     padding-left: 15px;
     text-align: center;
     margin-bottom: 15px!important;
  }
 
- .PO_validateForm > button {
+ .PO_validateSearch > button {
      margin: auto;
      margin-top: 20px !important;
      margin-right: 5px !important;
@@ -631,13 +628,13 @@ button.PHOTOSOBLIQUES_active{
   background-color : rgba(125, 160, 157, 0.6) !important;
  }
 
- .PO_addBasket, .PO_removeBasket, .PO_downloadBasket, .PO_search{
+ .PO_customBtn, .PO_removeBasket, .PO_downloadBasket, .PO_search{
   max-height: auto;
   max-width: 115%;
   padding: 5px;
  }
 
- .PO_addBasket{
+ .PO_customBtn{
   margin-top: 5px!important;
  }
 
@@ -717,7 +714,18 @@ button.PHOTOSOBLIQUES_active{
 .PO_resultLoaded{
   position: absolute;
   right:0;
-  margin-top: 15px;
+  /*margin-top: 15px;*/
+  /*line-height: 35px;*/
+}
+
+.PO_loadingMore  {
+  display: inline-block;
+  vertical-align: bottom;  
+}
+
+.PO_numResultsLoaded{
+  display: inline-block;
+  line-height: 40px;
 }
 
 .PO_masterclass hr{
@@ -890,7 +898,7 @@ button.PHOTOSOBLIQUES_active{
   margin-top: -5px;
   border-width: 5px;
   border-style: solid;
-  border-color: transparent transparent transparent black;
+  border-color: transparent transparent transparent var(--ms-button-primary-bg, black);
 }
 
 .PO_tooltipDownloadBasket {
@@ -901,7 +909,7 @@ button.PHOTOSOBLIQUES_active{
 .PO_tooltipDownloadBasket .PO_tooltiptext {
   visibility: hidden;
   width: 100px;
-  background-color: black;
+  background-color: var(--ms-button-primary-bg, black);
   color: #fff;
   text-align: center;
   border-radius: 6px;
@@ -927,7 +935,7 @@ button.PHOTOSOBLIQUES_active{
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
-  border-color: transparent transparent black transparent;
+  border-color: transparent transparent var(--ms-button-primary-bg, black) transparent;
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
@@ -1014,6 +1022,6 @@ button.PHOTOSOBLIQUES_active{
   cursor: pointer!important;
 }
 
-#filterSearchedValues{
+#filterSearchedValues, #filterBasketValues{
   border: none!important;
 }
