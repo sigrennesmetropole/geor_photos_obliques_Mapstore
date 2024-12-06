@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from "react-redux";
 import { name } from '../../../config';
 
-import {createPlugin, getPluginConfiguration} from "@mapstore/utils/PluginsUtils";
+import {createPlugin} from "@mapstore/utils/PluginsUtils";
 import { toggleControl } from '@mapstore/actions/controls';
 import { photosObliques } from "../components/Component";
 import pluginIcon from "../assets/images/photosObliquesLogo.svg";
@@ -47,8 +47,8 @@ import {
     getBasket,
     getItemCounterInBasket,
     getDateList,
-    getStartDate,
-    getEndDate,
+    getStartDates,
+    getEndDates,
     getPolygon,
     getPhotoCountSelector,
     getFilterSearchValues,
@@ -77,15 +77,15 @@ export default createPlugin(name, {
         activeTab: getActiveTab(state),
         dockStyle: mapLayoutValuesSelector(state, {right: true, height: true}, true),
         pluginIcon,
-        roseValue: getSelectedRoseValue(state) || '',
+        roseValue: getSelectedRoseValue(state),
         filtersTriggered: getFiltersTriggered(state) || false,
         searchResult: getSearchResult(state),
         itemId: getItemId(state),
         basket: getBasket(state) || [],
         itemCounterInBasket: getItemCounterInBasket(state) || 0,
         dateList: getDateList(state) || [],
-        startDate: getStartDate(state) || [],
-        endDate: getEndDate(state) || [],
+        startDates: getStartDates(state) || [],
+        endDates: getEndDates(state) || [],
         polygon: getPolygon(state) || '',
         photoCount: getPhotoCountSelector(state) || 0,
         filterSearchValues: getFilterSearchValues(state) || '-relevance',

@@ -18,8 +18,8 @@ export const actions = {
     CLICK_PICTURE: "PHOTOSOBLIQUES:CLICK_PICTURE",
     DOWNLOAD_BASKET: "PHOTOSOBLIQUES:DOWNLOAD_BASKET",
     COUNT_ITEMS_SELECTED_IN_BASKET: "PHOTOSOBLIQUES:COUNT_ITEMS_SELECTED_IN_BASKET",
-    START_DATE_VALUE: "PHOTOSOBLIQUES:START_DATE_VALUE",
-    END_DATE_VALUE: "PHOTOSOBLIQUES:END_DATE_VALUE",
+    START_DATES_VALUES: "PHOTOSOBLIQUES:START_DATES_VALUES",
+    END_DATES_VALUES: "PHOTOSOBLIQUES:END_DATES_VALUES",
     INIT_PROJECTIONS: "PHOTOSOBLIQUES:INIT_PROJECTIONS",
     INIT_DATE_SELECT: "PHOTOSOBLIQUES:INIT_DATE_SELECT",
     INIT_OVERLAY_LAYER: "PHOTOSOBLIQUES:INIT_OVERLAY_LAYER",
@@ -42,17 +42,23 @@ export const actions = {
     CLEAR_FILTERS: "PHOTOSOBLIQUES:CLEAR_FILTERS",
     SET_PLUGIN_CONFIGS: "PHOTOSOBLIQUES:SET_PLUGIN_CONFIGS",
     SET_PICTURES_IN_BASKET: "PHOTOSOBLIQUES:SET_PICTURES_IN_BASKET",
-    SET_ENDDATE_VALUE: 'PHOTOSOBLIQUES:SET_ENDDATE_VALUE',
-    SET_STARTDATE_VALUE: 'PHOTOSOBLIQUES:SET_STARTDATE_VALUE',
+    SET_END_DATE_VALUE: 'PHOTOSOBLIQUES:SET_END_DATE_VALUE',
+    SET_START_DATE_VALUE: 'PHOTOSOBLIQUES:SET_START_DATE_VALUE',
     OPEN_SEARCH_FILTERS: 'PHOOSOBLIQUES:OPEN_SEARCH_FILTERS',
     SET_PHOTO_COUNT: 'PHOTOSOBLIQUES:SET_PHOTO_COUNT',
     SET_PREV_PHOTO_COUNT: 'PHOTOSOBLIQUES:SET_PREV_PHOTO_COUNT',
     SET_PREV_SEARCH_FILTERS_VALUES: 'PHOTOSOBLIQUES:SET_PREV_SEARCH_FILTERS_VALUES'
 };
 
-export const tabTypes = {
+export const tabTypesPO = {
     SEARCH: 'PHOTOSOBLIQUES:SEARCH',
     CART: 'PHOTOSOBLIQUES:CART'
+};
+
+export const loadTypesPO = {
+    NEW: 'PHOTOSOBLIQUES:LOAD:NEW',
+    MORE: 'PHOTOSOBLIQUES:LOAD:MORE',
+    SORT: 'PHOTOSOBLIQUES:LOAD:SORT'
 };
 
 
@@ -67,7 +73,7 @@ export function updateMapLayoutPO(layout) {
         layout,
         source: 'photosObliques'
     };
-}
+};
 
 /**
  * initConfigsPO action triggered to initialize or reinitialize plugin basic configs
@@ -80,7 +86,7 @@ export function initConfigsPO(configs) {
         type: actions.INIT_CONFIGS,
         configs
     };
-}
+};
 
 /**
  * closePO action to close configs
@@ -91,7 +97,7 @@ export function closePO() {
     return {
         type: actions.CLOSE_PHOTOSOBLIQUES
     };
-}
+};
 
 /**
  * changeTabPO start action to change tab
@@ -104,7 +110,7 @@ export function changeTabPO(tab) {
         type: actions.CHANGE_TAB,
         tab
     };
-}
+};
 
 /**
  * windRoseClickPO start action for degree value change on compass
@@ -117,7 +123,7 @@ export function windRoseClickPO(degree) {
         type: actions.ROSE_CLICKED,
         degree
     };
-}
+};
 
 /**
  * windRoseClickPO start action to change degree value on compass
@@ -130,7 +136,7 @@ export function setWindRoseClickPO(degree) {
         type: actions.ROSE_CLICKED_SETTER,
         degree
     };
-}
+};
 
 /**
  * validateSearchFiltersPO start action to validate selected search filters and send it to BE
@@ -140,14 +146,13 @@ export function setWindRoseClickPO(degree) {
  * @param newSearch - if filters are triggered for a new search
  * @returns - action search filters
  */
-export function validateSearchFiltersPO(filters, loadMore, newSearch) {
+export function validateSearchFiltersPO(filters, loadType) {
     return {
         type: actions.SEARCH_FILTERS,
         filters,
-        loadMore,
-        newSearch
+        loadType
     };
-}
+};
 
 /**
  * cancelSearchFiltersPO start action to cancel search panel
@@ -158,7 +163,7 @@ export function cancelSearchFiltersPO() {
     return {
         type: actions.CANCEL_SEARCH_FILTERS
     };
-}
+};
 
 /**
  * filterSearchedValuesPO start action to filter searched values
@@ -171,7 +176,7 @@ export function filterSearchedValuesPO(value) {
         type: actions.FILTER_SEARCH_VALUES,
         value
     };
-}
+};
 
 /**
  * searchValuesFilteredPO start action to change search values filtered
@@ -184,7 +189,7 @@ export function searchValuesFilteredPO(searchResult) {
         type: actions.SEARCH_VALUES_FILTERED,
         searchResult
     };
-}
+};
 
 /**
  * addBasketPO start action to add item on basket
@@ -197,7 +202,7 @@ export function addBasketPO(item) {
         type: actions.ADD_BASKET,
         item
     };
-}
+};
 
 /**
  * updateItemInBasketPO start action to update list of items in basket
@@ -212,7 +217,7 @@ export function updateItemInBasketPO(basket, removePopUp) {
         basket,
         removePopUp
     };
-}
+};
 
 /**
  * removeSelectedItemsInBasketPO start action to remove selected item(s) of basket
@@ -225,7 +230,7 @@ export function removeSelectedItemsInBasketPO(forceDeletionOnEmptySelection) {
         type: actions.REMOVE_SELECTED_ITEMS_IN_BASKET,
         forceDeletionOnEmptySelection
     };
-}
+};
 
 /**
  * clickPicturePO start action to select picture in basket
@@ -242,7 +247,7 @@ export function clickPicturePO(itemId, ctrlKey, shiftKey) {
         ctrlKey,
         shiftKey
     };
-}
+};
 
 /**
  * downloadBasketPO start action to download
@@ -253,7 +258,7 @@ export function downloadBasketPO() {
     return {
         type: actions.DOWNLOAD_BASKET
     };
-}
+};
 
 /**
  * countItemsSelectedInBasketPO start action to count selected items in basket
@@ -266,33 +271,33 @@ export function countItemsSelectedInBasketPO(count) {
         type: actions.COUNT_ITEMS_SELECTED_IN_BASKET,
         count
     };
-}
+};
 
 /**
- * getStartDateValuePO start action to change start date value
+ * getStartDatesValuesPO start action to change start date value
  * @memberof plugin.actions
- * @param startDate - selected start date
+ * @param dates - selected start date
  * @returns - action start date value
  */
-export function getStartDateValuePO(startDate) {
+export function getStartDatesValuesPO(dates) {
     return {
-        type: actions.START_DATE_VALUE,
-        startDate
+        type: actions.START_DATES_VALUES,
+        dates
     };
-}
+};
 
 /**
- * getEndDateValuePO start action to change end date value
+ * getEndDatesValuesPO start action to change end date value
  * @memberof plugin.actions
- * @param endDate - selected end date
+ * @param dates - selected end date
  * @returns - action end date value
  */
-export function getEndDateValuePO(endDate) {
+export function getEndDatesValuesPO(dates) {
     return {
-        type: actions.END_DATE_VALUE,
-        endDate
+        type: actions.END_DATES_VALUES,
+        dates
     };
-}
+};
 
 /**
  * selectStartDateValuePO start action to select start date value
@@ -305,7 +310,7 @@ export function selectStartDateValuePO(startDate) {
         type: actions.SELECT_START_DATE_VALUE,
         startDate
     };
-}
+};
 
 /**
  * selectEndDateValuePO start action to select end date value
@@ -318,7 +323,7 @@ export function selectEndDateValuePO(endDate) {
         type: actions.SELECT_END_DATE_VALUE,
         endDate
     };
-}
+};
 
 /**
  * initProjectionsPO start action to initialize available projections
@@ -329,7 +334,7 @@ export function initProjectionsPO() {
     return {
         type: actions.INIT_PROJECTIONS
     };
-}
+};
 
 /**
  * initDateSelectPO start action to initialize date selection
@@ -340,7 +345,7 @@ export function initDateSelectPO() {
     return {
         type: actions.INIT_DATE_SELECT
     };
-}
+};
 
 /**
  * initOverlayLayerPO start action to initialize overlay layer
@@ -351,7 +356,7 @@ export function initOverlayLayerPO() {
     return {
         type: actions.INIT_OVERLAY_LAYER
     };
-}
+};
 
 /**
  * setPolygonPO start action to set polygon on layer
@@ -364,7 +369,7 @@ export function setPolygonPO(polygon) {
         type: actions.SET_POLYGON,
         polygon
     };
-}
+};
 
 /**
  * getPhotoCountActionPO start action to change number of estimated results
@@ -375,7 +380,7 @@ export function getPhotoCountActionPO() {
     return {
         type: actions.GET_PHOTO_COUNT
     };
-}
+};
 
 /**
  * setPhotoCountActionPO start action to change value of diplayed number of results
@@ -388,7 +393,7 @@ export function setPhotoCountActionPO(amount) {
         type: actions.SET_PHOTO_COUNT,
         amount
     };
-}
+};
 
 /**
  * pictureHoveredPO start action to change hovered picture
@@ -401,7 +406,7 @@ export function pictureHoveredPO(item) {
         type: actions.PICTURE_HOVERED,
         item
     };
-}
+};
 
 /**
  * zoomElementPO start action to change map extent to match picture's extent
@@ -414,7 +419,7 @@ export function zoomElementPO(item) {
         type: actions.ZOOM_ELEMENT,
         item
     };
-}
+};
 
 /**
  * filterBasketValuesPO start action to change basket sorting value
@@ -427,7 +432,7 @@ export function filterBasketValuesPO(filterValue) {
         type: actions.FILTER_BASKET_VALUES,
         filterValue
     };
-}
+};
 
 /**
  * onScrollPO start action when user is scrolling
@@ -438,7 +443,7 @@ export function onScrollPO() {
     return {
         type: actions.ONSCROLL
     };
-}
+};
 
 /**
  * setDateListPO start action to change list of avalaible dates
@@ -451,7 +456,7 @@ export function setDateListPO(dates) {
         type: actions.SET_DATE_LIST,
         dates
     };
-}
+};
 
 /**
  * modalDisplayPO start action to change modal to display
@@ -466,7 +471,7 @@ export function modalDisplayPO(bool, modalType) {
         bool,
         modalType
     };
-}
+};
 
 /**
  * updateHoveredPolygonVisibilityStatePO start action to change hovered polygon visibility
@@ -479,7 +484,7 @@ export function updateHoveredPolygonVisibilityStatePO(visible) {
         type: actions.UPDATE_HOVERED_POLYGON_VISIBILITY_STATE,
         visible
     };
-}
+};
 
 /**
  * setDownloading start action to change downloading status
@@ -492,7 +497,7 @@ export function setDownloadingPO(bool) {
         type: actions.SET_DOWNLOADING,
         bool
     };
-}
+};
 
 /**
  * setLoading start action to change Loading results status
@@ -505,7 +510,7 @@ export function setLoadingPO(bool) {
         type: actions.SET_LOADING,
         bool
     };
-}
+};
 
 /**
  * accumulateScrollEventsPO start action to accumulate search results when user is scrolling
@@ -518,7 +523,7 @@ export function accumulateScrollEventsPO(bool) {
         type: actions.ACCUMULATE_SCROLL_EVENTS,
         bool
     };
-}
+};
 
 /**
  * saveDownloadFieldsPO start action to change fileName and prefix of files to download
@@ -533,7 +538,7 @@ export function saveDownloadFieldsPO(fileName, prefix) {
         fileName,
         prefix
     };
-}
+};
 
 /**
  * clearFiltersPO start action to clear search filters values
@@ -544,7 +549,7 @@ export function clearFiltersPO() {
     return {
         type: actions.CLEAR_FILTERS
     };
-}
+};
 
 /**
  * setPluginConfigsPO action triggered to change plugin basic configs
@@ -557,7 +562,7 @@ export function setPluginConfigsPO(configs) {
         type: actions.SET_PLUGIN_CONFIGS,
         configs
     };
-}
+};
 
 /**
  * setPicturesInBasketPO action to set pictures in basket and checks limitations
@@ -572,7 +577,7 @@ export function setPicturesInBasketPO(amount, basketSize) {
         amount,
         basketSize
     };
-}
+};
 
 /**
  * setStartDateValuePO action to change start date value
@@ -582,10 +587,10 @@ export function setPicturesInBasketPO(amount, basketSize) {
  */
 export function setStartDateValuePO(startDateValue) {
     return {
-        type: actions.SET_STARTDATE_VALUE,
+        type: actions.SET_START_DATE_VALUE,
         startDateValue
     };
-}
+};
 
 /**
  * setEndDateValuePO action to change end date value
@@ -595,10 +600,10 @@ export function setStartDateValuePO(startDateValue) {
  */
 export function setEndDateValuePO(endDateValue) {
     return {
-        type: actions.SET_ENDDATE_VALUE,
+        type: actions.SET_END_DATE_VALUE,
         endDateValue
     };
-}
+};
 
 /**
  * openSearchFiltersPO action triggered to open search panel
@@ -609,7 +614,7 @@ export function openSearchFiltersPO() {
     return {
         type: actions.OPEN_SEARCH_FILTERS
     };
-}
+};
 
 /**
  * setPrevPhotoCount action to change the number of current results
@@ -622,7 +627,7 @@ export function setPrevPhotoCount(prevPhotoCount) {
         type: actions.SET_PREV_PHOTO_COUNT,
         prevPhotoCount
     };
-}
+};
 
 /**
  * setPrevFiltersValues action to change the search filters of current results
@@ -635,4 +640,4 @@ export function setPrevSearchFiltersValues(prevSearchFiltersValues) {
         type: actions.SET_PREV_SEARCH_FILTERS_VALUES,
         prevSearchFiltersValues
     };
-}
+};

@@ -1,8 +1,6 @@
 import { get, head } from "lodash";
 import { additionalLayersSelector } from '@mapstore/selectors/layers';
-import {
-    PO_PERIMETER_LAYER_ID
-} from "../constants/photosObliques-constants";
+import { PO_PERIMETERS_LAYER_ID } from "../constants/photosObliques-constants";
 
 /**
  * isOpen checks if plugin tab is open or not
@@ -69,12 +67,12 @@ export const getBasket = (state) => get(state, 'photosObliques.basket');
 export const getItemCounterInBasket = (state) => get(state, 'photosObliques.itemCounterInBasket');
 
 /**
-* getStartDate checks list of available start dates
+* getStartDates checks list of available start dates
 * @memberof photosObliques.selectors
 * @param state - application state
 * @returns - returns the list of start dates state
 */
-export const getStartDate = (state) => get(state, 'photosObliques.startDate');
+export const getStartDates = (state) => get(state, 'photosObliques.startDates');
 
 
 /**
@@ -83,17 +81,17 @@ export const getStartDate = (state) => get(state, 'photosObliques.startDate');
 * @param state - application state
 * @returns - returns the list of end dates state
 */
-export const getEndDate = (state) => get(state, 'photosObliques.endDate');
+export const getEndDates = (state) => get(state, 'photosObliques.endDates');
 
 /**
-* getSelectedTilesLayer checks plugin's additional layer
+* getPerimetersLayer checks plugin's additional layer
 * @memberof photosObliques.selectors
 * @param state - application state
 * @returns - returns the addtional layer state
 */
-export const getSelectedTilesLayer = (state) => {
+export const getPerimetersLayer = (state) => {
     const additionallayers = additionalLayersSelector(state) || [];
-    return head(additionallayers.filter(({ id }) => id === PO_PERIMETER_LAYER_ID));
+    return head(additionallayers.filter(({ id }) => id === PO_PERIMETERS_LAYER_ID));
 }
 
 /**

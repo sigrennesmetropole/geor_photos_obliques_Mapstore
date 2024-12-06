@@ -1,19 +1,27 @@
 /* eslint-disable no-console */
-import { actions, tabTypes } from "../actions/photosObliques-action";
+import { actions, tabTypesPO } from "../actions/photosObliques-action";
 import assign from 'object-assign';
 
 const initialState = {
-    activeTab: tabTypes.SEARCH,
-    roseValue: "",
+    activeTab: tabTypesPO.SEARCH,
+    roseValue: -1,
     filtersTriggered: "",
     searchResult: [],
     itemId: "",
     basket: [],
     itemCounterInBasket: 0,
     dateList: [],
-    startDate: [],
-    endDate: [],
+    startDates: [],
+    endDates: [],
+    startDateValue: 0,
+    endDateValue: 0,
+    displayFilters : true,
     modalDisplay: false,
+    prevSearchFiltersValues : { 
+        prevStartDate: 0,
+        prevEndDate: 0,
+        prevRoseValue: -1
+    }
 };
 
 /**
@@ -27,6 +35,7 @@ export default (state = initialState, action) => {
     //console.log("action.type : ",action.type);
     //console.log("action.source : ",action.source);
     //console.log(state);
+    //console.log(action);
     switch (action.type) {
     case actions.INIT_CONFIGS:
         return assign({}, state, { configs: action.configs });
@@ -50,10 +59,10 @@ export default (state = initialState, action) => {
          return assign({}, state, { itemCounterInBasket: action.count });
     case actions.SET_DATE_LIST:
         return assign({}, state, { dateList: action.dates });
-    case actions.START_DATE_VALUE:
-         return assign({}, state, { startDate: action.startDate });
-    case actions.END_DATE_VALUE:
-         return assign({}, state, { endDate: action.endDate });
+    case actions.START_DATES_VALUES:
+         return assign({}, state, { startDates: action.dates });
+    case actions.END_DATES_VALUES:
+         return assign({}, state, { endDates: action.dates });
     case actions.SET_POLYGON:
         return assign({}, state, { polygon: action.polygon });
     case actions.SET_PHOTO_COUNT:
@@ -74,9 +83,9 @@ export default (state = initialState, action) => {
         return assign({}, state , { fileName: action.fileName, prefix: action.prefix });
     case actions.SET_PICTURES_IN_BASKET:
         return assign({}, state , { picturesInBasket: action.amount, basketSize: action.basketSize });
-    case actions.SET_STARTDATE_VALUE:
+    case actions.SET_START_DATE_VALUE:
         return assign({}, state , { startDateValue: action.startDateValue });
-    case actions.SET_ENDDATE_VALUE:
+    case actions.SET_END_DATE_VALUE:
         return assign({}, state , { endDateValue: action.endDateValue });
     case actions.CANCEL_SEARCH_FILTERS:
         return assign({}, state , { displayFilters: false });
