@@ -642,7 +642,6 @@ function pictureSelectionPO(currentItems, control, intersectedItem) {
             if (item.selected) {
                 selectedRow.push(intersectedItem);
             }
-            lastSelected = currentSelected;
         } else if (!control) {
             item.selected = false;
         }
