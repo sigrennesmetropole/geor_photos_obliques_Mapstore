@@ -16,7 +16,9 @@ export function getPhotos(polygon, datas){
         slug = slug + "&endDate=" + datas[1];
     }
     if (datas[2]) {
-        slug = slug + "&angleDegree=" + datas[2];
+        var angleDeg = datas[2];
+        if (angleDeg < 0) { angleDeg = ''}
+        slug = slug + "&angleDegree=" + angleDeg;
     }
     if (datas[3]) {
         slug = slug + "&provider=" + datas[3];
@@ -72,7 +74,9 @@ export function getPhotoCount(polygon, datas){
         slug = slug + "&endDate=" + datas[1];
     }
     if (datas[2]) {
-        slug = slug + "&angleDegree=" + datas[2];
+        var angleDeg = datas[2];
+        if (angleDeg < 0) { angleDeg = ''}
+        slug = slug + "&angleDegree=" + angleDeg;
     }
     if (datas[3]) {
         slug = slug + "&provider=" + datas[3];

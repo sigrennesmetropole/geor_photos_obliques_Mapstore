@@ -315,7 +315,7 @@ export class photosObliques extends React.Component {
                     <p className="PO_filterSubTitles"><Message msgId={'photosObliques.windRoseLabel'} /></p>
                     <div className="PO_compass">
                         <div className="PO_compass-main">
-                        <span className="PO_north-label" style={this.props.roseValue === 0 ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>N</span>
+                        <span className="PO_north-label" style={this.props.roseValue === 0.1 ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>N</span>
                         <span className="PO_dot PO_part2" style={this.props.roseValue === 22.5 ? {"backgroundColor": "#444"} : {"backgroundColor": "#ddd"}}></span>
                         <span className="PO_dot PO_part3" style={this.props.roseValue === 45 ? {"backgroundColor": "#444"} : {"backgroundColor": "#ddd"}}></span>
                         <span className="PO_dot PO_part4" style={this.props.roseValue === 67.5 ? {"backgroundColor": "#444"} : {"backgroundColor": "#ddd"}}></span>
@@ -347,7 +347,7 @@ export class photosObliques extends React.Component {
                             </div>
                             <div className="bt-center"></div>
                             <ul className="PO_circle">
-                                <li id="PO_part1" onClick={() => this.props.windRoseClickPO(0)}>
+                                <li id="PO_part1" onClick={() => this.props.windRoseClickPO(0.1)}>
                                 </li>
                                 <li id="PO_part2" onClick={() => this.props.windRoseClickPO(22.5)}>
                                     <div className="PO_text">2</div>
