@@ -575,7 +575,7 @@ export class photosObliques extends React.Component {
                         <div className="container auto">
                             <div className="message"><Message msgId={'photosObliques.downloadModal'}/></div>
                             <div onClick={() => this.props.modalDisplayPO(false, '')} className="PO_close">x</div>
-                            <div className="PO_numberPicsToDwnld">{this.props.itemCounterInBasket != 0 ? this.props.itemCounterInBasket : this.props.picturesInBasket} <Message msgId={'photosObliques.numberOfFilesDownloaded'}/></div>
+                            <div className="PO_numberPicsToDwnld">{this.props.itemCounterInBasket != 0 ? this.props.itemCounterInBasket : this.props.basket.length} <Message msgId={'photosObliques.numberOfFilesDownloaded'}/></div>
                             <div className="row fileNameChoice">
                                 <div className="col-sm-1"></div>
                                 <div className="col-sm-10">
