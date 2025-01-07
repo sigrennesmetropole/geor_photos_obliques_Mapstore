@@ -273,27 +273,19 @@ export class photosObliques extends React.Component {
             <>
                 <h3 className="PO_filterTitle"><Message msgId={'photosObliques.filterTitle'} /></h3>
                 <p className="PO_filterSubTitles"><Message msgId={'photosObliques.filterYears'} /></p>
-                <select id="PO_startDate" className="rw-input" onChange={(e) => this.props.selectStartDateValuePO(parseInt(e.target.value))} >
+                <select id="PO_startDate" className="rw-input" value={this.props.startDateValue} onChange={(e) => this.props.selectStartDateValuePO(parseInt(e.target.value))} >
                     <option className="PO_dropdownMenu" value={0} key="start">{getMessageById(this.context.messages, 'photosObliques.defaultStartDateOption')}</option>
                     {
                         this.props.startDates.map((val) => {
-                            if (val === parseInt(this.props.startDateValue)) {
-                                return (<option className="PO_dropdownMenu" value={ val } selected key={ val }>{ val }</option>);
-                            } else{
-                                return (<option className="PO_dropdownMenu" value={ val } key={ val }>{ val }</option>);
-                            }
+                            return (<option className="PO_dropdownMenu" value={ val } key={ val }>{ val }</option>);
                         })
                     }
                 </select>
-                <select id="PO_endDate" className="rw-input" onChange={(e) => this.props.selectEndDateValuePO(parseInt(e.target.value))} >
+                <select id="PO_endDate" className="rw-input" value={this.props.endDateValue} onChange={(e) => this.props.selectEndDateValuePO(parseInt(e.target.value))} >
                     <option className="PO_dropdownMenu" value={0} key="end">{getMessageById(this.context.messages, 'photosObliques.defaultEndDateOption')}</option>
                     {
                         this.props.endDates.map((val) => {
-                            if (val === parseInt(this.props.endDateValue)) {
-                                return (<option className="PO_dropdownMenu" value={ val } selected key={ val }>{ val }</option>);
-                            } else{
-                                return (<option className="PO_dropdownMenu" value={ val } key={ val }>{ val }</option>);
-                            }
+                            return (<option className="PO_dropdownMenu" value={ val } key={ val }>{ val }</option>);
                         })
                     }
                 </select>
