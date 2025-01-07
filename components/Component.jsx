@@ -68,7 +68,9 @@ export class photosObliques extends React.Component {
             pobackendurlaccess: props.pobackendurlaccess,
             pohelpurlaccess: props.pohelpurlaccess,
             xoffset: 0,
-            yoffset: 0
+            yoffset: 0,
+            filename: '',
+            prefix: ''
         };
         props.initConfigsPO({
             ...props
@@ -151,7 +153,7 @@ export class photosObliques extends React.Component {
                     <span className="PO_resultAmount">{this.props.prevPhotoCount} <Message msgId={'photosObliques.picturesFound'} /></span>
                     <span>
                         <span className="PO_bold"><Message msgId={'photosObliques.orderBy'}/>: </span>
-                        <select id="filterSearchedValues" className="PO_filterSearchedVal PO_sortSearchedValues" onChange={() => this.props.filterSearchedValuesPO(document.getElementById("filterSearchedValues").value)}>
+                        <select id="filterSearchedValues" className="PO_filterSearchedVal PO_sortSearchedValues" onChange={(e) => this.props.filterSearchedValuesPO(e.target.value)}>
                             <option className="PO_dropdownMenu" value="-relevance">{getMessageById(this.context.messages, 'photosObliques.relevance')}</option>
                             <option className="PO_dropdownMenu" value="-year">{getMessageById(this.context.messages, 'photosObliques.yearTaken')}</option>
                             <option className="PO_dropdownMenu" value="-date">{getMessageById(this.context.messages, 'photosObliques.date')}</option>
@@ -165,12 +167,12 @@ export class photosObliques extends React.Component {
                     {this.renderSpinner("photosObliques.spinnerResultLoadingMessage")}
                 </div> }
                 {
-                    this.props.searchResult[0]?.provider === 'none' &&
+                    !this.props.searchResult[0]?.provider &&
                     <div className="PO_bold text-center PO_NoResultFound">
                         <Message msgId={'photosObliques.noResultsFound'} />
                     </div>
                 }
-                {this.props.searchResult.length != 0 && this.props.searchResult[0].provider != 'none' && 
+                {!!this.props.searchResult.length && !!this.props.searchResult[0].provider && 
                 <div className="PHOTOSOBLIQUES_scrollBar" id="PHOTOSOBLIQUES_scrollBar" onScroll={() => this.props.onScrollPO()} style={this.props.displayFilters ? {"pointerEvents": "none", "opacity": "0.3"} : {"pointerEvents": "auto", "opacity" : "1"}}>
                     {
                         this.props.searchResult.map((val, key) => {
@@ -205,7 +207,7 @@ export class photosObliques extends React.Component {
                                     </div>
                                     <div className="col-sm-3 PO_tooltipZoom">
                                         <div className="row">
-                                            <div className={parseFloat(val.relevance).toFixed(0) >= 50 ? parseFloat(val.relevance).toFixed(0) >= 75 ? "PO_resultPrecision PO_high_high col-sm-6": "PO_resultPrecision PO_high_low col-sm-6" : parseFloat(val.relevance).toFixed(0) >= 25 ? "PO_resultPrecision PO_low_high col-sm-6": "PO_resultPrecision PO_low_low col-sm-6"}>{ parseFloat(val.relevance).toFixed(0) }%</div>
+                                            <div className={this.getRelevanceClassNames(parseFloat(val.relevance))}>{ parseFloat(val.relevance).toFixed(0) }%</div>
                                             <div className="PO_zoomToGlyph col-sm-5" onClick={() => this.props.zoomElementPO(val)}>
                                                 <Glyphicon glyph="zoom-to" />
                                             </div>
@@ -218,12 +220,34 @@ export class photosObliques extends React.Component {
                         })
                     }
                 </div>}
-                {this.props.searchResult.length != 0 && this.props.searchResult[0].provider != 'none' && 
+                {!!this.props.searchResult.length && !!this.props.searchResult[0].provider && 
                 <div className="PO_resultLoaded"> {this.props.loading && <span className="PO_loadingMore"> <LoadingSpinner/></span>}
                     <span className="PO_numResultsLoaded"><Message msgId={'photosObliques.picturesLoaded'}/> : {this.props.searchResult.length} / {this.props.prevPhotoCount} </span>
                 </div>}
             </>
         )
+    };
+
+    /**
+     * getRelevanceClassNames update css classes of relevance indicator according to level of relevance
+     * @memberof photosObliques.component
+     * @returns - list of css classes
+     */
+    getRelevanceClassNames(relevance){
+        let relevanceClassNames = "PO_resultPrecision col-sm-6 ";
+        if(relevance >= 75){
+            relevanceClassNames += "PO_high_high";
+        }
+        else if(relevance >= 50){
+            relevanceClassNames += "PO_high_low";
+        }
+        else if(relevance >= 25){
+            relevanceClassNames += "PO_low_high";
+        }
+        else{            
+            relevanceClassNames += "PO_low_low";
+        }
+        return relevanceClassNames;
     };
 
     /**
@@ -250,13 +274,13 @@ export class photosObliques extends React.Component {
         return (
             <>
                 {
-                    this.props.filtersTriggered === true &&
+                    this.props.filtersTriggered &&
                     <button className="btn-primary PO_customBtn" onClick={() => this.props.cancelSearchFiltersPO()}>
                         <Message msgId={'photosObliques.cancelSearch'}/>
                     </button>
                 }
                 <button className="btn-primary PO_customBtn" onClick={() => {this.props.validateSearchFiltersPO(true, loadTypesPO.NEW), this.props.searchValuesFilteredPO([])}}>
-                    <Message msgId={'photosObliques.ValidateSearch'}/>
+                    <Message msgId={'photosObliques.validateSearch'}/>
                 </button>
                 <span>{ this.props.photoCount } <Message msgId={'photosObliques.picturesAvailable'}/></span>
             </>
@@ -307,7 +331,7 @@ export class photosObliques extends React.Component {
                     <p className="PO_filterSubTitles"><Message msgId={'photosObliques.windRoseLabel'} /></p>
                     <div className="PO_compass">
                         <div className="PO_compass-main">
-                        <span className="PO_north-label" style={this.props.roseValue === 0.1 ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>N</span>
+                        <span className="PO_north-label" style={this.props.roseValue === 0 ? {"fontWeight": "bold"} : {"fontWeight": "normal"}}>N</span>
                         <span className="PO_dot PO_part2" style={this.props.roseValue === 22.5 ? {"backgroundColor": "#444"} : {"backgroundColor": "#ddd"}}></span>
                         <span className="PO_dot PO_part3" style={this.props.roseValue === 45 ? {"backgroundColor": "#444"} : {"backgroundColor": "#ddd"}}></span>
                         <span className="PO_dot PO_part4" style={this.props.roseValue === 67.5 ? {"backgroundColor": "#444"} : {"backgroundColor": "#ddd"}}></span>
@@ -339,7 +363,7 @@ export class photosObliques extends React.Component {
                             </div>
                             <div className="bt-center"></div>
                             <ul className="PO_circle">
-                                <li id="PO_part1" onClick={() => this.props.windRoseClickPO(0.1)}>
+                                <li id="PO_part1" onClick={() => this.props.windRoseClickPO(0)}>
                                 </li>
                                 <li id="PO_part2" onClick={() => this.props.windRoseClickPO(22.5)}>
                                     <div className="PO_text">2</div>
@@ -410,13 +434,13 @@ export class photosObliques extends React.Component {
             <div id="PHOTOSOBLIQUES_EXTENSION PHOTOSOBLIQUES_scrollBar">
                 {!this.props.downloading && <div>
                     <div className="PO_basket_sort_position">
-                        {this.props.itemCounterInBasket != 0 && <span className="PO_filterBasketValues">
+                        {this.props.itemCounterInBasket > 0 && <span className="PO_filterBasketValues">
                             {this.props.itemCounterInBasket} / {this.props.basket.length} <Message msgId={'photosObliques.pictureSelected'} />
                         </span>}
                         {this.props.itemCounterInBasket === 0 && <span></span>}
                         <span className="PO_basket_sort_position">
                             <span className="PO_bold PO_filterBasketValues"><Message msgId={'photosObliques.orderBy'} />: </span>
-                            <select id="filterBasketValues" className="PO_filterValues PO_sortSearchedValues" onChange={() => this.props.filterBasketValuesPO(document.getElementById("filterBasketValues").value)}>
+                            <select id="filterBasketValues" className="PO_filterValues PO_sortSearchedValues" onChange={(e) => this.props.filterBasketValuesPO(e.target.value)}>
                                 <option className="PO_dropdownMenu" value="-relevance">{getMessageById(this.context.messages, 'photosObliques.relevance')}</option>
                                 <option className="PO_dropdownMenu" value="-year">{getMessageById(this.context.messages, 'photosObliques.yearTaken')}</option>
                                 <option className="PO_dropdownMenu" value="-date">{getMessageById(this.context.messages, 'photosObliques.date')}</option>
@@ -428,7 +452,7 @@ export class photosObliques extends React.Component {
                     </div>
                     <div>
                         <div className="PO_basket_counter_position">
-                            <Message msgId={'photosObliques.maxLimits'} /> {this.props.picturesInBasket} / {this.props.configs.pomaxcartnumberofpics} <Message msgId={'photosObliques.pictureAmount'} /> - {parseFloat(this.props.basketSize / 1000000).toFixed(1)} / {this.props.configs.pomaxcartsize  + " Mo"}
+                            <Message msgId={'photosObliques.maxLimits'} /> {this.props.basket.length} / {this.props.configs.pomaxcartnumberofpics} <Message msgId={'photosObliques.pictureAmount'} /> - {parseFloat(this.props.basketSize / 1000000).toFixed(1)} / {this.props.configs.pomaxcartsize  + " Mo"}
                         </div>
                         <div className="PO_basket_buttons_position">
                             <div className="PO_tooltipDeletionBasket">
@@ -444,7 +468,10 @@ export class photosObliques extends React.Component {
                     {
                         this.props.basket.map((val, key) => {
                             return (
-                                <div className={val.selected ? "row mapstore-side-card PO_searchResults PO_searchResult_center PO_selected" : "row mapstore-side-card PO_searchResults PO_searchResult_center"} key={key} onClick={(e) => this.props.clickPicturePO(val.id, e.ctrlKey, e.shiftKey)} onMouseEnter={() => this.props.pictureHoveredPO(val)} onMouseLeave={() => this.props.pictureHoveredPO()}>
+                                <div key={key} className={val.selected ? "row mapstore-side-card PO_searchResults PO_searchResult_center PO_selected" : "row mapstore-side-card PO_searchResults PO_searchResult_center"} 
+                                onClick={(e) => this.props.clickPicturePO(val.id, e.ctrlKey, e.shiftKey)} 
+                                onMouseEnter={() => this.props.pictureHoveredPO(val)} 
+                                onMouseLeave={() => this.props.pictureHoveredPO()}>
                                     <div className="col-sm-4 PO_static">
                                         <img src={ val.urlOverview } className="PO_searchResultPictures" onMouseEnter={(event) => {
                                             this.setState({xoffset: event.clientX, yoffset: event.clientY})
@@ -467,7 +494,7 @@ export class photosObliques extends React.Component {
                                         </div>
                                         <div className="col-sm-5">
                                             <div className="row PO_harmonizePrecision">
-                                                <div className={parseFloat(val.relevance).toFixed(0) >= 50 ? parseFloat(val.relevance).toFixed(0) >= 75 ? "PO_resultPrecision PO_high_high col-sm-6": "PO_resultPrecision PO_high_low col-sm-6" : parseFloat(val.relevance).toFixed(0) >= 25 ? "PO_resultPrecision PO_low_high col-sm-6": "PO_resultPrecision PO_low_low col-sm-6"}>{ parseFloat(val.relevance).toFixed(0) }%</div>
+                                                <div className={this.getRelevanceClassNames(parseFloat(val.relevance))}>{ parseFloat(val.relevance).toFixed(0) }%</div>
                                                 <div className="col-sm-5 PO_zoomToGlyph" onClick={() => this.props.zoomElementPO(val)}><Glyphicon glyph="zoom-to" /></div>
                                             </div>
                                         </div>
@@ -490,7 +517,7 @@ export class photosObliques extends React.Component {
      */
     countBasketSelectedElements(){
         var counter = 0;
-        this.props.basket.map((val) => {
+        this.props.basket.forEach((val) => {
             if (val.selected === true) {
                 counter = counter +1;
             }
@@ -499,7 +526,7 @@ export class photosObliques extends React.Component {
     };
 
     /**
-     * selectTooltipForDeletion renders the selection tabs to get all plkugins sub parts
+     * selectTooltipForDeletion renders the selection tabs to get all plugins sub parts
      * @memberof photosObliques.component
      * @returns - navbar like for the plugin
      */
@@ -507,11 +534,11 @@ export class photosObliques extends React.Component {
         if (this.countBasketSelectedElements() === 1) {
             return (<span className="PO_tooltiptext"><Message msgId={'photosObliques.removeSelectedElement'} /></span>)
         }
-        if (this.countBasketSelectedElements() > 1) {
+        else if (this.countBasketSelectedElements() > 1) {
             return (<span className="PO_tooltiptext PO_bigTooltipDownload"><Message msgId={'photosObliques.removeSelectedElements'} /></span>)
             
         }
-        if (this.countBasketSelectedElements() === 0) {
+        else if (this.countBasketSelectedElements() === 0) {
             return (<span className="PO_tooltiptext PO_bigTooltipDownload"><Message msgId={'photosObliques.removeEverythingFromBasket'} /></span>)
         }
     };
@@ -525,11 +552,11 @@ export class photosObliques extends React.Component {
         if (this.countBasketSelectedElements() === 1) {
             return (<span className="PO_tooltiptext"><Message msgId={'photosObliques.downloadOneButton'} /></span>)
         }
-        if (this.countBasketSelectedElements() > 1) {
+        else if (this.countBasketSelectedElements() > 1) {
             return (<span className="PO_tooltiptext"><Message msgId={'photosObliques.downloadMultipleButton'} /></span>)
             
         }
-        if (this.countBasketSelectedElements() === 0) {
+        else if (this.countBasketSelectedElements() === 0) {
             return (<span className="PO_tooltiptext"><Message msgId={'photosObliques.downloadAllButton'} /></span>)
         }
     };
@@ -567,7 +594,7 @@ export class photosObliques extends React.Component {
                         <div className="container auto">
                             <div className="message"><Message msgId={'photosObliques.downloadModal'}/></div>
                             <div onClick={() => this.props.modalDisplayPO(false, '')} className="PO_close">x</div>
-                            <div className="PO_numberPicsToDwnld">{this.props.itemCounterInBasket != 0 ? this.props.itemCounterInBasket : this.props.basket.length} <Message msgId={'photosObliques.numberOfFilesDownloaded'}/></div>
+                            <div className="PO_numberPicsToDwnld">{this.props.itemCounterInBasket > 0 ? this.props.itemCounterInBasket : this.props.basket.length} <Message msgId={'photosObliques.numberOfFilesDownloaded'}/></div>
                             <div className="row fileNameChoice">
                                 <div className="col-sm-1"></div>
                                 <div className="col-sm-10">
@@ -576,7 +603,9 @@ export class photosObliques extends React.Component {
                                             <label htmlFor="fname" className="PO_popupTextLabels"><Message msgId={'photosObliques.fileName'}/></label>
                                         </div>
                                         <div className="col-sm-5">
-                                            <input type="PO_text" id="fname" name="fname" placeholder="date du jour" />
+                                            <input type="PO_text" id="fname" name="fname" 
+                                            placeholder={getMessageById(this.context.messages, 'photosObliques.fileNamePlaceHolder')} 
+                                            onChange={(e) => this.handleTextFieldChange(e, 'filename')}/>
                                         </div>
                                     </div>
                                     <div className="row PO_top-spacing">
@@ -584,7 +613,9 @@ export class photosObliques extends React.Component {
                                             <label htmlFor="pname" className="PO_popupTextLabels"><Message msgId={'photosObliques.prefixLabel'}/></label>
                                         </div>
                                         <div className="col-sm-5">
-                                            <input type="PO_text" id="pname" name="pname" placeholder="pas de préfixe" />
+                                            <input type="PO_text" id="pname" name="pname" 
+                                            placeholder={getMessageById(this.context.messages, 'photosObliques.prefixPlaceHolder')} 
+                                            onChange={(e) => this.handleTextFieldChange(e, 'prefix')} />
                                         </div>
                                     </div>
                                 </div>
@@ -592,7 +623,7 @@ export class photosObliques extends React.Component {
                             </div>
                             <div className="row">
                                 <div className="col-sm-2"></div>
-                                <button onClick={() => {this.props.modalDisplayPO(true, 'iUnderstand'), this.props.saveDownloadFieldsPO(document.getElementById("fname").value,document.getElementById("pname").value)}} className="col-sm-3 btn-primary PO_customBtn PO_button_margin_bottom"><Message msgId={'photosObliques.ok'}/></button>
+                                <button onClick={() => {this.props.modalDisplayPO(true, 'iUnderstand'), this.props.saveDownloadFieldsPO(this.state.filename,this.state.prefix)}} className="col-sm-3 btn-primary PO_customBtn PO_button_margin_bottom"><Message msgId={'photosObliques.ok'}/></button>
                                 <div className="col-sm-2"></div>
                                 <button onClick={() => this.props.modalDisplayPO(false, '')} className="col-sm-3 btn-primary PO_customBtn PO_button_margin_bottom"><Message msgId={'photosObliques.cancel'}/></button>
                                 <div className="col-sm-2"></div>
@@ -630,8 +661,22 @@ export class photosObliques extends React.Component {
     };
 
     /**
+     * handleTextFieldChange when a text field change, it updates the state
+     * @memberof photosObliques.component
+     * @param e - javascript event object
+     * @param stateAttribute - name of the field which is to update
+     * @returns - nothing
+     */
+    handleTextFieldChange(e, stateAttribute) {
+        this.setState({
+            ...this.state,
+            [stateAttribute]: e.target.value
+        })
+    };
+
+    /**
      * renderSpinner places a spinner on waiting times
-     * @memberof rtge.component
+     * @memberof photosObliques.component
      * @returns - spinner dom content
      */
     renderSpinner(msgId) {
@@ -645,7 +690,7 @@ export class photosObliques extends React.Component {
         );
     };
 
-        /**
+    /**
      * renderTabMenu renders the selection tabs to get all plkugins sub parts
      * @memberof photosObliques.component
      * @returns - navbar like for the plugin
@@ -654,19 +699,19 @@ export class photosObliques extends React.Component {
         return (
             <div className="PO_masterclass row PHOTOSOBLIQUES_rowTabs">
                 <div className="col-sm-6 PO_text-center">
-                    <button className={this.props.activeTab === "PHOTOSOBLIQUES:SEARCH"
+                    <button className={this.props.activeTab === tabTypesPO.SEARCH
                         ? "PHOTOSOBLIQUES_SearchTabButton PHOTOSOBLIQUES_active"
                         : "PHOTOSOBLIQUES_SearchTabButton"} onClick={() => this.props.changeTabPO(tabTypesPO.SEARCH)}>
                         <Message msgId={'photosObliques.search'}/>
                     </button>
                 </div>
                 <div className="col-sm-6 PO_text-center">
-                    {this.props.basket.length != 0 && <button className={this.props.activeTab === "PHOTOSOBLIQUES:CART"
+                    {this.props.basket.length != 0 && <button className={this.props.activeTab === tabTypesPO.CART
                         ? "PHOTOSOBLIQUES_CartTabButton PHOTOSOBLIQUES_active"
                         : "PHOTOSOBLIQUES_CartTabButton"} onClick={() => this.props.changeTabPO(tabTypesPO.CART)}>
                         <Message msgId={'photosObliques.cart'}/><span className="nbPictInBasket"> ({this.props.basket.length}) </span>
                     </button>}
-                    {this.props.basket.length === 0 && <button className={this.props.activeTab === "PHOTOSOBLIQUES:CART"
+                    {this.props.basket.length === 0 && <button className={this.props.activeTab === tabTypesPO.CART
                         ? "PHOTOSOBLIQUES_CartTabButton PHOTOSOBLIQUES_active PO_greyed "
                         : "PHOTOSOBLIQUES_CartTabButton PO_greyed"} disabled>
                         <Message msgId={'photosObliques.cart'}/>

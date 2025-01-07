@@ -88,9 +88,9 @@ Lors de l'ajout du plugin dans un contexte MapStore pour geOrchestra, celui-ci d
 | Nom du paramètre | Valeur par défaut | Description |
 | ---      | ---      | ---      |
 | pobackendurlaccess | "/photosobliques" | Lien d’accès au back utilisé par le plugin.  |
-| poMaxCartNumberOfPics | 25 | Nombre maximal de photos pouvant être ajoutées au panier |
-| poMaxCartSize | 50 | Poids maximal autorisé pour le panier |
-| poDownloadInfoMessage | "" | Message d'information à afficher lors du téléchargement des photos |
-| poHelpURLAccess | "" | Lien d'accès à la documentation du plugin |
+| pomaxcartnumberofpics | 25 | Nombre maximal de photos pouvant être ajoutées au panier |
+| pomaxcartsize | 50 | Poids maximal autorisé pour le panier |
+| podownloadinfomessage | "" | Message d'information à afficher lors du téléchargement des photos |
+| pohelpurlaccess | "" | Lien d'accès à la documentation du plugin |
 
 Le plugin est optimisé pour une utilisation dans un contexte de carte utilisant le système de projection EPSG:3857.

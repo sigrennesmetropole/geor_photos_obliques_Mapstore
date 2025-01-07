@@ -443,7 +443,7 @@ export const filtersTriggeredPOEpic = (action$, store) => action$.ofType(actions
                 })
             } else {
                 // en cas de 0 résultats retournés
-                response.data = [{provider: 'none'}];
+                response.data = [{provider: null}];
                 observablesReturned = [
                     setPrevSearchFiltersValues(searchFiltersValues),
                     setPrevPhotoCount(getPhotoCountSelector(store.getState())),
