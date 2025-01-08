@@ -17,3 +17,4 @@ trigger_job:
   trigger:
     project: sig/ed/MapStore/MapStoreExtension
     branch: RM/photoOblique_main
+  when: manual
