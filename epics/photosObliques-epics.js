@@ -92,14 +92,6 @@ import {
 } from "ol/geom";
 
 import {
-    Projection
-} from "ol/proj";
-
-import {
-    register
-} from "ol/proj/proj4.js";
-
-import {
     WKT, GeoJSON
 } from "ol/format";
 
@@ -109,7 +101,10 @@ import {
     updateAdditionalLayer
 } from "@mapstore/actions/additionallayers";
 
+import {localConfigSelector} from '@mapstore/selectors/localConfig';
 import Proj4js from 'proj4';
+import {Projection} from "ol/proj";
+import {register} from "ol/proj/proj4.js";
 
 import {
     getYears, 
@@ -295,7 +290,6 @@ export const windRoseClickedPOEpic = (action$, store) => action$.ofType(actions.
         else{
             return Rx.Observable.empty();
         }
-        
 });
     
 /**
@@ -318,19 +312,22 @@ export const updateSearchResultsOnMapMovePOEpic = (action$, store) => action$.of
  * initProjectionsPOEpic inits projections used for layers
  * @memberof photosObliques.epics
  * @param action$ - list of actions triggered in mapstore context
+ * @param store - list the content of variables inputted with the actions
  * @returns - empty observable
  */
-export const initProjectionsPOEpic = (action$) => action$.ofType(actions.INIT_PROJECTIONS).switchMap(() => {
-    if (!Proj4js.defs("EPSG:3857")) {
-        Proj4js.defs("EPSG:3857", "+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs +type=crs");
-    }
-    if (!Proj4js.defs("EPSG:3948")) {
-        Proj4js.defs("EPSG:3948", "+proj=lcc +lat_0=48 +lon_0=3 +lat_1=47.25 +lat_2=48.75 +x_0=1700000 +y_0=7200000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs");
-    }
-    if (!Proj4js.defs("EPSG:4326")) {
-        Proj4js.defs("EPSG:4326", "+proj=longlat +datum=WGS84 +no_defs +type=crs");
-    }
-    register(Proj4js);    
+export const initProjectionsPOEpic = (action$, store) => action$.ofType(actions.INIT_PROJECTIONS).switchMap(() => {
+
+    // adds custom projections from localConfig.json to avoid errors experienced with urbanisme mapstore config
+    // https://github.com/sigrennesmetropole/geor_urbanisme_mapstore/blob/229b0325d6255cc85254a44010d95ad33471072a/js/extension/epics/urbanisme.js#L123-L126
+    const {projectionDefs = []} = localConfigSelector(store.getState()) ?? {};
+    projectionDefs.forEach((proj) => {
+        if (!Proj4js.defs(proj.code)){
+            Proj4js.defs(proj.code, proj.def);
+        }
+    });
+
+    //TODO : handle context and sourceData projection to replace those hardcoded values
+    // for proj3857, use context current proj / for proj3948 use config.srid send from the be
     proj3857 = new Projection({code: 'EPSG:3857'});
     proj3948 = new Projection({code: 'EPSG:3948'});
     proj4326 = new Projection({code: 'EPSG:4326'});

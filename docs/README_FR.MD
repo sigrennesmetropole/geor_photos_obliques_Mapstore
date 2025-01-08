@@ -1,6 +1,6 @@
 # Plugin Photos_Obliques pour MapStore2-geOrchestra
 
-:gb: [English Version](https://github.com/sigrennesmetropole/geor_photos_obliques_Mapstore).
+:gb: [English Version](../README.md).
 
 ## I - Généralités
 
