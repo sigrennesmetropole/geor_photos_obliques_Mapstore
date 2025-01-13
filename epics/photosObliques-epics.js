@@ -325,6 +325,7 @@ export const initProjectionsPOEpic = (action$, store) => action$.ofType(actions.
             Proj4js.defs(proj.code, proj.def);
         }
     });
+    register(Proj4js);
 
     //TODO : handle context and sourceData projection to replace those hardcoded values
     // for proj3857, use context current proj / for proj3948 use config.srid send from the be
